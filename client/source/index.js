@@ -3,11 +3,11 @@
 const React = require("react")
 const ReactDOM = require("react-dom")
 
-// import
+require("./index.less")
 
 class Main extends React.Component {
     render() {
-        return <div>Welcome to the Judging System</div>
+        return <div className="mainContainer">Welcome to the Judging System</div>
     }
 }
 
