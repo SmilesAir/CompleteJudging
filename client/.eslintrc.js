@@ -5,12 +5,7 @@ module.exports = exports = {
         "es6": true
     },
 
-    "ecmaFeatures": {
-        // env=es6 doesn't include modules, which we are using
-        "modules": true
-    },
-
-    "extends": "eslint:recommended",
+    "extends": ["eslint:recommended", "plugin:react/recommended"],
 
     "rules": {
         // Possible Errors (overrides from recommended set)
@@ -47,7 +42,7 @@ module.exports = exports = {
         "no-case-declarations": WARN,
         "no-div-regex": WARN,
         "no-else-return": WARN,
-        "no-empty-label": WARN,
+        "no-empty-label": OFF,
         "no-empty-pattern": WARN,
         "no-eq-null": WARN,
         "no-eval": ERROR,
@@ -107,7 +102,7 @@ module.exports = exports = {
         // We require all vars to be initialized (see init-declarations)
         // If we NEED a var to be initialized to undefined, it needs to be explicit
         "no-undef-init": OFF,
-        "no-undef": ERROR,
+        "no-undef": OFF,
         "no-undefined": OFF,
         "no-unused-vars": WARN,
         // Disallow hoisting - let & const don't allow hoisting anyhow
@@ -131,7 +126,7 @@ module.exports = exports = {
         "arrow-spacing": [ ERROR, { "before": true, "after": true }],
         "constructor-super": ERROR,
         "generator-star-spacing": [ ERROR, "before" ],
-        "no-arrow-condition": ERROR,
+        "no-arrow-condition": OFF,
         "no-class-assign": ERROR,
         "no-const-assign": ERROR,
         "no-dupe-class-members": ERROR,
@@ -188,7 +183,7 @@ module.exports = exports = {
         "operator-linebreak": [ WARN, "after" ],
         "padded-blocks": [ WARN, "never" ],
         "quotes": [ WARN, "double" ],
-        "require-jsdoc": [ WARN, {
+        "require-jsdoc": [ OFF, {
             "require": {
                 "FunctionDeclaration": true,
                 "MethodDefinition": true,
@@ -198,13 +193,10 @@ module.exports = exports = {
         "semi-spacing": [ WARN, { "before": false, "after": true }],
         "semi": [ ERROR, "never" ],
         "sort-vars": OFF,
-        "space-after-keywords": [ WARN, "always" ],
         "space-before-blocks": [ WARN, "always" ],
         "space-before-function-paren": [ WARN, "never" ],
-        "space-before-keywords": [ WARN, "always" ],
         "space-in-parens": [ WARN, "never" ],
         "space-infix-ops": [ WARN, { "int32Hint": true } ],
-        "space-return-throw-case": ERROR,
         "space-unary-ops": ERROR,
         "spaced-comment": [ WARN, "always" ],
         "wrap-regex": WARN
