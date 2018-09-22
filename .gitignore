@@ -50,3 +50,6 @@ coverage
 
 # Benchmarking
 benchmarks/graphs
+
+.serverless
+client/builds

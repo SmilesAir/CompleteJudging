@@ -5,6 +5,7 @@ provider:
   name: aws
   runtime: nodejs6.10
   region: us-west-2
+  stage: development
 
   iamRoleStatements: # permissions for all of your functions can be set here
     - Effect: Allow
@@ -20,5 +21,9 @@ provider:
 
 functions:
   testLambda:
-    handler: aws/test.testLambda
-    memorySize: 512
+    handler: source/test.testLambda
+    events:
+      - http:
+          path: testPost
+          method: post
+          cors: true

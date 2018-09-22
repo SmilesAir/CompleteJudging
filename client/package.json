@@ -1,0 +1,26 @@
+{
+    "name": "completejudging",
+    "version": "v0.0.1",
+    "description": "The new FPA Judging System",
+    "homepage": "https://github.com/SmilesAir/CompleteJudging",
+    "license": "MIT",
+    "author": {
+        "name": "Ryan Young",
+        "email": "ryan@smilesair.com"
+    },
+    "main": "source/index.js",
+    "scripts": {
+        "start": "codeglue --mode=server --stage=development",
+        "deploy": "aws s3 sync ./builds/web s3://completejudging-development"
+    },
+    "dependencies": {
+        "aws-sdk": "2.316.0",
+        "react": "^16.5.2",
+        "react-dom": "^16.5.2"
+    },
+    "devDependencies": {
+        "babel-preset-env": "^1.7.0",
+        "babel-preset-react": "^6.24.1",
+        "codeglue": "ehgoodenough/codeglue#master"
+    }
+}
