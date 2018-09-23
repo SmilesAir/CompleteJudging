@@ -31,7 +31,7 @@ module.exports = exports = {
         "block-scoped-var": WARN,
         "consistent-return": ERROR,
         "curly": ERROR,
-        "default-case": WARN,
+        "default-case": OFF,
         // the dot goes with the property when doing multiline
         "dot-location": [ WARN, "property" ],
         "dot-notation": WARN,
@@ -150,7 +150,7 @@ module.exports = exports = {
         "eol-last": WARN,
         "func-names": WARN,
         "func-style": [ WARN, "declaration" ],
-        "id-length": [ WARN, { "min": 2, "max": 32 } ],
+        "id-length": OFF,
         "indent": [ WARN, 4 ],
         "jsx-quotes": [ WARN, "prefer-double" ],
         "linebreak-style": [ WARN, "windows" ],
@@ -199,6 +199,8 @@ module.exports = exports = {
         "space-infix-ops": [ WARN, { "int32Hint": true } ],
         "space-unary-ops": ERROR,
         "spaced-comment": [ WARN, "always" ],
-        "wrap-regex": WARN
+        "wrap-regex": WARN,
+
+        "no-console": OFF
     }
 };
