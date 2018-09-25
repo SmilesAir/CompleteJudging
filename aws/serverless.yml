@@ -3,7 +3,7 @@ service: CompleteJudging
 
 provider:
   name: aws
-  runtime: nodejs6.10
+  runtime: nodejs8.10
   region: us-west-2
   stage: ${opt:stage, "development"}
 
@@ -40,6 +40,13 @@ functions:
       - http:
           path: createTournament
           method: post
+          cors: true
+  getActiveTournaments:
+    handler: source/getActiveTournaments.handler
+    events:
+      - http:
+          path: getActiveTournaments
+          method: get
           cors: true
   hideTournament:
     handler: source/createTournament.handler

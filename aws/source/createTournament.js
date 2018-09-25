@@ -4,10 +4,11 @@ let docClient = new AWS.DynamoDB.DocumentClient()
 
 module.exports.handler = function(event, context, callback) {
 
-    //event.body = JSON.parse(event.body) || {}
+    event.body = JSON.parse(event.body) || {}
 
     let tournamentName = event.body.tournamentName
-    let tournamentInfoKey = tournamentName + Date.now()
+    let now = Date.now()
+    let tournamentInfoKey = tournamentName + now
 
     let getParams = {
         TableName: process.env.ACTIVE_TOURNAMENT_KEYS,
@@ -20,11 +21,21 @@ module.exports.handler = function(event, context, callback) {
                 Item: {
                     key: tournamentInfoKey,
                     tournamentName: tournamentName,
+                    createdTime: now
                 }
             }
+            console.log("put info", putParams)
             return docClient.put(putParams).promise()
         } else {
-            throw new Error(`Error, ${tournamentName} already exists`)
+            let failResponse = {
+                statusCode: 500,
+                headers: {
+                  "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+                  "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS 
+                },
+                body: `Error, ${tournamentName} already exists`
+            }
+            callback(failResponse)
         }
     }).then((response) => {
         let putParams = {
@@ -35,12 +46,30 @@ module.exports.handler = function(event, context, callback) {
                 tournamentInfoKey: tournamentInfoKey
             }
         }
+        console.log("put key", putParams)
         return docClient.put(putParams).promise()
     }).then((response) => {
-        callback(null, "Success, Created Table")
+        let successResponse = {
+            statusCode: 200,
+            headers: {
+              "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+              "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS 
+            },
+            body: "Success, Created Table"
+        }
+        callback(null, successResponse)
     }).catch((error) => {
         console.log("catch", error)
 
-        callback(error)
+        let failResponse = {
+            statusCode: error.status,
+            headers: {
+              "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+              "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS 
+            },
+            body: "Success, Created Table"
+        }
+
+        callback(failResponse)
     })
 }
