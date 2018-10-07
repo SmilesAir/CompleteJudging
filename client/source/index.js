@@ -2,14 +2,18 @@
 
 const React = require("react")
 const ReactDOM = require("react-dom")
-import { observer } from "mobx-react"
+const MobxReact = require("mobx-react")
+require("favicon.ico")
+var fpaLogo = require("images/fpa_logo.png")
 
 const MainStore = require("scripts/stores/mainStore.js")
 const Enums = require("scripts/stores/enumStore.js")
+const InfoView = require("scripts/interfaces/infoView.js")
+const Interfaces = require("scripts/interfaces/interfaces.js")
 
 require("./index.less")
 
-@observer class Main extends React.Component {
+@MobxReact.observer class Main extends React.Component {
     constructor() {
         super()
 
@@ -26,6 +30,27 @@ require("./index.less")
         }
     }
 
+    render() {
+        
+
+        return (
+            <div className="mainContainer">
+                <HeaderView />
+                <InterfaceView/>
+            </div>
+        )
+    }
+}
+
+class HeaderView extends React.Component {
+    render() {
+        return (
+            <div className="headerContainer">Freestyle Players Association Judging System</div>
+        )
+    }
+}
+
+@MobxReact.observer class InterfaceView extends React.Component {
     render() {
         let activeInterface = undefined
 
@@ -45,88 +70,12 @@ require("./index.less")
         case Enums.EInterface.ex:
             activeInterface = <ExJudgeInterface />
             break
+        case Enums.EInterface.info:
+            activeInterface = <InfoView />
+            break
         }
 
-        return (
-            <div className="mainContainer">
-                <div>Freestyle Players Association Judging System</div>
-                <TournamentSelection />
-                {activeInterface}
-            </div>
-        )
-    }
-}
-
-@observer class TournamentSelection extends React.Component {
-    constructor() {
-        super()
-
-        this.state = { tournamentInfoList: [] }
-    }
-
-    refreshTournamentInfoList() {
-        this.tournamentInfoList = []
-
-        fetch("https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/getActiveTournaments",
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then((response) => {
-                return response.json()
-            }).then((response) => {
-                this.setState({tournamentInfoList: response.tournamentInfos})
-            }).catch((error) => {
-                console.log("Refresh Tournament Info Error", error)
-            })
-    }
-
-    getActiveTournamentInfoComponents() {
-        return this.state.tournamentInfoList.map((info) => {
-            let dateString = new Date(info.createdTime).toString()
-
-            return (<div key={info.tournamentName}>Tournament Name: {info.tournamentName} Created: {dateString}</div>)
-        })
-    }
-
-    onSubmit(event) {
-        event.preventDefault()
-
-        fetch("https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/createTournament",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ tournamentName: this.state.newTournamentName })
-            }).then((response) => {
-                if (response.status < 400) {
-                    this.refreshTournamentInfoList()
-                }
-            }).catch((error) => {
-                console.log("Create Tournament Error", error)
-            })
-    }
-
-    onChange(event) {
-        this.setState({ newTournamentName: event.target.value })
-    }
-
-    render() {
-        return (
-            <div className="tournamentSelectionContainer">
-                <form onSubmit={(event) => {this.onSubmit(event)}}>
-                    <label>
-                        New Tournament Name:
-                        <input type="text" value={this.state.value} onChange={(event) => {this.onChange(event)}}/>
-                    </label>
-                    <input type="submit" value="Submit" />
-                </form>
-                <button onClick={() => {this.refreshTournamentInfoList()}}>Refresh Active Tournament List</button>
-                {this.getActiveTournamentInfoComponents()}
-            </div>
-        )
+        return activeInterface
     }
 }
 
@@ -136,19 +85,27 @@ class DefaultInterface extends React.Component {
     }
 
     render() {
-
+        let buttons = Interfaces.list.map((model) => {
+            return model.type !== MainStore.activeInterface ?
+                (<button className="interfaceSelectButton" key={model.type} onClick={() => {this.click(model.type)}}>{model.name}</button>)
+                : undefined
+        })
         return (
             <div className="defaultInterfaceContainer">
-                <button onClick={() => {this.click(Enums.EInterface.head)}}>Head Judge</button>
-                <button onClick={() => {this.click(Enums.EInterface.ai)}}>Artistic Impression Judge</button>
-                <button onClick={() => {this.click(Enums.EInterface.diff)}}>Difficulty Judge</button>
-                <button onClick={() => {this.click(Enums.EInterface.ex)}}>Execution Judge</button>
+                {buttons}
             </div>
         )
     }
 }
 
 class HeadJudgeInterface extends React.Component {
+    constructor() {
+        super()
+
+        this.name = "Head Judge"
+        this.type = Enums.EInterface.head
+    }
+
     render() {
         return <div>Head Judge</div>
     }
@@ -156,6 +113,13 @@ class HeadJudgeInterface extends React.Component {
 
 
 class AiJudgeInterface extends React.Component {
+    constructor() {
+        super()
+
+        this.name = "Artistic Impression Judge"
+        this.type = Enums.EInterface.head
+    }
+
     render() {
         return <div>Artistic Impression Judge</div>
     }
@@ -163,13 +127,26 @@ class AiJudgeInterface extends React.Component {
 
 
 class DiffJudgeInterface extends React.Component {
+    constructor() {
+        super()
+
+        this.name = "Difficulty Judge"
+        this.type = Enums.EInterface.head
+    }
+
     render() {
         return <div>Difficulty Judge</div>
     }
 }
 
-
 class ExJudgeInterface extends React.Component {
+    constructor() {
+        super()
+
+        this.name = "Execution Judge"
+        this.type = Enums.EInterface.head
+    }
+
     render() {
         return <div>Execution Judge</div>
     }

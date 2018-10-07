@@ -181,7 +181,7 @@ module.exports = exports = {
         "one-var": OFF,
         "operator-assignment": [ WARN, "never" ],
         "operator-linebreak": [ WARN, "after" ],
-        "padded-blocks": [ WARN, "never" ],
+        "padded-blocks": [ OFF, "never" ],
         "quotes": [ WARN, "double" ],
         "require-jsdoc": [ OFF, {
             "require": {

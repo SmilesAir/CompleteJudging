@@ -1,10 +1,10 @@
 "use strict"
 
-import {observable} from "mobx"
+const Mobx = require("mobx")
 
 const Enums = require("scripts/stores/enumStore.js")
 
 
-module.exports = observable({
+module.exports = Mobx.observable({
     activeInterface: Enums.EInterface.default,
 })
