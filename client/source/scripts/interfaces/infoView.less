@@ -1,9 +1,70 @@
 
 .infoContainer {
     grid-area: interface;
-    display: flex;
 
-    
+    border-radius: .5em;
+    padding: .5em;
 
-    background-color: rebeccapurple;
+    background-color: white;
+}
+
+.infoTab {
+    display: none;
+}
+
+.infoTab:checked + label {
+    color: #555;
+    border: 1px solid #ddd;
+    border-top: 2px solid orange;
+    border-bottom: 1px solid white;
+}
+
+#tab1:checked ~ #content1,
+#tab2:checked ~ #content2,
+#tab3:checked ~ #content3 {
+    display: block;
+}
+
+.infoLabel {
+    display: inline-block;
+    margin: 0 0 -1px;
+    padding: 15px 25px;
+    font-weight: 600;
+    text-align: center;
+    color: #bbb;
+    border: 1px solid transparent;
+}
+
+.infoLabel:hover {
+    color: #888;
+    cursor: pointer;
+}
+
+.infoLabel:before {
+    font-family: fontawesome;
+    font-weight: normal;
+    margin-right: 10px;
+}
+
+.infoTabContent {
+    display: none;
+    padding: 20px 0 0;
+    border-top: 1px solid #ddd;
+}
+
+.infoSummary {
+    display: block;
+    color: #888
+}
+
+.infoSummary:hover {
+    color: black;
+    cursor: pointer;
+
+    background-color: #ddd;
+}
+
+.infoSummary:active {
+    color: white;
+    background-color: black;
 }

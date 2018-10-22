@@ -11,6 +11,12 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
     render() {
         return (
             <div className="infoContainer">
+                <input className="infoTab" id="tab1" type="radio" name="tabs" defaultChecked />
+                <label className="infoLabel" htmlFor="tab1">Select</label>
+                <input className="infoTab" id="tab2" type="radio" name="tabs" />
+                <label className="infoLabel" htmlFor="tab2">Players and Teams</label>
+                <input className="infoTab" id="tab3" type="radio" name="tabs" />
+                <label className="infoLabel" htmlFor="tab3">Pools</label>
                 <TournamentSelection/>
             </div>
         )
@@ -22,6 +28,8 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
         super()
 
         this.state = { tournamentInfoList: [] }
+
+        this.refreshTournamentInfoList()
     }
 
     refreshTournamentInfoList() {
@@ -42,11 +50,20 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
             })
     }
 
+    selectTournament(info) {
+        console.log(info)
+    }
+
     getActiveTournamentInfoComponents() {
         return this.state.tournamentInfoList.map((info) => {
             let dateString = new Date(info.createdTime).toString()
 
-            return (<div key={info.tournamentName}>Tournament Name: {info.tournamentName} Created: {dateString}</div>)
+            return (
+            <label className="infoSummary" key={info.tournamentName} onClick={() => {
+                this.selectTournament(info)
+            }}>
+                Name: {info.tournamentName} Created: {dateString}
+            </label>)
         })
     }
 
@@ -75,7 +92,7 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
 
     render() {
         return (
-            <div className="tournamentSelectionContainer">
+            <div id="content1" className="tournamentSelectionContainer infoTabContent">
                 <form onSubmit={(event) => {this.onSubmit(event)}}>
                     <label>
                         New Tournament Name:
@@ -89,4 +106,3 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
         )
     }
 }
-
