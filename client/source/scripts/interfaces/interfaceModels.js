@@ -11,16 +11,6 @@ module.exports.DefaultModel = class extends ModelInterfaceBase {
     }
 }
 
-class HeadJudgeModel extends ModelInterfaceBase {
-    constructor() {
-        super()
-
-        this.name = "Head Judge"
-        this.type = Enums.EInterface.head
-    }
-}
-module.exports.HeadJudgeModel = HeadJudgeModel
-
 class AiJudgeModel extends ModelInterfaceBase {
     constructor() {
         super()

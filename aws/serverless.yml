@@ -10,21 +10,27 @@ provider:
   environment:
     ACTIVE_TOURNAMENT_KEYS: ${self:provider.stage}-activeTournamentKeys
     TOURNAMENT_INFO: ${self:provider.stage}-tournamentInfo
+    ACTIVE_POOLS: ${self:provider.stage}-activePools
 
-  iamRoleStatements: # permissions for all of your functions can be set here
+  iamRoleStatements:
     - Effect: Allow
-      Action: # Gives permission to DynamoDB tables in a specific region
+      Action:
         - dynamodb:Scan
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ACTIVE_TOURNAMENT_KEYS}"
     - Effect: Allow
-      Action: # Gives permission to DynamoDB tables in a specific region
+      Action:
         - dynamodb:Scan
         - dynamodb:GetItem
         - dynamodb:PutItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TOURNAMENT_INFO}"
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ACTIVE_POOLS}"
 
 functions:
   testLambda:
@@ -62,6 +68,20 @@ functions:
           path: finishTournament
           method: post
           cors: true
+  setPlayingPool:
+    handler: source/setPlayingPool.handler
+    events:
+      - http:
+          path: setPlayingPool
+          method: post
+          cors: true
+  getPlayingPool:
+    handler: source/getPlayingPool.handler
+    events:
+      - http:
+          path: getPlayingPool
+          method: get
+          cors: true
 
 resources:
   Resources:
@@ -82,6 +102,19 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:provider.environment.TOURNAMENT_INFO}
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: key
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    activePools:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.ACTIVE_POOLS}
         AttributeDefinitions:
           - AttributeName: key
             AttributeType: S

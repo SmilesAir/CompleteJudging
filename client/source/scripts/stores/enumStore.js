@@ -8,4 +8,5 @@ module.exports.EInterface = {
     diff: 3,
     ex: 4,
     info: 5,
+    rank: 6
 }

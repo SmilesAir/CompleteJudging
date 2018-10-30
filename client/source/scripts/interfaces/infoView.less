@@ -6,6 +6,8 @@
     padding: .5em;
 
     background-color: white;
+
+    overflow: auto;
 }
 
 .infoTab {
@@ -67,4 +69,23 @@
 .infoSummary:active {
     color: white;
     background-color: black;
+}
+
+.content2Container {
+    display: grid;
+    grid-template-areas:
+        "playerListArea poolsArea";
+    grid-template-columns: 15em 1fr;
+}
+
+.playerListContainer {
+    grid-area: playerListArea;
+}
+
+.poolsContainer {
+    grid-area: poolsArea;
+}
+
+.poolDescription {
+    font-size: 1.5em;
 }

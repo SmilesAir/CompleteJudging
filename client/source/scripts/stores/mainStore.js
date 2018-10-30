@@ -7,4 +7,8 @@ const Enums = require("scripts/stores/enumStore.js")
 
 module.exports = Mobx.observable({
     activeInterface: Enums.EInterface.default,
+    startupTournamentName: undefined,
+    tournamentName: undefined,
+    saveData: undefined,
+    tournamentInfoList: []
 })

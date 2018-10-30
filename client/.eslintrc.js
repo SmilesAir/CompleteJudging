@@ -41,7 +41,7 @@ module.exports = exports = {
         "no-caller": ERROR,
         "no-case-declarations": WARN,
         "no-div-regex": WARN,
-        "no-else-return": WARN,
+        "no-else-return": OFF,
         "no-empty-label": OFF,
         "no-empty-pattern": WARN,
         "no-eq-null": WARN,
@@ -60,7 +60,7 @@ module.exports = exports = {
         "no-labels": WARN,
         "no-lone-blocks": WARN,
         "no-loop-func": ERROR,
-        "no-magic-numbers": WARN,
+        "no-magic-numbers": OFF,
         "no-multi-spaces": ERROR,
         "no-multi-str": WARN,
         "no-native-reassign": ERROR,
@@ -106,7 +106,7 @@ module.exports = exports = {
         "no-undefined": OFF,
         "no-unused-vars": WARN,
         // Disallow hoisting - let & const don't allow hoisting anyhow
-        "no-use-before-define": ERROR,
+        "no-use-before-define": OFF,
 
         // Node.js and CommonJS
         "callback-return": [ WARN, [ "callback", "next" ]],
@@ -156,7 +156,7 @@ module.exports = exports = {
         "linebreak-style": [ WARN, "windows" ],
         "lines-around-comment": [ WARN, { "beforeBlockComment": true } ],
         "max-depth": [ WARN, 8 ],
-        "max-len": [ WARN, 132 ],
+        "max-len": [ OFF, 132 ],
         "max-nested-callbacks": [ WARN, 8 ],
         "max-params": [ WARN, 8 ],
         "new-cap": WARN,

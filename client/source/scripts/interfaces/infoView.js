@@ -4,6 +4,8 @@ const MobxReact = require("mobx-react")
 const MainStore = require("scripts/stores/mainStore.js")
 const Enums = require("scripts/stores/enumStore.js")
 const ModelInterfaceBase = require("scripts/interfaces/interfaceModelBase.js")
+const Interfaces = require("scripts/interfaces/interfaces.js")
+const DataAction = require("scripts/actions/dataAction.js")
 
 require("./infoView.less")
 
@@ -11,13 +13,94 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
     render() {
         return (
             <div className="infoContainer">
-                <input className="infoTab" id="tab1" type="radio" name="tabs" defaultChecked />
+                <input className="infoTab" id="tab1" type="radio" name="tabs" />
                 <label className="infoLabel" htmlFor="tab1">Select</label>
                 <input className="infoTab" id="tab2" type="radio" name="tabs" />
                 <label className="infoLabel" htmlFor="tab2">Players and Teams</label>
-                <input className="infoTab" id="tab3" type="radio" name="tabs" />
+                <input className="infoTab" id="tab3" type="radio" name="tabs" defaultChecked />
                 <label className="infoLabel" htmlFor="tab3">Pools</label>
                 <TournamentSelection/>
+                <PlayerAndTeams/>
+                <PoolsView/>
+            </div>
+        )
+    }
+}
+
+@MobxReact.observer class PlayersView extends React.Component {
+    getPlayerComponents() {
+        if (MainStore.saveData !== undefined) {
+            let playerNumber = 1
+            return MainStore.saveData.playerList.map((player) => {
+                return (<div key={playerNumber}>{playerNumber++}. {player.firstName} {player.lastName} - {player.rank}</div>)
+            })
+        } else {
+            return undefined
+        }
+    }
+    render() {
+        return (
+            <div className="playerListContainer">
+                {this.getPlayerComponents()}
+            </div>
+        )
+    }
+}
+
+@MobxReact.observer class PoolsView extends React.Component {
+    getTeamComponents(pool) {
+        let key = 0
+        return pool.teamList.map((team) => {
+            let teamNames = team.playerList.map((playerId) => {
+                return DataAction.getFullPlayerName(playerId)
+            }).join(" - ")
+            return <div key={key++}>{teamNames}</div>
+        })
+    }
+
+    onSetPool(pool) {
+        Interfaces.head.setPlayingPool(pool)
+    }
+
+    getPoolComponents() {
+        if (MainStore.saveData !== undefined) {
+            return MainStore.saveData.poolList.map((pool) => {
+                let key = `${pool.divisionIndex}${pool.roundIndex}${pool.poolIndex}`
+                return (
+                    <div key={key}>
+                        <div className="poolDescription">
+                            {DataAction.getFullPoolDescription(pool)}
+                            <button onClick={() => this.onSetPool(pool)}>Set Pool</button>
+                        </div>
+                        <div>
+                            {this.getTeamComponents(pool)}
+                        </div>
+                    </div>
+                )
+            })
+        } else {
+            return undefined
+        }
+    }
+
+    render() {
+        return (
+            <div id="content3" className="infoTabContent">
+                <div className="poolsContainer">
+                    {this.getPoolComponents()}
+                </div>
+            </div>
+        )
+    }
+}
+
+class PlayerAndTeams extends React.Component {
+    render() {
+        return (
+            <div id="content2" className="infoTabContent">
+                <div className="content2Container">
+                    <PlayersView/>
+                </div>
             </div>
         )
     }
@@ -27,27 +110,7 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
     constructor() {
         super()
 
-        this.state = { tournamentInfoList: [] }
-
-        this.refreshTournamentInfoList()
-    }
-
-    refreshTournamentInfoList() {
-        this.tournamentInfoList = []
-
-        fetch("https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/getActiveTournaments",
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then((response) => {
-                return response.json()
-            }).then((response) => {
-                this.setState({tournamentInfoList: response.tournamentInfos})
-            }).catch((error) => {
-                console.log("Refresh Tournament Info Error", error)
-            })
+        this.state = { newTournamentName: "" }
     }
 
     selectTournament(info) {
@@ -55,7 +118,7 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
     }
 
     getActiveTournamentInfoComponents() {
-        return this.state.tournamentInfoList.map((info) => {
+        return MainStore.tournamentInfoList.map((info) => {
             let dateString = new Date(info.createdTime).toString()
 
             return (
@@ -79,7 +142,7 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
                 body: JSON.stringify({ tournamentName: this.state.newTournamentName })
             }).then((response) => {
                 if (response.status < 400) {
-                    this.refreshTournamentInfoList()
+                    Interfaces.info.refreshTournamentInfoList()
                 }
             }).catch((error) => {
                 console.log("Create Tournament Error", error)
@@ -92,7 +155,7 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
 
     render() {
         return (
-            <div id="content1" className="tournamentSelectionContainer infoTabContent">
+            <div id="content1" className="infoTabContent">
                 <form onSubmit={(event) => {this.onSubmit(event)}}>
                     <label>
                         New Tournament Name:
@@ -100,7 +163,7 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
                     </label>
                     <input type="submit" value="Submit" />
                 </form>
-                <button onClick={() => {this.refreshTournamentInfoList()}}>Refresh Active Tournament List</button>
+                <button onClick={() => {Interfaces.info.refreshTournamentInfoList()}}>Refresh Active Tournament List</button>
                 {this.getActiveTournamentInfoComponents()}
             </div>
         )

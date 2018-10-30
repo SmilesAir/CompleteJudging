@@ -10,6 +10,8 @@ const MainStore = require("scripts/stores/mainStore.js")
 const Enums = require("scripts/stores/enumStore.js")
 const InfoView = require("scripts/interfaces/infoView.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
+const HeadJudgeInterface = require("scripts/interfaces/simpleRank/headView.js")
+const RankView = require("scripts/interfaces/simpleRank/judgeView.js")
 
 require("./index.less")
 
@@ -17,35 +19,56 @@ require("./index.less")
     constructor() {
         super()
 
-        let url = new URL(window.location.href)
-        let startupParam = url.searchParams.get("startup")
-
         MainStore.activeInterface = Enums.EInterface.default
 
+        let url = new URL(window.location.href)
+        let startupParam = url.searchParams.get("startup")
         for (let interfaceName in Enums.EInterface) {
             if (interfaceName === startupParam) {
                 MainStore.activeInterface = Enums.EInterface[interfaceName]
                 break
             }
         }
+
+        MainStore.startupTournamentName = url.searchParams.get("tournamentName")
+
+        Interfaces.init()
     }
 
     render() {
-        
-
         return (
             <div className="mainContainer">
                 <HeaderView />
-                <InterfaceView/>
+                <InterfaceView />
             </div>
         )
     }
 }
 
-class HeaderView extends React.Component {
+@MobxReact.observer class HeaderView extends React.Component {
+    getInterfaceButtons() {
+        let buttons = []
+        for (let interfaceName in Enums.EInterface) {
+            let interfaceValue = Enums.EInterface[interfaceName]
+            if (interfaceValue !== Enums.EInterface.invalid) {
+                buttons.push((
+                    <button key={interfaceName} onClick={ () => {
+                        MainStore.activeInterface = interfaceValue
+                    }}>{interfaceName}</button>
+                ))
+            }
+        }
+
+        return buttons
+    }
+
     render() {
+        let title = MainStore.tournamentName !== undefined ? MainStore.tournamentName : "Freestyle Players Association Judging System"
         return (
-            <div className="headerContainer">Freestyle Players Association Judging System</div>
+            <div className="headerContainer">
+            {title}
+            {this.getInterfaceButtons()}
+            </div>
         )
     }
 }
@@ -73,6 +96,9 @@ class HeaderView extends React.Component {
         case Enums.EInterface.info:
             activeInterface = <InfoView />
             break
+        case Enums.EInterface.rank:
+            activeInterface = <RankView />
+            break
         }
 
         return activeInterface
@@ -98,20 +124,6 @@ class DefaultInterface extends React.Component {
     }
 }
 
-class HeadJudgeInterface extends React.Component {
-    constructor() {
-        super()
-
-        this.name = "Head Judge"
-        this.type = Enums.EInterface.head
-    }
-
-    render() {
-        return <div>Head Judge</div>
-    }
-}
-
-
 class AiJudgeInterface extends React.Component {
     constructor() {
         super()
@@ -124,7 +136,6 @@ class AiJudgeInterface extends React.Component {
         return <div>Artistic Impression Judge</div>
     }
 }
-
 
 class DiffJudgeInterface extends React.Component {
     constructor() {

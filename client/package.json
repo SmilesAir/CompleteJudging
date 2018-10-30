@@ -23,7 +23,8 @@
         "mobx": "^5.1.2",
         "mobx-react": "^5.2.8",
         "react": "^16.5.2",
-        "react-dom": "^16.5.2"
+        "react-dom": "^16.5.2",
+        "uuid": "^3.3.2"
     },
     "devDependencies": {
         "babel-eslint": "^8.2.6",
