@@ -114,7 +114,7 @@ class PlayerAndTeams extends React.Component {
     }
 
     selectTournament(info) {
-        console.log(info)
+        Interfaces.info.setInfo(info)
     }
 
     getActiveTournamentInfoComponents() {

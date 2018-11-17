@@ -20,12 +20,20 @@ module.exports = class extends ModelInterfaceBase {
         this.obs = Mobx.observable({
             playingPool: undefined,
             routineLengthSeconds: undefined,
-            playingTeamIndex: undefined
+            playingTeamIndex: undefined,
+            results: undefined,
+            dragTeamIndex: undefined
         })
     }
 
     init() {
-        fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/getPlayingPool?tournamentName=${MainStore.startupTournamentName}`,
+        if (MainStore.startupTournamentName !== undefined) {
+            this.queryPoolData(MainStore.startupTournamentName)
+        }
+    }
+
+    queryPoolData(tournamentName) {
+        fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/getPlayingPool?tournamentName=${tournamentName}`,
             {
                 method: "GET",
                 headers: {
@@ -43,8 +51,87 @@ module.exports = class extends ModelInterfaceBase {
             this.obs.playingTeamIndex = response.observable.playingTeamIndex
             this.playPoolHash = response.playPoolHash
             this.observableHash = response.observableHash
+
+            this.obs.results = new ResultsDataRank(this.obs.playingPool)
+
+            // Test
+            for (let i = 0; i < 3; ++i) {
+                this.obs.playingPool.teamList[i].played = true
+                this.obs.playingTeamIndex = 3
+            }
         }).catch((error) => {
             console.log("Error: Set Playing Pool", error)
         })
+    }
+
+    startScoreDrag(teamIndex) {
+        this.obs.dragTeamIndex = teamIndex
+    }
+
+    endScoreDrag() {
+        this.obs.dragTeamIndex = undefined
+
+        this.updateTeamListOrder()
+    }
+
+    onScoreDrag(event) {
+        if (this.obs.dragTeamIndex !== undefined) {
+            this.obs.results.rawPointsList[this.obs.dragTeamIndex] += event.movementX / event.currentTarget.clientWidth * 100
+        }
+    }
+
+    updateTeamListOrder() {
+        let newTeamList = []
+        let newPointsList = []
+        let teamList = this.obs.playingPool.teamList
+        let pointsList = this.obs.results.rawPointsList
+        let playingTeam = teamList[this.obs.playingTeamIndex]
+        for (let teamIndex = 0; teamIndex < teamList.length; ++teamIndex) {
+            let team = teamList[teamIndex]
+            let points = pointsList[teamIndex]
+            if (teamIndex === this.obs.playingTeamIndex || team.played === true) {
+                let inserted = false
+                for (let sortedIndex = 0; sortedIndex < newPointsList.length; ++sortedIndex) {
+                    let sortedPoints = newPointsList[sortedIndex]
+                    if (points > sortedPoints) {
+                        newTeamList.splice(sortedIndex, 0, team)
+                        newPointsList.splice(sortedIndex, 0, points)
+
+                        inserted = true
+                        break
+                    }
+                }
+
+                if (!inserted) {
+                    newTeamList.push(team)
+                    newPointsList.push(points)
+                }
+            } else {
+                newTeamList.push(team)
+                newPointsList.push(points)
+            }
+        }
+
+        teamList.length = 0
+        for (let newTeam of newTeamList) {
+            teamList.push(newTeam)
+        }
+        pointsList.length = 0
+        for (let points of newPointsList) {
+            pointsList.push(points)
+        }
+
+        this.obs.playingTeamIndex = teamList.indexOf(playingTeam)
+    }
+}
+
+class ResultsDataRank extends DataStore.ResultsDataBase {
+    constructor(poolData) {
+        super(poolData.divisionIndex, poolData.roundIndex, poolData.poolIndex, poolData.teamList)
+
+        this.rawPointsList = Mobx.observable([])
+        for (let i = 0; i < this.teamList.length; ++i) {
+            this.rawPointsList.push(0)
+        }
     }
 }

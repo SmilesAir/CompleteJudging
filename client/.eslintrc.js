@@ -179,7 +179,7 @@ module.exports = exports = {
         "no-unneeded-ternary": WARN,
         "object-curly-spacing": [ WARN, "always" ],
         "one-var": OFF,
-        "operator-assignment": [ WARN, "never" ],
+        "operator-assignment": [ OFF, "never" ],
         "operator-linebreak": [ WARN, "after" ],
         "padded-blocks": [ OFF, "never" ],
         "quotes": [ WARN, "double" ],
