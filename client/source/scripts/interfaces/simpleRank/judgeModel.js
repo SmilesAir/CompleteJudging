@@ -72,6 +72,8 @@ module.exports = class extends ModelInterfaceBase {
         this.obs.dragTeamIndex = undefined
 
         this.updateTeamListOrder()
+
+        this.reportScores()
     }
 
     onScoreDrag(event) {
@@ -122,6 +124,23 @@ module.exports = class extends ModelInterfaceBase {
         }
 
         this.obs.playingTeamIndex = teamList.indexOf(playingTeam)
+    }
+
+    reportScores() {
+        fetch("https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/reportJudgeScore",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    tournamentName: MainStore.tournamentName,
+                    judgeId: MainStore.userId,
+                    results: this.obs.results
+                })
+            }).catch((error) => {
+            console.log("Report Scores Error:", error)
+        })
     }
 }
 

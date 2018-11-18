@@ -77,7 +77,8 @@ module.exports.updateActivePoolAttribute = async function(tournamentName, attrib
         let updatePoolParams = {
             TableName: process.env.ACTIVE_POOLS,
             Key: { "key": tournamentKey.playingPoolKey },
-            UpdateExpression: `set ${attributeName} = :value`,
+            UpdateExpression: `set #attributeName = :value`,
+            ExpressionAttributeNames: { "#attributeName": attributeName },
             ExpressionAttributeValues: { ":value": attributeValue }
         }
         return docClient.update(updatePoolParams).promise().catch((error) => {

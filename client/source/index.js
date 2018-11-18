@@ -31,6 +31,7 @@ require("./index.less")
         }
 
         MainStore.startupTournamentName = url.searchParams.get("tournamentName")
+        MainStore.userId = url.searchParams.get("userId")
 
         Interfaces.init()
     }

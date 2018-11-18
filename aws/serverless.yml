@@ -11,11 +11,11 @@ provider:
     ACTIVE_TOURNAMENT_KEYS: ${self:provider.stage}-activeTournamentKeys
     TOURNAMENT_INFO: ${self:provider.stage}-tournamentInfo
     ACTIVE_POOLS: ${self:provider.stage}-activePools
+    ACTIVE_RESULTS: ${self:provider.stage}-activeResults
 
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - dynamodb:Scan
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:UpdateItem
@@ -23,7 +23,6 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ACTIVE_TOURNAMENT_KEYS}"
     - Effect: Allow
       Action:
-        - dynamodb:Scan
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:UpdateItem
@@ -34,6 +33,12 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ACTIVE_POOLS}"
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ACTIVE_RESULTS}"
 
 functions:
   testLambda:
@@ -125,6 +130,19 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:provider.environment.ACTIVE_POOLS}
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: key
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    activeResults:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.ACTIVE_RESULTS}
         AttributeDefinitions:
           - AttributeName: key
             AttributeType: S
