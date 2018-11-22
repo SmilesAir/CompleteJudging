@@ -46,10 +46,10 @@ module.exports.getTournamentKey = function(tournamentName) {
         if (!module.exports.isItemEmpty(response)) {
             return response.Item
         } else {
-            throw new Error(`Error. Can't find tournament with name: ${tournamentName}`)
+            throw new Error(`Can't find tournament with name: ${tournamentName}`)
         }
     }).catch((error) => {
-        throw new Error(`Error. Can't find tournament with name: ${tournamentName}`)
+        throw new Error(`Can't find tournament with name: ${tournamentName}`)
     })
 }
 
@@ -64,10 +64,10 @@ module.exports.getActivePool = async function(tournamentName) {
         if (!module.exports.isItemEmpty(getResp)) {
             return getResp.Item.data
         } else {
-            throw new Error(`Error. No active pool data for ${tournamentName}`)
+            throw new Error(`No active pool data for ${tournamentName}`)
         }
     } else {
-        throw new Error(`Error. ${tournamentName} doesn't have a playing pool`)
+        throw new Error(`${tournamentName} doesn't have a playing pool`)
     }
 }
 
@@ -82,10 +82,10 @@ module.exports.updateActivePoolAttribute = async function(tournamentName, attrib
             ExpressionAttributeValues: { ":value": attributeValue }
         }
         return docClient.update(updatePoolParams).promise().catch((error) => {
-            throw new Error(`Error. Update active pool for ${tournamentName}. ${error}`)
+            throw new Error(`Update active pool for ${tournamentName}. ${error}`)
         })
     } else {
-        throw new Error(`Error. ${tournamentName} doesn't have a playing pool`)
+        throw new Error(`${tournamentName} doesn't have a playing pool`)
     }
 }
 
@@ -99,6 +99,6 @@ module.exports.updateTournamentKeyPlayingPool = async function(tournamentName, p
         ExpressionAttributeValues: { ":playingPoolKey": playingPoolKey }
     }
     return docClient.update(updatePoolParams).promise().catch((error) => {
-        throw new Error(`Error. Update active pool for ${tournamentName}. ${error}`)
+        throw new Error(`Update active pool for ${tournamentName}. ${error}`)
     })
 }

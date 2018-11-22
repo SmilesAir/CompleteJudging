@@ -30,6 +30,10 @@ module.exports = class extends ModelInterfaceBase {
         if (MainStore.startupTournamentName !== undefined) {
             this.queryPoolData(MainStore.startupTournamentName)
         }
+
+        setInterval(() => {
+            this.queryPoolData(MainStore.tournamentName)
+        }, this.updateIntervalMs)
     }
 
     queryPoolData(tournamentName) {
@@ -46,22 +50,31 @@ module.exports = class extends ModelInterfaceBase {
                 throw new Error(response.statusText)
             }
         }).then((response) => {
-            this.obs.playingPool = new DataStore.PoolData(response.pool)
-            this.obs.routineLengthSeconds = response.observable.routineLengthSeconds
-            this.obs.playingTeamIndex = response.observable.playingTeamIndex
-            this.playPoolHash = response.playPoolHash
-            this.observableHash = response.observableHash
-
-            this.obs.results = new ResultsDataRank(this.obs.playingPool)
-
-            // Test
-            for (let i = 0; i < 3; ++i) {
-                this.obs.playingPool.teamList[i].played = true
-                this.obs.playingTeamIndex = 3
-            }
+            this.updateFromAws(response)
         }).catch((error) => {
             console.log("Error: Set Playing Pool", error)
         })
+    }
+
+    updateFromAws(awsData) {
+        if (this.playPoolHash !== awsData.poolHash) {
+            this.playPoolHash = awsData.poolHash
+            this.obs.playingPool = new DataStore.PoolData(awsData.pool)
+
+            this.obs.results = new ResultsDataRank(this.obs.playingPool)
+        }
+
+        if (this.observableHash !== awsData.observableHash) {
+            this.observableHash = awsData.observableHash
+            this.obs.routineLengthSeconds = awsData.observable.routineLengthSeconds
+            this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
+        }
+
+        // // Test
+        // for (let i = 0; i < 3; ++i) {
+        //     this.obs.playingPool.teamList[i].played = true
+        //     this.obs.playingTeamIndex = 3
+        // }
     }
 
     startScoreDrag(teamIndex) {

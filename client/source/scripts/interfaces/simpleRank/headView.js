@@ -46,10 +46,7 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
     }
 
     onTeamClick(teamData) {
-        let index = Interfaces.head.obs.playingPool.teamList.indexOf(teamData)
-        if (index !== -1) {
-            Interfaces.head.obs.playingTeamIndex = index
-        }
+        Interfaces.head.setPlayingTeam(teamData)
     }
 
     getTeamsElement() {

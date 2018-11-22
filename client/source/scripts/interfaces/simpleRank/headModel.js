@@ -21,6 +21,8 @@ module.exports = class extends ModelInterfaceBase {
             playingPool: undefined,
             playingTeamIndex: undefined
         })
+
+        this.awsData = undefined
     }
 
     getPoolDataForAWS() {
@@ -36,9 +38,30 @@ module.exports = class extends ModelInterfaceBase {
     }
 
     setPlayingPool(pool) {
-        this.obs.playingPool = pool
-        this.obs.playingTeamIndex = pool.teamList.length > 0 ? 0 : undefined
+        if (this.obs.playingPool !== pool) {
+            this.obs.playingPool = pool
+            this.obs.playingTeamIndex = pool.teamList.length > 0 ? 0 : undefined
 
+            this.awsData = this.getPoolDataForAWS()
+        }
+
+        this.sendDataToAWS()
+    }
+
+    setPlayingTeam(teamData) {
+        let index = this.obs.playingPool.teamList.indexOf(teamData)
+        if (index !== -1) {
+            if (this.obs.playingTeamIndex !== index) {
+                this.obs.playingTeamIndex = index
+                this.awsData.observable.playingTeamIndex = index
+                this.awsData.observableHash = uuid4()
+
+                this.sendDataToAWS()
+            }
+        }
+    }
+
+    sendDataToAWS() {
         fetch("https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/setPlayingPool",
             {
                 method: "POST",
@@ -47,7 +70,7 @@ module.exports = class extends ModelInterfaceBase {
                 },
                 body: JSON.stringify({
                     tournamentName: MainStore.tournamentName,
-                    data: this.getPoolDataForAWS()
+                    data: this.awsData
                 })
             }).then((response) => {
             return response.json()

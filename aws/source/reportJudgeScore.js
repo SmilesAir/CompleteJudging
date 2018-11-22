@@ -28,6 +28,6 @@ module.exports.handler = (e, c, cb) => { Common.handler(e, c, cb, async (event, 
         }
     }
     return docClient.put(putParams).promise().catch((error) => {
-        throw new Error(`Error. Put into active results. ${error}`)
+        throw new Error(`Put into active results. ${error}`)
     })
 })}
