@@ -21,16 +21,6 @@ class AiJudgeModel extends ModelInterfaceBase {
 }
 module.exports.AiJudgeModel = AiJudgeModel
 
-class DiffJudgeModel extends ModelInterfaceBase {
-    constructor() {
-        super()
-
-        this.name = "Difficulty Judge"
-        this.type = Enums.EInterface.diff
-    }
-}
-module.exports.DiffJudgeModel = DiffJudgeModel
-
 class ExJudgeModel extends ModelInterfaceBase {
     constructor() {
         super()

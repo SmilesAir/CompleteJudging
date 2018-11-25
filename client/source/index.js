@@ -12,6 +12,7 @@ const InfoView = require("scripts/interfaces/infoView.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const HeadJudgeInterface = require("scripts/interfaces/simpleRank/headView.js")
 const RankView = require("scripts/interfaces/simpleRank/judgeView.js")
+const DiffView = require("scripts/interfaces/fpa/diffView.js")
 
 require("./index.less")
 
@@ -89,7 +90,7 @@ require("./index.less")
             activeInterface = <AiJudgeInterface />
             break
         case Enums.EInterface.diff:
-            activeInterface = <DiffJudgeInterface />
+            activeInterface = <DiffView />
             break
         case Enums.EInterface.ex:
             activeInterface = <ExJudgeInterface />
@@ -135,19 +136,6 @@ class AiJudgeInterface extends React.Component {
 
     render() {
         return <div>Artistic Impression Judge</div>
-    }
-}
-
-class DiffJudgeInterface extends React.Component {
-    constructor() {
-        super()
-
-        this.name = "Difficulty Judge"
-        this.type = Enums.EInterface.head
-    }
-
-    render() {
-        return <div>Difficulty Judge</div>
     }
 }
 

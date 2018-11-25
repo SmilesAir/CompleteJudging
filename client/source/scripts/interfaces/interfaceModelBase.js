@@ -9,7 +9,7 @@ class ModelInterfaceBase extends React.Component {
 
         this.name = "Missing Interface Name"
         this.type = Enums.EInterface.invalid
-        this.updateIntervalMs = 1000
+        this.updateIntervalMs = 5000
     }
 }
 module.exports = ModelInterfaceBase
