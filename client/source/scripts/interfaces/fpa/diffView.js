@@ -77,9 +77,7 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
     }
 
     onTouchEnd(event) {
-        event.preventDefault()
-
-        this.onInputEnd()
+        this.onParentInputEnd(event)
     }
 
     onMouseDown(event) {
@@ -93,10 +91,31 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
     }
 
     onMouseUp(event) {
-        this.onInputEnd()
+        this.onParentInputEnd(event)
     }
 
-    onInputEnd() {
+    onParentTouchMove(event) {
+        if (Interfaces.diff.obs.editIndex !== undefined) {
+            let inputContainer = document.getElementsByClassName("inputContainer")[0]
+            let bounds = inputContainer.getBoundingClientRect()
+
+            let x = event.targetTouches[0].clientX
+            let y = event.targetTouches[0].clientY
+
+            if (x >= bounds.left &&
+                x <= bounds.right &&
+                y >= bounds.top &&
+                y <= bounds.bottom) {
+                
+                this.updateNumberOut(x)
+            }
+        }
+    }
+
+    onParentInputEnd(event) {
+        event.preventDefault()
+        event.stopPropagation()
+        
         if (Interfaces.diff.obs.editIndex === undefined) {
             let score = this.getStateNumberOut()
             if (score !== undefined) {
@@ -108,17 +127,6 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
 
         this.state.numberOut = undefined
         this.setState(this.state)
-    }
-
-    onParentTouchMove(event) {
-        //console.log("moved", this.touchAreaRef.elementFromPoint(event.targetTouches[0].clientX, event.targetTouches[0].clientY))
-        console.log("moved", this.touchAreaRef)
-    }
-
-    onParentInputEnd(event) {
-        event.preventDefault()
-
-        Interfaces.diff.endEdit()
     }
 
     render() {
@@ -137,7 +145,7 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
                     {headerText}
                 </div>
                 <TimeMarksView />
-                <div className="inputContainer"
+                <div id="inputContainer" className="inputContainer"
                     onTouchStart={(event) => this.onTouchStart(event)}
                     onTouchMove={(event) => this.onTouchMove(event)}
                     onTouchEnd={(event) => this.onTouchEnd(event)}
@@ -188,8 +196,13 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
 }
 
 @MobxReact.observer class TimeMarksView extends React.Component {
+    constructor() {
+        super()
 
-    getMinuteViews() {
+        this.marksPerGroup = 5
+    }
+
+    getGroupViews() {
         if (Interfaces.diff.obs.results === undefined) {
             return undefined
         }
@@ -202,21 +215,21 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
         let diffScoreList = teamScores.scores
 
         let markCount = diffScoreList.length
-        let minuteCount = Math.ceil(markCount / 4)
+        let groupCount = Math.ceil(markCount / this.marksPerGroup)
 
         let ret = []
-        for (let minuteIndex = 0; minuteIndex < minuteCount; ++minuteIndex) {
+        for (let groupIndex = 0; groupIndex < groupCount; ++groupIndex) {
 
             let markList = []
-            let markOffset = minuteIndex * 4
-            let minuteMarkCount = Math.min(4, markCount - markOffset)
-            for (let i = 0; i < minuteMarkCount; ++i) {
+            let markOffset = groupIndex * this.marksPerGroup
+            let groupMarkCount = Math.min(this.marksPerGroup, markCount - markOffset)
+            for (let i = 0; i < groupMarkCount; ++i) {
                 let markIndex = i + markOffset
                 markList.push(<MarkView key={markIndex} markIndex={markIndex} />)
             }
 
             ret.push(
-                <div key={minuteIndex} className="minuteContainer">
+                <div key={groupIndex} className="groupContainer">
                     {markList}
                 </div>
             )
@@ -228,7 +241,7 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
     render() {
         return (
             <div className="timeMarksContainer">
-                {this.getMinuteViews()}
+                {this.getGroupViews()}
             </div>
         )
     }
