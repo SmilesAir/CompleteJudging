@@ -18,7 +18,7 @@ module.exports.handler = (e, c, cb) => { Common.handler(e, c, cb, async (event, 
     let tournamentName = body.tournamentName
 
     let resultsKey = `${body.judgeId}-${Date.now()}`
-    let pool = await Common.updateActivePoolAttribute(tournamentName, `resultsKey-${body.judgeId}`, resultsKey)
+    let pool = await Common.updateActivePoolAttribute(tournamentName, `${Common.getResultsKeyPrefix()}${body.judgeId}`, resultsKey)
 
     let putParams = {
         TableName : process.env.ACTIVE_RESULTS,

@@ -15,15 +15,13 @@ module.exports.handler = (e, c, cb) => { Common.handler(e, c, cb, async (event, 
     try {
         activePool = await Common.getActivePool(tournamentName)
     } catch(error) {
-
+        throw new Error(`Can't get active pool. ${tournamentName}`)
     }
 
-    console.log(activePool, newData)
+    let tournamentKey = await Common.getTournamentKey(tournamentName)
 
     if (activePool !== undefined && activePool.poolHash === newData.poolHash) {
         if (activePool.observableHash !== newData.observableHash) {
-            let tournamentKey = await Common.getTournamentKey(tournamentName)
-
             let updateParams = {
                 TableName : process.env.ACTIVE_POOLS,
                 Key: {
@@ -43,19 +41,38 @@ module.exports.handler = (e, c, cb) => { Common.handler(e, c, cb, async (event, 
             })
         }
     } else {
+        let poolName = Common.getPoolName(newData)
+        let existingPoolItem = await Common.getExisitingPoolItem(tournamentKey, poolName)
+
         let now = Date.now()
         let playingPoolKey = now.toString()
-        await Common.updateTournamentKeyPlayingPool(tournamentName, playingPoolKey)
+        let newPoolItem = {
+            key: playingPoolKey,
+            data: newData
+        }
+        let attributeValues = {
+            playingPoolKey: playingPoolKey,
+            [poolName]: playingPoolKey
+        }
+
+        if (existingPoolItem !== undefined) {
+            for (let resultName in existingPoolItem) {
+                if (resultName.startsWith(Common.getResultsKeyPrefix())) {
+                    newPoolItem[resultName] = existingPoolItem[resultName]
+                }
+            }
+        }
+
+        await Common.updateTournamentKeyWithObject(tournamentName, attributeValues)
 
         let putPlayingPoolParams = {
             TableName : process.env.ACTIVE_POOLS,
-            Item: {
-                key: playingPoolKey,
-                data: newData
-            }
+            Item: newPoolItem
         }
         return docClient.put(putPlayingPoolParams).promise().catch((error) => {
             throw new Error(`Put new playing pool for ${tournamentName}`)
         })
     }
 })}
+
+

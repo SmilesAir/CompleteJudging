@@ -174,7 +174,7 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
         this.onEditStart()
     }
 
-    onMouseDown(event,) {
+    onMouseDown(event) {
         this.onEditStart()
     }
 
@@ -184,9 +184,10 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
 
     render() {
         let score = Interfaces.diff.obs.results.teamScoreList[Interfaces.diff.obs.playingTeamIndex].scores[this.markIndex]
+        let classname = `markContainer ${score === 0 ? "markZero" : ""}`
 
         return (
-            <div className="markContainer"
+            <div className={classname}
                 onTouchStart={(event) => this.onTouchStart(event)}
                 onMouseDown={(event) => this.onMouseDown(event)}>
                 {score}

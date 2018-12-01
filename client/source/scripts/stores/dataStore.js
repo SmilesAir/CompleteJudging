@@ -33,6 +33,9 @@ module.exports.TeamData = class {
 
 module.exports.PoolData = class {
     constructor(poolJson) {
+        this.divisionIndex = poolJson.divisionIndex
+        this.roundIndex = poolJson.roundIndex
+        this.poolIndex = poolJson.poolIndex
         this.teamList = []
 
         if (poolJson !== undefined) {

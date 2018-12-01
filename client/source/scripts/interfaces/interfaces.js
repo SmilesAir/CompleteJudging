@@ -1,5 +1,6 @@
 
 
+const MainStore = require("scripts/stores/mainStore.js")
 const InfoModel = require("scripts/interfaces/infoModel.js")
 const HeadModel = require("scripts/interfaces/simpleRank/headModel.js")
 const RankModel = require("scripts/interfaces/simpleRank/judgeModel.js")
@@ -29,9 +30,15 @@ class Interfaces {
     }
 
     init() {
+
         this.info.init()
-        this.rank.init()
-        this.diff.init()
+
+        this.activeInterface = this.list[MainStore.activeInterface]
+        if (this.activeInterface) {
+            if (this.activeInterface.init !== undefined) {
+                this.activeInterface.init()
+            }
+        }
     }
 }
 module.exports = new Interfaces()
