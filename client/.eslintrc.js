@@ -7,6 +7,8 @@ module.exports = exports = {
 
     "extends": ["eslint:recommended", "plugin:react/recommended"],
 
+    "parser": "babel-eslint",
+
     "rules": {
         // Possible Errors (overrides from recommended set)
         "no-extra-parens": ERROR,
