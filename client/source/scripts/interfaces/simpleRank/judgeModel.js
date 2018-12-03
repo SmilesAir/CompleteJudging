@@ -159,7 +159,7 @@ module.exports = class extends ModelInterfaceBase {
 
 class ResultsDataRank extends DataStore.ResultsDataBase {
     constructor(poolData) {
-        super(poolData.divisionIndex, poolData.roundIndex, poolData.poolIndex, poolData.teamList)
+        super(Enums.EInterface.rank, poolData.divisionIndex, poolData.roundIndex, poolData.poolIndex, poolData.teamList)
 
         this.rawPointsList = Mobx.observable([])
         for (let i = 0; i < this.teamList.length; ++i) {

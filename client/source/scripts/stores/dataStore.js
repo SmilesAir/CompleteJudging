@@ -47,7 +47,8 @@ module.exports.PoolData = class {
 }
 
 module.exports.ResultsDataBase = class {
-    constructor(divisionIndex, roundIndex, poolIndex, teamList) {
+    constructor(type, divisionIndex, roundIndex, poolIndex, teamList) {
+        this.type = type
         this.divisionIndex = divisionIndex
         this.roundIndex = roundIndex
         this.poolIndex = poolIndex

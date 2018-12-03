@@ -1,6 +1,12 @@
 
 const DataStore = require("scripts/stores/dataStore.js")
 const MainStore = require("scripts/stores/mainStore.js")
+const DataModel = require("scripts/models/dataModel.js")
+
+function init() {
+    DataStore.dataModel = new DataModel()
+}
+module.exports.init = init
 
 function getPlayerId(playerList, player) {
     if (player.id !== undefined) {
@@ -86,6 +92,13 @@ function getFullPlayerName(id) {
 }
 module.exports.getFullPlayerName = getFullPlayerName
 
+function getTeamPlayers(team) {
+    return team.playerList.map((playerId) => {
+        return getFullPlayerName(playerId)
+    }).join(" - ")
+}
+module.exports.getTeamPlayers = getTeamPlayers
+
 function getPlayerData(id) {
     if (MainStore.saveData !== undefined) {
         return MainStore.saveData.playerList.find((player) => {
@@ -149,3 +162,38 @@ function getFullPoolDescription(pool) {
     return `${getDivisionNameFromIndex(pool.divisionIndex)} ${getRoundNameFromIndex(pool.roundIndex)} ${getPoolNameFromIndex(pool.poolIndex)}`
 }
 module.exports.getFullPoolDescription = getFullPoolDescription
+
+function getResultsSummary(results) {
+    return DataStore.dataModel.getResultsSummary(results)
+}
+module.exports.getResultsSummary = getResultsSummary
+
+function isTeamEqual(a, b) {
+    if (a.playerList.length !== b.playerList.length) {
+        return false
+    }
+
+    for (let i = 0; i < a.playerList.length; ++i) {
+        if (a.playerList[i] !== b.playerList[i]) {
+            return false
+        }
+    }
+
+    return true
+}
+module.exports.isTeamEqual = isTeamEqual
+
+function isTeamListEqual(a, b) {
+    if (a.length !== b.length) {
+        return false
+    }
+
+    for (let teamIndex = 0; teamIndex < a.length; ++teamIndex) {
+        if (!isTeamEqual(a[teamIndex], b[teamIndex])) {
+            return false
+        }
+    }
+
+    return true
+}
+module.exports.isTeamListEqual = isTeamListEqual

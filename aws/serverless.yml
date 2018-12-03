@@ -99,6 +99,13 @@ functions:
           path: reportJudgeScore
           method: post
           cors: true
+  getPoolResults:
+    handler: source/getPoolResults.handler
+    events:
+      - http:
+          path: getPoolResults
+          method: get
+          cors: true
 
 resources:
   Resources:

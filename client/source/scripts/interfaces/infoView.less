@@ -52,6 +52,38 @@
     display: none;
     padding: 20px 0 0;
     border-top: 1px solid #ddd;
+
+    .poolContainer {
+        display: grid;
+        grid-template-areas:
+            "description results"
+            "controls results"
+            "teams results";
+        grid-template-rows: 2em 1.5em 1fr;
+        grid-template-columns: auto 1fr;
+
+
+        .description {
+            grid-area: description;
+
+            font-size: 1.5em;
+        }
+
+        .controls {
+            grid-area: controls
+        }
+
+        .teams {
+            grid-area: teams;
+        }
+
+        .results {
+            grid-area: results;
+
+            background-color: aqua;
+            white-space:pre-wrap;
+        }
+    }
 }
 
 .infoSummary {
@@ -84,8 +116,4 @@
 
 .poolsContainer {
     grid-area: poolsArea;
-}
-
-.poolDescription {
-    font-size: 1.5em;
 }

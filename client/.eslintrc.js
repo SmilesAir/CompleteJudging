@@ -149,7 +149,6 @@ module.exports = exports = {
         "computed-property-spacing": [ WARN, "never" ],
         "consistent-this": [ WARN, "self" ],
         "eol-last": WARN,
-        "func-names": WARN,
         "func-style": [ WARN, "declaration" ],
         "id-length": OFF,
         "indent": [ WARN, 4 ],

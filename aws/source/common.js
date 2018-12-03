@@ -88,17 +88,52 @@ module.exports.getResultsKeyPrefix = function() {
     return "resultsKey-"
 }
 
-module.exports.getPoolName = function(poolData) {
-    return `${module.exports.getPoolNamePrefix()}${poolData.pool.divisionIndex}-${poolData.pool.roundIndex}-${poolData.pool.poolIndex}`
+module.exports.getPoolNameFromData = function(poolData) {
+    return module.exports.getPoolName(poolData.pool.divisionIndex, poolData.pool.roundIndex, poolData.pool.poolIndex)
 }
 
-module.exports.getExisitingPoolItem = async function(tournamentKey, poolName) {
+module.exports.getPoolName = function(divisionIndex, roundIndex, poolIndex) {
+    return `${module.exports.getPoolNamePrefix()}${divisionIndex}-${roundIndex}-${poolIndex}`
+}
+
+module.exports.getExisitingPoolItem = function(tournamentKey, poolName) {
     let oldPoolDataKey = tournamentKey[poolName]
     if (oldPoolDataKey !== undefined) {
-        return await module.exports.getPoolItem(oldPoolDataKey)
+        return module.exports.getPoolItem(oldPoolDataKey)
     }
 
     return undefined
+}
+
+module.exports.getResultData = function(resultsKey) {
+    let getParams = {
+        TableName : process.env.ACTIVE_RESULTS,
+        Key: { key: resultsKey }
+    }
+    return docClient.get(getParams).promise().then((response) => {
+        console.log(response.Item)
+        return {
+            judgeName: resultsKey.split('-')[0],
+            data: response.Item.Item
+        }
+    }).catch((error) => {
+        throw new Error(`Get from active results. ${error}`)
+    })
+}
+
+module.exports.getPoolResults = async function(tournamentName, divisionIndex, roundIndex, poolIndex) {
+    let tournamentKey = await module.exports.getTournamentKey(tournamentName)
+    let poolName = module.exports.getPoolName(divisionIndex, roundIndex, poolIndex)
+    let poolItem = await module.exports.getExisitingPoolItem(tournamentKey, poolName)
+
+    let getPromises = []
+    for (let resultsAttributeName in poolItem) {
+        if (resultsAttributeName.startsWith(module.exports.getResultsKeyPrefix())) {
+            getPromises.push(module.exports.getResultData(poolItem[resultsAttributeName]))
+        }
+    }
+
+    return Promise.all(getPromises)
 }
 
 module.exports.updateActivePoolAttribute = async function(tournamentName, attributeName, attributeValue) {

@@ -128,7 +128,7 @@ class TeamDiffScores {
 
 class ResultsDataDiff extends DataStore.ResultsDataBase {
     constructor(poolData) {
-        super(poolData.divisionIndex, poolData.roundIndex, poolData.poolIndex, poolData.teamList)
+        super(Enums.EInterface.variety, poolData.divisionIndex, poolData.roundIndex, poolData.poolIndex, poolData.teamList)
 
         this.teamScoreList = []
         for (let i = 0; i < this.teamList.length; ++i) {

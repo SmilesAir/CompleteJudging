@@ -41,7 +41,7 @@ module.exports.handler = (e, c, cb) => { Common.handler(e, c, cb, async (event, 
             })
         }
     } else {
-        let poolName = Common.getPoolName(newData)
+        let poolName = Common.getPoolNameFromData(newData)
         let existingPoolItem = await Common.getExisitingPoolItem(tournamentKey, poolName)
 
         let now = Date.now()

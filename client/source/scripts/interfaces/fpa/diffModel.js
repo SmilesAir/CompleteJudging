@@ -4,8 +4,8 @@ const Mobx = require("mobx")
 const Enums = require("scripts/stores/enumStore.js")
 const ModelInterfaceBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
-const DataAction = require("scripts/actions/dataAction.js")
 const DataStore = require("scripts/stores/dataStore.js")
+const DiffData = require("scripts/interfaces/fpa/data/diffData.js")
 
 module.exports = class extends ModelInterfaceBase {
     constructor() {
@@ -62,7 +62,7 @@ module.exports = class extends ModelInterfaceBase {
             this.playPoolHash = awsData.poolHash
             this.obs.playingPool = new DataStore.PoolData(awsData.pool)
 
-            this.obs.results = new ResultsDataDiff(this.obs.playingPool)
+            this.obs.results = new DiffData.DataClass(this.obs.playingPool)
         }
 
         if (this.observableHash !== awsData.observableHash) {
@@ -113,32 +113,5 @@ module.exports = class extends ModelInterfaceBase {
         }
 
         this.obs.editIndex = undefined
-    }
-}
-
-class TeamDiffScores {
-    constructor() {
-        this.scores = Mobx.observable([])
-    }
-
-    addScore(score) {
-        this.scores.push(score)
-    }
-}
-
-class ResultsDataDiff extends DataStore.ResultsDataBase {
-    constructor(poolData) {
-        super(poolData.divisionIndex, poolData.roundIndex, poolData.poolIndex, poolData.teamList)
-
-        this.teamScoreList = []
-        for (let i = 0; i < this.teamList.length; ++i) {
-            this.teamScoreList.push(new TeamDiffScores())
-        }
-
-        this.teamScoreList = Mobx.observable(this.teamScoreList)
-    }
-
-    addScore(teamIndex, score) {
-        this.teamScoreList[teamIndex].addScore(score)
     }
 }

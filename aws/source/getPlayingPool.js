@@ -1,6 +1,4 @@
 
-const AWS = require('aws-sdk')
-let docClient = new AWS.DynamoDB.DocumentClient()
 
 const Common = require("./common.js")
 

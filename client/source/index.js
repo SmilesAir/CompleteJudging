@@ -14,6 +14,7 @@ const HeadJudgeInterface = require("scripts/interfaces/simpleRank/headView.js")
 const RankView = require("scripts/interfaces/simpleRank/judgeView.js")
 const DiffView = require("scripts/interfaces/fpa/diffView.js")
 const VarietyView = require("scripts/interfaces/fpa/varietyView.js")
+const DataAction = require("scripts/actions/dataAction.js")
 
 require("./index.less")
 
@@ -35,6 +36,7 @@ require("./index.less")
         MainStore.startupTournamentName = url.searchParams.get("tournamentName")
         MainStore.userId = url.searchParams.get("userId")
 
+        DataAction.init()
         Interfaces.init()
     }
 

@@ -2,7 +2,6 @@ const React = require("react")
 const MobxReact = require("mobx-react")
 
 const MainStore = require("scripts/stores/mainStore.js")
-const Enums = require("scripts/stores/enumStore.js")
 const ModelInterfaceBase = require("scripts/interfaces/interfaceModelBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
@@ -51,9 +50,7 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
     getTeamComponents(pool) {
         let key = 0
         return pool.teamList.map((team) => {
-            let teamNames = team.playerList.map((playerId) => {
-                return DataAction.getFullPlayerName(playerId)
-            }).join(" - ")
+            let teamNames = DataAction.getTeamPlayers(team)
             return <div key={key++}>{teamNames}</div>
         })
     }
@@ -62,19 +59,31 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
         Interfaces.head.setPlayingPool(pool)
     }
 
+    getResults(results) {
+        return (
+            <div className="results">
+                {DataAction.getResultsSummary(results)}
+            </div>
+        )
+    }
+
     getPoolComponents() {
         if (MainStore.saveData !== undefined) {
             return MainStore.saveData.poolList.map((pool) => {
                 let key = `${pool.divisionIndex}${pool.roundIndex}${pool.poolIndex}`
                 return (
-                    <div key={key}>
-                        <div className="poolDescription">
+                    <div key={key} className="poolContainer">
+                        <div className="description">
                             {DataAction.getFullPoolDescription(pool)}
-                            <button onClick={() => this.onSetPool(pool)}>Set Pool</button>
                         </div>
-                        <div>
+                        <div className="controls">
+                            <button onClick={() => this.onSetPool(pool)}>Set Pool</button>
+                            <button onClick={() => Interfaces.info.getPoolResults(pool)}>Get Results</button>
+                        </div>
+                        <div className="teams">
                             {this.getTeamComponents(pool)}
                         </div>
+                        {this.getResults(pool.results)}
                     </div>
                 )
             })
