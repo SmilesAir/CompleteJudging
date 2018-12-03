@@ -18,13 +18,6 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
         this.touchAreaRef = React.createRef()
     }
 
-    getTeams() {
-        let i = 0
-        return Interfaces.rank.obs.playingPool.teamList.map((team) => {
-            return <TeamView team={team} teamIndex={i} key={i++}/>
-        })
-    }
-
     getNumbers() {
         let numberList = []
         for (let i = 0; i <= 10; ++i) {

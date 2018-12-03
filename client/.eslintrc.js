@@ -38,7 +38,7 @@ module.exports = exports = {
         "dot-location": [ WARN, "property" ],
         "dot-notation": WARN,
         "eqeqeq": [ ERROR, "smart" ],
-        "guard-for-in": WARN,
+        "guard-for-in": OFF,
         "no-alert": ERROR,
         "no-caller": ERROR,
         "no-case-declarations": WARN,
@@ -50,7 +50,6 @@ module.exports = exports = {
         "no-eval": ERROR,
         "no-extend-native": ERROR,
         "no-extra-bind": WARN,
-        "no-floating-decimal": WARN,
         "no-implicit-coercion": [ WARN, {
             "boolean": true,
             "number": true,
@@ -123,7 +122,7 @@ module.exports = exports = {
         "no-sync": WARN,
 
         // ECMAScript 6 support
-        "arrow-body-style": [ ERROR, "always" ],
+        "arrow-body-style": [ OFF, "always" ],
         "arrow-parens": [ ERROR, "always" ],
         "arrow-spacing": [ ERROR, { "before": true, "after": true }],
         "constructor-super": ERROR,
@@ -176,7 +175,7 @@ module.exports = exports = {
         "no-plusplus": OFF,
         "no-spaced-func": WARN,
         "no-ternary": OFF,
-        "no-trailing-spaces": WARN,
+        "no-trailing-spaces": [WARN, {"skipBlankLines": true}],
         "no-underscore-dangle": WARN,
         "no-unneeded-ternary": WARN,
         "object-curly-spacing": [ WARN, "always" ],
@@ -200,9 +199,11 @@ module.exports = exports = {
         "space-in-parens": [ WARN, "never" ],
         "space-infix-ops": [ WARN, { "int32Hint": true } ],
         "space-unary-ops": ERROR,
-        "spaced-comment": [ WARN, "always" ],
         "wrap-regex": WARN,
 
-        "no-console": OFF
+        "no-console": OFF,
+
+        "react/prop-types": [OFF],
+        "react/no-direct-mutation-state": [OFF]
     }
 };

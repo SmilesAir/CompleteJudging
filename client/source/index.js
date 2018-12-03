@@ -4,7 +4,7 @@ const React = require("react")
 const ReactDOM = require("react-dom")
 const MobxReact = require("mobx-react")
 require("favicon.ico")
-var fpaLogo = require("images/fpa_logo.png")
+//const fpaLogo = require("images/fpa_logo.png")
 
 const MainStore = require("scripts/stores/mainStore.js")
 const Enums = require("scripts/stores/enumStore.js")
@@ -13,6 +13,7 @@ const Interfaces = require("scripts/interfaces/interfaces.js")
 const HeadJudgeInterface = require("scripts/interfaces/simpleRank/headView.js")
 const RankView = require("scripts/interfaces/simpleRank/judgeView.js")
 const DiffView = require("scripts/interfaces/fpa/diffView.js")
+const VarietyView = require("scripts/interfaces/fpa/varietyView.js")
 
 require("./index.less")
 
@@ -68,8 +69,8 @@ require("./index.less")
         let title = MainStore.tournamentName !== undefined ? MainStore.tournamentName : "Freestyle Players Association Judging System"
         return (
             <div className="headerContainer">
-            {title}
-            {this.getInterfaceButtons()}
+                {title}
+                {this.getInterfaceButtons()}
             </div>
         )
     }
@@ -101,6 +102,9 @@ require("./index.less")
         case Enums.EInterface.rank:
             activeInterface = <RankView />
             break
+        case Enums.EInterface.variety:
+            activeInterface = <VarietyView />
+            break
         }
 
         return activeInterface
@@ -115,8 +119,7 @@ class DefaultInterface extends React.Component {
     render() {
         let buttons = Interfaces.list.map((model) => {
             return model.type !== MainStore.activeInterface ?
-                (<button className="interfaceSelectButton" key={model.type} onClick={() => {this.click(model.type)}}>{model.name}</button>)
-                : undefined
+                <button className="interfaceSelectButton" key={model.type} onClick={() => {this.click(model.type)}}>{model.name}</button> : undefined
         })
         return (
             <div className="defaultInterfaceContainer">

@@ -1,0 +1,59 @@
+
+.varietyContainer {
+    grid-area: interface;
+    display: grid;
+    grid-template-areas:
+        "header"
+        "scores"
+        "quantity"
+        "quality";
+    grid-template-rows: 2em 4em 1fr 1fr;
+
+    border-radius: .5em;
+    padding: .5em;
+
+    background-color: white;
+
+    overflow: auto;
+
+    user-select: none;
+
+    .header {
+        grid-area: header;
+
+        background-color: lightblue;
+    }
+}
+
+.scoresContainer {
+    grid-area: scores;
+    background-color: greenyellow;
+}
+
+.quantityContainer {
+    grid-area: quantity;
+    display: flex;
+
+    background-color: yellow;
+
+    .quantityButton {
+        flex-grow: 1;
+    }
+}
+
+.tempQualityContainer {
+    grid-area: quality;
+    background-color: burlywood;
+
+    .touchArea {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+
+        margin: 5%;
+    }
+
+    .number {
+        font-size: 8vw;
+    }
+}
