@@ -197,3 +197,15 @@ function isTeamListEqual(a, b) {
     return true
 }
 module.exports.isTeamListEqual = isTeamListEqual
+
+function verifyDataModel(model) {
+    if (model.DataClass === undefined ||
+        model.verify === undefined ||
+        model.getSummary === undefined) {
+        
+        return false
+    }
+
+    return true
+}
+module.exports.verifyDataModel = verifyDataModel

@@ -4,8 +4,8 @@ const Mobx = require("mobx")
 const Enums = require("scripts/stores/enumStore.js")
 const ModelInterfaceBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
-const DataAction = require("scripts/actions/dataAction.js")
 const DataStore = require("scripts/stores/dataStore.js")
+const VarietyData = require("scripts/interfaces/fpa/data/varietyData.js")
 
 module.exports = class extends ModelInterfaceBase {
     constructor() {
@@ -62,7 +62,7 @@ module.exports = class extends ModelInterfaceBase {
             this.playPoolHash = awsData.poolHash
             this.obs.playingPool = new DataStore.PoolData(awsData.pool)
 
-            this.obs.results = new ResultsDataDiff(this.obs.playingPool)
+            this.obs.results = new VarietyData.DataClass(this.obs.playingPool)
         }
 
         if (this.observableHash !== awsData.observableHash) {
@@ -95,50 +95,16 @@ module.exports = class extends ModelInterfaceBase {
         })
     }
 
-    addScore(score) {
-        this.obs.results.addScore(this.obs.playingTeamIndex, score)
+    setQualityScore(score) {
+        this.obs.results.setQualityScore(this.obs.playingTeamIndex, score)
 
         this.reportScores()
     }
 
-    startEdit(markIndex) {
-        this.obs.editIndex = markIndex
-    }
+    setQuantityScore(score) {
+        this.obs.results.setQuantityScore(this.obs.playingTeamIndex, score)
 
-    endEdit(score) {
-        if (score !== undefined && this.obs.editIndex !== undefined) {
-            this.obs.results.teamScoreList[this.obs.playingTeamIndex].scores[this.obs.editIndex] = score
-
-            this.reportScores()
-        }
-
-        this.obs.editIndex = undefined
+        this.reportScores()
     }
 }
 
-class TeamDiffScores {
-    constructor() {
-        this.scores = Mobx.observable([])
-    }
-
-    addScore(score) {
-        this.scores.push(score)
-    }
-}
-
-class ResultsDataDiff extends DataStore.ResultsDataBase {
-    constructor(poolData) {
-        super(Enums.EInterface.variety, poolData.divisionIndex, poolData.roundIndex, poolData.poolIndex, poolData.teamList)
-
-        this.teamScoreList = []
-        for (let i = 0; i < this.teamList.length; ++i) {
-            this.teamScoreList.push(new TeamDiffScores())
-        }
-
-        this.teamScoreList = Mobx.observable(this.teamScoreList)
-    }
-
-    addScore(teamIndex, score) {
-        this.teamScoreList[teamIndex].addScore(score)
-    }
-}

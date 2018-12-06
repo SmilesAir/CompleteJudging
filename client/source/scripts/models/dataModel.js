@@ -1,12 +1,20 @@
 
 const DataAction = require("scripts/actions/dataAction.js")
 const DiffData = require("scripts/interfaces/fpa/data/diffData.js")
+const VarietyData = require("scripts/interfaces/fpa/data/varietyData.js")
 
 module.exports = class {
     constructor() {
         this.dataModelList = [
-            DiffData
+            DiffData,
+            VarietyData
         ]
+
+        for (let dataModel of this.dataModelList) {
+            if (!DataAction.verifyDataModel(dataModel)) {
+                console.error(`Failed to verify data model ${dataModel}`)
+            }
+        }
     }
 
     getModel(data) {
@@ -46,8 +54,6 @@ module.exports = class {
 
                 ret += "\r\n"
             }
-
-            console.log(firstData)
 
             return ret
         }

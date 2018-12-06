@@ -62,11 +62,16 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
     incrementMoveCount() {
         ++this.state.moveCount
         this.setState(this.state)
+
+
+        Interfaces.variety.setQuantityScore(this.state.moveCount)
     }
 
     decrementMoveCount() {
         this.state.moveCount = Math.max(0, this.state.moveCount - 1)
         this.setState(this.state)
+
+        Interfaces.variety.setQuantityScore(this.state.moveCount)
     }
 
     render() {
