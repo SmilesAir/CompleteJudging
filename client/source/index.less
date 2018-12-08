@@ -17,20 +17,29 @@ body {
     background-color: rgb(235, 245, 255);
     border-radius: 1em;
     box-shadow: 0 0 4px 4px black;
+
+    .headerContainer {
+        grid-area: header;
+        align-self: center;
+        justify-self: center;
+    }
+    
+    .defaultInterfaceContainer {
+        grid-area: interface;
+        display: grid;
+    }
+    
+    .interfaceSelectButton {
+        border-radius: 1em;
+        margin: .2em;
+    }
 }
 
-.headerContainer {
-    grid-area: header;
-    align-self: center;
-    justify-self: center;
+.noHeader {
+    grid-template-areas:
+    "interface"
+    "footer";
+
+    grid-template-rows: 1fr 0em;
 }
 
-.defaultInterfaceContainer {
-    grid-area: interface;
-    display: grid;
-}
-
-.interfaceSelectButton {
-    border-radius: 1em;
-    margin: .2em;
-}

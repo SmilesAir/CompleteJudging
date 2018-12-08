@@ -35,14 +35,18 @@ require("./index.less")
 
         MainStore.startupTournamentName = url.searchParams.get("tournamentName")
         MainStore.userId = url.searchParams.get("userId")
+        let headerParam = url.searchParams.get("header")
+        MainStore.showControlsHeader = headerParam === null || headerParam === true
 
         DataAction.init()
         Interfaces.init()
     }
 
     render() {
+        let classname = `mainContainer ${MainStore.showControlsHeader ? "" : "noHeader"}`
+
         return (
-            <div className="mainContainer">
+            <div className={classname}>
                 <HeaderView />
                 <InterfaceView />
             </div>
@@ -69,12 +73,16 @@ require("./index.less")
 
     render() {
         let title = MainStore.tournamentName !== undefined ? MainStore.tournamentName : "Freestyle Players Association Judging System"
-        return (
-            <div className="headerContainer">
-                {title}
-                {this.getInterfaceButtons()}
-            </div>
-        )
+        if (MainStore.showControlsHeader) {
+            return (
+                <div className="headerContainer">
+                    {title}
+                    {this.getInterfaceButtons()}
+                </div>
+            )
+        } else {
+            return <div/>
+        }
     }
 }
 

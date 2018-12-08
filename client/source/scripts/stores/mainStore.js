@@ -11,5 +11,6 @@ module.exports = Mobx.observable({
     tournamentName: undefined,
     saveData: undefined,
     tournamentInfoList: [],
-    userId: undefined
+    userId: undefined,
+    showControlsHeader: true
 })

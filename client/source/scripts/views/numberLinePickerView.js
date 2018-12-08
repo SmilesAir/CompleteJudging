@@ -9,16 +9,23 @@ require("./numberLinePickerView.less")
         super(props)
 
         this.state = {}
+        this.touchAreaRef = React.createRef()
     }
 
     getIsEditing() {
         return this.props.getIsEditingFunc !== undefined ? this.getIsEditingFunc() : false
     }
 
-    onInputEnd(event) {
+    onInputEnd() {
         if (this.props.onInputEnd !== undefined) {
-            this.props.onInputEnd(event)
+            let number = this.getStateNumberOut()
+            if (number !== undefined) {
+                this.props.onInputEnd(number)
+            }
         }
+
+        this.state.numberOut = undefined
+        this.setState(this.state)
     }
 
     updateNumberOut(posX) {
@@ -48,7 +55,7 @@ require("./numberLinePickerView.less")
 
     getNumberOutView() {
         if (this.getStateNumberOut() !== undefined) {
-            let popupClassnames = `popupContainer ${this.getIsEditing() ? "" : "editing"}`
+            let popupClassnames = `popupContainer ${this.getIsEditing() ? "editing" : ""}`
 
             return (
                 <div className="overlay">

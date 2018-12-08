@@ -17,24 +17,11 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
         }
     }
 
-    onTouchStart(event) {
-    }
+    onInputEnd(number) {
+        Interfaces.variety.setQualityScore(number)
 
-    onTouchMove(event) {
-    }
-
-    onTouchEnd(event) {
-    }
-
-    onMouseDown(event) {
-        ++this.state.moveCount
+        this.state.qualityScore = number
         this.setState(this.state)
-    }
-
-    onMouseMove(event) {
-    }
-
-    onMouseUp(event) {
     }
 
     onKeyDown(event) {
@@ -88,13 +75,13 @@ module.exports = @MobxReact.observer class extends ModelInterfaceBase {
                 </div>
                 <div className="scoresContainer">
                     <div>Unique Move Count: {this.state.moveCount}</div>
-                    <div>Quality Score: {0}</div>
+                    <div>Quality Score: {this.state.qualityScore}</div>
                 </div>
                 <div className="quantityContainer">
                     <button className="quantityButton" onClick={() => this.incrementMoveCount()} onKeyDown={(event) => this.onIncrementButtonKeyDown(event)}>Increment</button>
                     <button className="quantityButton" onClick={() => this.decrementMoveCount()} onKeyDown={(event) => this.onDecrementButtonKeyDown(event)}>Decrement</button>
                 </div>
-                <NumberLinePickerView/>
+                <NumberLinePickerView onInputEnd={(event) => this.onInputEnd(event)}/>
             </div>
         )
     }
