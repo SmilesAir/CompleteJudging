@@ -3,13 +3,13 @@ const MobxReact = require("mobx-react")
 
 const MainStore = require("scripts/stores/mainStore.js")
 const Enums = require("scripts/stores/enumStore.js")
-const ModelInterfaceBase = require("scripts/interfaces/interfaceModelBase.js")
+const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
 
 require("./judgeView.less")
 
-module.exports = @MobxReact.observer class extends ModelInterfaceBase {
+module.exports = @MobxReact.observer class extends InterfaceModelBase {
     constructor() {
         super()
 

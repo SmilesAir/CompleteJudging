@@ -2,12 +2,12 @@
 const Mobx = require("mobx")
 
 const Enums = require("scripts/stores/enumStore.js")
-const ModelInterfaceBase = require("scripts/interfaces/interfaceModelBase.js")
+const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
 const VarietyData = require("scripts/interfaces/fpa/data/varietyData.js")
 
-module.exports = class extends ModelInterfaceBase {
+module.exports = class extends InterfaceModelBase {
     constructor() {
         super()
 
@@ -28,6 +28,8 @@ module.exports = class extends ModelInterfaceBase {
     }
 
     init() {
+        super.init()
+
         if (MainStore.startupTournamentName !== undefined) {
             this.queryPoolData(MainStore.startupTournamentName)
         }
@@ -70,12 +72,6 @@ module.exports = class extends ModelInterfaceBase {
             this.obs.routineLengthSeconds = awsData.observable.routineLengthSeconds
             this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
         }
-
-        // // Test
-        // for (let i = 0; i < 3; ++i) {
-        //     this.obs.playingPool.teamList[i].played = true
-        //     this.obs.playingTeamIndex = 3
-        // }
     }
 
     reportScores() {

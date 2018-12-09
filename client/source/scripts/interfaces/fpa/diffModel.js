@@ -2,12 +2,12 @@
 const Mobx = require("mobx")
 
 const Enums = require("scripts/stores/enumStore.js")
-const ModelInterfaceBase = require("scripts/interfaces/interfaceModelBase.js")
+const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
 const DiffData = require("scripts/interfaces/fpa/data/diffData.js")
 
-module.exports = class extends ModelInterfaceBase {
+module.exports = class extends InterfaceModelBase {
     constructor() {
         super()
 
@@ -28,6 +28,8 @@ module.exports = class extends ModelInterfaceBase {
     }
 
     init() {
+        super.init()
+        
         if (MainStore.startupTournamentName !== undefined) {
             this.queryPoolData(MainStore.startupTournamentName)
         }

@@ -2,8 +2,9 @@
 
 const React = require("react")
 const Enums = require("scripts/stores/enumStore.js")
+const MainStore = require("scripts/stores/mainStore.js")
 
-class ModelInterfaceBase extends React.Component {
+class InterfaceModelBase extends React.Component {
     constructor() {
         super()
 
@@ -11,5 +12,15 @@ class ModelInterfaceBase extends React.Component {
         this.type = Enums.EInterface.invalid
         this.updateIntervalMs = 5000
     }
+
+    init() {
+        if (this.obs !== undefined) {
+            this.setObs(this.obs)
+        }
+    }
+
+    setObs(obs) {
+        MainStore.interfaceObs = obs
+    }
 }
-module.exports = ModelInterfaceBase
+module.exports = InterfaceModelBase

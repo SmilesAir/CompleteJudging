@@ -1,10 +1,10 @@
 
 const Enums = require("scripts/stores/enumStore.js")
-const ModelInterfaceBase = require("scripts/interfaces/interfaceModelBase.js")
+const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
 
-module.exports = class extends ModelInterfaceBase {
+module.exports = class extends InterfaceModelBase {
     constructor() {
         super()
 

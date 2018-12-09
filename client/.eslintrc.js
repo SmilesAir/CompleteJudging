@@ -136,7 +136,6 @@ module.exports = exports = {
         "object-shorthand": [ WARN, "never" ],
         "prefer-arrow-callback": WARN,
         "prefer-spread": WARN,
-        "prefer-template": WARN,
         "require-yield": ERROR,
 
         // Stylistic - everything here is a warning because of style.

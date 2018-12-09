@@ -1,8 +1,8 @@
 
-const ModelInterfaceBase = require("scripts/interfaces/interfaceModelBase.js")
+const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const Enums = require("scripts/stores/enumStore.js")
 
-module.exports.DefaultModel = class extends ModelInterfaceBase {
+module.exports.DefaultModel = class extends InterfaceModelBase {
     constructor() {
         super()
 
@@ -11,7 +11,7 @@ module.exports.DefaultModel = class extends ModelInterfaceBase {
     }
 }
 
-class AiJudgeModel extends ModelInterfaceBase {
+class AiJudgeModel extends InterfaceModelBase {
     constructor() {
         super()
 
@@ -21,7 +21,7 @@ class AiJudgeModel extends ModelInterfaceBase {
 }
 module.exports.AiJudgeModel = AiJudgeModel
 
-class ExJudgeModel extends ModelInterfaceBase {
+class ExJudgeModel extends InterfaceModelBase {
     constructor() {
         super()
 

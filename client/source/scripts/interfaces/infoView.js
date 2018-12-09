@@ -2,13 +2,13 @@ const React = require("react")
 const MobxReact = require("mobx-react")
 
 const MainStore = require("scripts/stores/mainStore.js")
-const ModelInterfaceBase = require("scripts/interfaces/interfaceModelBase.js")
+const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
 
 require("./infoView.less")
 
-module.exports = @MobxReact.observer class extends ModelInterfaceBase {
+module.exports = @MobxReact.observer class extends InterfaceModelBase {
     render() {
         return (
             <div className="infoContainer">

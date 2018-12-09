@@ -15,6 +15,7 @@ const RankView = require("scripts/interfaces/simpleRank/judgeView.js")
 const DiffView = require("scripts/interfaces/fpa/diffView.js")
 const VarietyView = require("scripts/interfaces/fpa/varietyView.js")
 const DataAction = require("scripts/actions/dataAction.js")
+const OverlayView = require("scripts/views/overlayView.js")
 
 require("./index.less")
 
@@ -49,6 +50,7 @@ require("./index.less")
             <div className={classname}>
                 <HeaderView />
                 <InterfaceView />
+                <OverlayView />
             </div>
         )
     }

@@ -1,0 +1,48 @@
+
+.overlayContainer {
+    position: fixed;
+
+    left: 10%;
+    top: 10%;
+    width: 80%;
+    height: 80%;
+
+    padding: .5em;
+
+    display: grid;
+    grid-template-areas:
+        "header"
+        "blank"
+        "info";
+    grid-template-rows: auto 1em 1fr;
+
+    background-color: plum;
+
+    border-radius: 1em;
+    box-shadow: 0 0 4px 4px gray;
+
+    .header {
+        grid-area: header;
+        font-size: 1.5em;
+    }
+
+    .info {
+        grid-area: info;
+        
+    }
+
+    .teamContainer {
+        cursor: pointer;
+
+        font-size: 1.5em;
+    }
+}
+
+.overlayInputContainer {
+    position: fixed;
+
+    left: 0%;
+    top: 0%;
+    width: 100%;
+    height: 10%;
+}
