@@ -16,6 +16,7 @@ const DiffView = require("scripts/interfaces/fpa/diffView.js")
 const VarietyView = require("scripts/interfaces/fpa/varietyView.js")
 const DataAction = require("scripts/actions/dataAction.js")
 const OverlayView = require("scripts/views/overlayView.js")
+const DiffInspectorView = require("scripts/interfaces/fpa/diffInspectorView.js")
 
 require("./index.less")
 
@@ -116,6 +117,9 @@ require("./index.less")
             break
         case Enums.EInterface.variety:
             activeInterface = <VarietyView />
+            break
+        case Enums.EInterface.diffInspector:
+            activeInterface = <DiffInspectorView />
             break
         }
 

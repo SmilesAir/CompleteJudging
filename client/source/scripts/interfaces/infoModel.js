@@ -56,20 +56,4 @@ module.exports = class extends InterfaceModelBase {
     setTournamentInfoList(infos) {
         MainStore.tournamentInfoList = infos
     }
-
-    getPoolResults(poolData) {
-        return fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/getPoolResults?tournamentName=${MainStore.tournamentName}&divisionIndex=${poolData.divisionIndex}&roundIndex=${poolData.roundIndex}&poolIndex=${poolData.poolIndex}`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then((response) => {
-            return response.json()
-        }).then((response) => {
-            poolData.results = response
-        }).catch((error) => {
-            console.log("Refresh Tournament Info Error", error)
-        })
-    }
 }

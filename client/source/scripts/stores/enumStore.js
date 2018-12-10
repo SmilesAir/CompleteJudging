@@ -9,5 +9,6 @@ module.exports.EInterface = {
     ex: 4,
     info: 5,
     rank: 6,
-    variety: 7
+    variety: 7,
+    diffInspector: 8
 }

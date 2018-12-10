@@ -7,6 +7,7 @@ const RankModel = require("scripts/interfaces/simpleRank/judgeModel.js")
 const DiffModel = require("scripts/interfaces/fpa/diffModel.js")
 const VarietyModel = require("scripts/interfaces/fpa/varietyModel.js")
 const InterfaceModels = require("scripts/interfaces/interfaceModels.js")
+const DiffInspectorModel = require("scripts/interfaces/fpa/diffInspectorModel.js")
 
 
 class Interfaces {
@@ -19,6 +20,7 @@ class Interfaces {
         this.info = new InfoModel()
         this.rank = new RankModel()
         this.variety = new VarietyModel()
+        this.diffInspector = new DiffInspectorModel()
 
         this.list = [
             this.default,
@@ -28,7 +30,8 @@ class Interfaces {
             this.ex,
             this.info,
             this.rank,
-            this.variety
+            this.variety,
+            this.diffInspector
         ]
     }
 

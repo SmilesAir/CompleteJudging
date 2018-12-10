@@ -78,7 +78,7 @@ module.exports = @MobxReact.observer class extends InterfaceModelBase {
                         </div>
                         <div className="controls">
                             <button onClick={() => this.onSetPool(pool)}>Set Pool</button>
-                            <button onClick={() => Interfaces.info.getPoolResults(pool)}>Get Results</button>
+                            <button onClick={() => DataAction.getPoolResults(pool)}>Get Results</button>
                         </div>
                         <div className="teams">
                             {this.getTeamComponents(pool)}
@@ -131,11 +131,12 @@ class PlayerAndTeams extends React.Component {
             let dateString = new Date(info.createdTime).toString()
 
             return (
-            <label className="infoSummary" key={info.tournamentName} onClick={() => {
-                this.selectTournament(info)
-            }}>
-                Name: {info.tournamentName} Created: {dateString}
-            </label>)
+                <label className="infoSummary" key={info.tournamentName} onClick={() => {
+                    this.selectTournament(info)
+                }}>
+                    Name: {info.tournamentName} Created: {dateString}
+                </label>
+            )
         })
     }
 

@@ -55,7 +55,7 @@ function loadDataFromDynamo(info) {
                             if (id !== undefined) {
                                 newTeam.playerList.push(id)
                             } else {
-                                console.log(`Error: Can't find Id for player: ${player}`)
+                                console.log(`Error: Can't find Id for player: ${player.FullName}`)
                             }
                         }
 
@@ -168,6 +168,11 @@ function getResultsSummary(results) {
 }
 module.exports.getResultsSummary = getResultsSummary
 
+function getResultsInspected(results, teamIndex) {
+    return DataStore.dataModel.getResultsInspected(results, teamIndex)
+}
+module.exports.getResultsInspected = getResultsInspected
+
 function isTeamEqual(a, b) {
     if (a.playerList.length !== b.playerList.length) {
         return false
@@ -201,7 +206,8 @@ module.exports.isTeamListEqual = isTeamListEqual
 function verifyDataModel(model) {
     if (model.DataClass === undefined ||
         model.verify === undefined ||
-        model.getSummary === undefined) {
+        model.getSummary === undefined ||
+        model.getDefaultConstants === undefined) {
         
         return false
     }
@@ -209,3 +215,30 @@ function verifyDataModel(model) {
     return true
 }
 module.exports.verifyDataModel = verifyDataModel
+
+function verifyDataConstants(constants) {
+    if (constants.name === undefined) {
+        
+        return false
+    }
+
+    return true
+}
+module.exports.verifyDataConstants = verifyDataConstants
+
+function getPoolResults(poolData) {
+    return fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/getPoolResults?tournamentName=${MainStore.tournamentName}&divisionIndex=${poolData.divisionIndex}&roundIndex=${poolData.roundIndex}&poolIndex=${poolData.poolIndex}`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((response) => {
+        return response.json()
+    }).then((response) => {
+        poolData.results = response
+    }).catch((error) => {
+        console.log("Refresh Tournament Info Error", error)
+    })
+}
+module.exports.getPoolResults = getPoolResults

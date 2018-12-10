@@ -1,4 +1,5 @@
 
+const MainStore = require("scripts/stores/mainStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
 const DiffData = require("scripts/interfaces/fpa/data/diffData.js")
 const VarietyData = require("scripts/interfaces/fpa/data/varietyData.js")
@@ -12,7 +13,14 @@ module.exports = class {
 
         for (let dataModel of this.dataModelList) {
             if (!DataAction.verifyDataModel(dataModel)) {
-                console.error(`Failed to verify data model ${dataModel}`)
+                console.error("Failed to verify data model")
+            } else {
+                let constants = dataModel.getDefaultConstants()
+                if (DataAction.verifyDataConstants(constants)) {
+                    MainStore.constants[constants.name] = constants
+                } else {
+                    console.error("Missing required constants for data model")
+                }
             }
         }
     }
@@ -56,6 +64,15 @@ module.exports = class {
             }
 
             return ret
+        }
+
+        return undefined
+    }
+
+    getResultsInspected(resultData, teamIndex) {
+        let model = this.getModel(resultData.data)
+        if (model !== undefined) {
+            return model.getInspected(resultData, teamIndex)
         }
 
         return undefined

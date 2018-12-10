@@ -4,6 +4,12 @@ const Mobx = require("mobx")
 const DataStore = require("scripts/stores/dataStore.js")
 const Enums = require("scripts/stores/enumStore.js")
 
+module.exports.getDefaultConstants = function() {
+    return {
+        name: "variety"
+    }
+}
+
 class TeamVarietyScores {
     constructor() {
         this.quantityScore = 0
