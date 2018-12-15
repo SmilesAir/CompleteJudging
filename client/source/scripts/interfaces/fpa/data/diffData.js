@@ -104,7 +104,7 @@ module.exports.getInspected = function(resultData, teamIndex) {
         str += ` Adj Sum Raw: ${getAdjustedScore(getAverage(scores, false)).toFixed(2)} Adj Sum Top (${top}): ${getAdjustedScore(getTopAverage(scores, top, false)).toFixed(2)}`
 
         return (
-            <div key={teamIndex}>{str}</div>
+            <div className="inspectedResults" key={teamIndex}>{str}</div>
         )
     }
 

@@ -5,6 +5,8 @@ const Enums = require("scripts/stores/enumStore.js")
 const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
+const MainStore = require("scripts/stores/mainStore.js")
+const DiffData = require("scripts/interfaces/fpa/data/diffData.js")
 
 require("./diffInspectorView.less")
 
@@ -12,8 +14,18 @@ module.exports = @MobxReact.observer class extends InterfaceModelBase {
     constructor(props) {
         super(props)
 
+        this.constants = MainStore.constants.diff
+
         this.state = {
-            moveCount: 0
+            moveCount: 0,
+            topCount: this.constants.top,
+            topCountValid: true,
+            offset: this.constants.offset,
+            offsetValid: true,
+            power: this.constants.power,
+            powerValid: true,
+            scale: this.constants.scale,
+            scaleValid: true
         }
     }
 
@@ -33,12 +45,84 @@ module.exports = @MobxReact.observer class extends InterfaceModelBase {
         )
     }
 
+    topCountChanged(event) {
+        let newNumber = parseInt(event.target.value, 10)
+        this.state.topCount = event.target.value
+        this.state.topCountValid = !isNaN(newNumber)
+        this.setState(this.state)
+
+        this.constants.top = !this.state.topCountValid ? this.constants.top : newNumber
+    }
+
+    offsetChanged(event) {
+        let newNumber = parseFloat(event.target.value, 10)
+        this.state.offset = event.target.value
+        this.state.offsetValid = !isNaN(newNumber)
+        this.setState(this.state)
+
+        this.constants.offset = !this.state.offsetValid ? this.constants.offset : newNumber
+    }
+
+    powerChanged(event) {
+        let newNumber = parseFloat(event.target.value, 10)
+        this.state.power = event.target.value
+        this.state.powerValid = !isNaN(newNumber)
+        this.setState(this.state)
+
+        this.constants.power = !this.state.powerValid ? this.constants.power : newNumber
+    }
+
+    scaleChanged(event) {
+        let newNumber = parseFloat(event.target.value, 10)
+        this.state.scale = event.target.value
+        this.state.scaleValid = !isNaN(newNumber)
+        this.setState(this.state)
+
+        this.constants.scale = !this.state.scaleValid ? this.constants.scale : newNumber
+    }
+
+    resetEquation() {
+        Object.assign(MainStore.constants.diff, DiffData.getDefaultConstants())
+
+        this.state.topCount = this.constants.top
+        this.state.offset = this.constants.offset
+        this.state.power = this.constants.power
+        this.state.scale = this.constants.scale
+        this.setState(this.state)
+    }
+
+    getControlsElement() {
+        return (
+            <div className="controls">
+                <div>
+                    Top # of scores:
+                    <input className={`numberInput ${this.state.topCountValid ? "" : "invalid"}`}
+                        type="text" value={this.state.topCount} onChange={(event) => this.topCountChanged(event)} />
+                </div>
+                <div>
+                    Non-linear equation
+                </div>
+                <div>
+                    {"Output = ((score + "}
+                    <input className={`numberInput ${this.state.offsetValid ? "" : "invalid"}`}
+                        type="text" value={this.state.offset} onChange={(event) => this.offsetChanged(event)} />
+                    {") ^ "}
+                    <input className={`numberInput ${this.state.powerValid ? "" : "invalid"}`}
+                        type="text" value={this.state.power} onChange={(event) => this.powerChanged(event)} />
+                    {") * "}
+                    <input className={`numberInput ${this.state.scaleValid ? "" : "invalid"}`}
+                        style={{ width: "12em" }} type="text" value={this.state.scale} onChange={(event) => this.scaleChanged(event)} />
+                    <button style={{ "marginLeft": "1em" }} onClick={() => this.resetEquation()}>Reset</button>
+                </div>
+            </div>
+        )
+    }
+
     render() {
         return (
             <div className="diffInspectorContainer">
                 {this.getScoresElement()}
-                <div className="controls">
-                </div>
+                {this.getControlsElement()}
             </div>
         )
     }
@@ -66,7 +150,7 @@ module.exports = @MobxReact.observer class extends InterfaceModelBase {
     render() {
         return (
             <div className="teamContainer">
-                <div>
+                <div className="teamNames">
                     {this.playersNames}
                 </div>
                 {this.getResults()}
