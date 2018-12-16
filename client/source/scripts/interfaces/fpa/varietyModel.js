@@ -4,7 +4,6 @@ const Mobx = require("mobx")
 const Enums = require("scripts/stores/enumStore.js")
 const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
-const DataStore = require("scripts/stores/dataStore.js")
 const VarietyData = require("scripts/interfaces/fpa/data/varietyData.js")
 
 module.exports = class extends InterfaceModelBase {
@@ -39,38 +38,11 @@ module.exports = class extends InterfaceModelBase {
         }, this.updateIntervalMs)
     }
 
-    queryPoolData(tournamentName) {
-        fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/getPlayingPool?tournamentName=${tournamentName}`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then((response) => {
-            if (response.status < 400) {
-                return response.json()
-            } else {
-                throw new Error(response.statusText)
-            }
-        }).then((response) => {
-            this.updateFromAws(response)
-        }).catch((error) => {
-            console.log("Error: Set Playing Pool", error)
-        })
-    }
-
     updateFromAws(awsData) {
-        if (this.playPoolHash !== awsData.poolHash) {
-            this.playPoolHash = awsData.poolHash
-            this.obs.playingPool = new DataStore.PoolData(awsData.pool)
-
+        let dirty = super.updateFromAws(awsData)
+        
+        if (dirty.poolDirty) {
             this.obs.results = new VarietyData.DataClass(this.obs.playingPool)
-        }
-
-        if (this.observableHash !== awsData.observableHash) {
-            this.observableHash = awsData.observableHash
-            this.obs.routineLengthSeconds = awsData.observable.routineLengthSeconds
-            this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
         }
     }
 

@@ -111,7 +111,6 @@ module.exports = exports = {
 
         // Node.js and CommonJS
         "callback-return": [ WARN, [ "callback", "next" ]],
-        "global-require": ERROR,
         "handle-callback-err": WARN,
         "no-mixed-requires": WARN,
         "no-new-require": ERROR,

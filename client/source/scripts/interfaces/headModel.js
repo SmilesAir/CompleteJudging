@@ -35,26 +35,6 @@ module.exports = class extends InterfaceModelBase {
         }
     }
 
-    queryPoolData(tournamentName) {
-        fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/getPlayingPool?tournamentName=${tournamentName}`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then((response) => {
-            if (response.status < 400) {
-                return response.json()
-            } else {
-                throw new Error(response.statusText)
-            }
-        }).then((response) => {
-            this.updateFromAws(response)
-        }).catch((error) => {
-            console.log("Error: Set Playing Pool", error)
-        })
-    }
-
     getPoolDataForAWS() {
         return {
             poolHash: uuid4(),

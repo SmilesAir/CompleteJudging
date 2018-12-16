@@ -1,11 +1,12 @@
 
 const MainStore = require("scripts/stores/mainStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
-const DiffData = require("scripts/interfaces/fpa/data/diffData.js")
-const VarietyData = require("scripts/interfaces/fpa/data/varietyData.js")
 
 module.exports = class {
     constructor() {
+        const DiffData = require("scripts/interfaces/fpa/data/diffData.js")
+        const VarietyData = require("scripts/interfaces/fpa/data/varietyData.js")
+
         this.dataModelList = [
             DiffData,
             VarietyData
