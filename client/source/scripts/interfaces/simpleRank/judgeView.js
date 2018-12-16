@@ -1,15 +1,12 @@
 const React = require("react")
 const MobxReact = require("mobx-react")
 
-const MainStore = require("scripts/stores/mainStore.js")
-const Enums = require("scripts/stores/enumStore.js")
-const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
+const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
-const DataAction = require("scripts/actions/dataAction.js")
 
 require("./judgeView.less")
 
-module.exports = @MobxReact.observer class extends InterfaceModelBase {
+module.exports = @MobxReact.observer class extends InterfaceViewBase {
     constructor() {
         super()
 
@@ -31,16 +28,15 @@ module.exports = @MobxReact.observer class extends InterfaceModelBase {
 
     render() {
         if (Interfaces.rank.obs.playingPool === undefined) {
-            return <div className="topContainer">Waiting for Head Judge</div>
+            return <div className="rankTopContainer">Waiting for Head Judge</div>
         }
 
         return (
-            <div className="topContainer">
+            <div className="rankTopContainer">
                 Rank Judge
                 <div className="rankTeamListContainer"
-                onMouseUp={(event) => this.onDragEnd(event)}
-                onMouseLeave={(event) => this.onDragEnd(event)}
-                onMouseUp={(event) => this.onDragEnd(event)}>
+                    onMouseUp={(event) => this.onDragEnd(event)}
+                    onMouseLeave={(event) => this.onDragEnd(event)}>
                     {this.getTeams()}
                 </div>
             </div>
@@ -75,7 +71,7 @@ module.exports = @MobxReact.observer class extends InterfaceModelBase {
         return this.team.played === true
     }
 
-    onMouseDown(event) {
+    onMouseDown() {
         if (this.getIsPlaying() || this.getHasPlayed()) {
             this.interface.startScoreDrag(this.teamIndex)
         }
@@ -85,7 +81,7 @@ module.exports = @MobxReact.observer class extends InterfaceModelBase {
         this.interface.onScoreDrag(event)
     }
 
-    onMouseUp(event) {
+    onMouseUp() {
         this.interface.endScoreDrag(this.teamIndex)
     }
 
@@ -101,9 +97,9 @@ module.exports = @MobxReact.observer class extends InterfaceModelBase {
 
     render() {
         return (
-            <div className="rankTeamContainer"
-            onMouseDown={(event) => this.onMouseDown(event)}
-            onMouseMove={(event) => this.onMouseMove(event)}>
+            <div className="rankTopContainer"
+                onMouseDown={(event) => this.onMouseDown(event)}
+                onMouseMove={(event) => this.onMouseMove(event)}>
                 <div className={this.getStyle()}>
                     {this.team.getPlayerNamesString()}: {this.getTeamPoints()} Points
                 </div>

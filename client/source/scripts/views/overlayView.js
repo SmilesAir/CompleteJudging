@@ -4,6 +4,7 @@ const MobxReact = require("mobx-react")
 
 const MainStore = require("scripts/stores/mainStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
+const Interfaces = require("scripts/interfaces/interfaces.js")
 
 require("./overlayView.less")
 
@@ -30,13 +31,15 @@ require("./overlayView.less")
     }
 
     getInfo() {
-        let teamViews = []
+        let activeInterface = Interfaces.list[MainStore.activeInterface]
+        let playingIndex = activeInterface !== undefined && activeInterface.obs !== undefined ? activeInterface.obs.playingTeamIndex : undefined
 
+        let teamViews = []
         if (MainStore.interfaceObs !== undefined && MainStore.interfaceObs.playingPool !== undefined) {
             let key = 0
             teamViews = MainStore.interfaceObs.playingPool.teamList.map((team) => {
                 return (
-                    <div key={key++} className="teamContainer">
+                    <div key={key++} className={`teamContainer ${playingIndex === key - 1 ? "playing" : ""}`}>
                         {DataAction.getTeamPlayers(team)}
                     </div>
                 )

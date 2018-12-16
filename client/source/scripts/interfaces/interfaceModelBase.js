@@ -4,11 +4,8 @@ const React = require("react")
 const Enums = require("scripts/stores/enumStore.js")
 const MainStore = require("scripts/stores/mainStore.js")
 
-class InterfaceModelBase extends React.Component {
+class InterfaceModelBase {
     constructor() {
-        super()
-
-        this.name = "Missing Interface Name"
         this.type = Enums.EInterface.invalid
         this.updateIntervalMs = 5000
     }

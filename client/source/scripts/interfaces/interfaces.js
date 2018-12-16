@@ -2,7 +2,7 @@
 
 const MainStore = require("scripts/stores/mainStore.js")
 const InfoModel = require("scripts/interfaces/infoModel.js")
-const HeadModel = require("scripts/interfaces/simpleRank/headModel.js")
+const HeadModel = require("scripts/interfaces/headModel.js")
 const RankModel = require("scripts/interfaces/simpleRank/judgeModel.js")
 const DiffModel = require("scripts/interfaces/fpa/diffModel.js")
 const VarietyModel = require("scripts/interfaces/fpa/varietyModel.js")

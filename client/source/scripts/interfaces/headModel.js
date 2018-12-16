@@ -5,7 +5,7 @@ const uuid4 = require("uuid/v4")
 const Enums = require("scripts/stores/enumStore.js")
 const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
-const DataAction = require("scripts/actions/dataAction.js")
+const DataStore = require("scripts/stores/dataStore.js")
 
 module.exports = class extends InterfaceModelBase {
     constructor() {
@@ -15,6 +15,8 @@ module.exports = class extends InterfaceModelBase {
         this.type = Enums.EInterface.head
 
         this.playingPoolKey = undefined
+        this.playPoolHash = undefined
+        this.observableHash = undefined
 
         this.obs = Mobx.observable({
             routineLengthSeconds: 60,
@@ -23,6 +25,34 @@ module.exports = class extends InterfaceModelBase {
         })
 
         this.awsData = undefined
+    }
+
+    init() {
+        super.init()
+
+        if (MainStore.startupTournamentName !== undefined) {
+            this.queryPoolData(MainStore.startupTournamentName)
+        }
+    }
+
+    queryPoolData(tournamentName) {
+        fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/getPlayingPool?tournamentName=${tournamentName}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then((response) => {
+            if (response.status < 400) {
+                return response.json()
+            } else {
+                throw new Error(response.statusText)
+            }
+        }).then((response) => {
+            this.updateFromAws(response)
+        }).catch((error) => {
+            console.log("Error: Set Playing Pool", error)
+        })
     }
 
     getPoolDataForAWS() {
@@ -59,6 +89,13 @@ module.exports = class extends InterfaceModelBase {
                 this.sendDataToAWS()
             }
         }
+    }
+
+    updateFromAws(awsData) {
+        this.obs.playingPool = new DataStore.PoolData(awsData.pool)
+        this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
+
+        this.awsData = awsData
     }
 
     sendDataToAWS() {

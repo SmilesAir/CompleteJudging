@@ -1,19 +1,19 @@
 const React = require("react")
 const MobxReact = require("mobx-react")
 
-const MainStore = require("scripts/stores/mainStore.js")
-const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
+const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 
 require("./diffView.less")
 
-module.exports = @MobxReact.observer class extends InterfaceModelBase {
+module.exports = @MobxReact.observer class extends InterfaceViewBase {
     constructor() {
         super()
 
         this.startTime = undefined
         this.state = {}
         this.touchAreaRef = React.createRef()
+        this.name = "Difficulty Judge"
     }
 
     getNumbers() {
@@ -122,19 +122,15 @@ module.exports = @MobxReact.observer class extends InterfaceModelBase {
 
     render() {
         if (Interfaces.diff.obs.playingPool === undefined) {
-            return <div className="topContainer">Waiting for Head Judge</div>
+            return <div className="diffTopContainer">Waiting for Head Judge</div>
         }
 
-        let headerText = `Difficulty Judge - ${MainStore.userId}`
-
         return (
-            <div className="topContainer"
+            <div className="diffTopContainer"
                 onMouseUp={(event) => this.onParentInputEnd(event)}
                 onTouchMove={(event) => this.onParentTouchMove(event)}
                 onTouchEnd={(event) => this.onParentInputEnd(event)}>
-                <div className="header">
-                    {headerText}
-                </div>
+                {this.getJudgeHeaderElement()}
                 <TimeMarksView />
                 <div id="inputContainer" className="inputContainer"
                     onTouchStart={(event) => this.onTouchStart(event)}

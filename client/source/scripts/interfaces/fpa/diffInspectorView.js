@@ -2,7 +2,7 @@ const React = require("react")
 const MobxReact = require("mobx-react")
 
 const Enums = require("scripts/stores/enumStore.js")
-const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
+const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
 const MainStore = require("scripts/stores/mainStore.js")
@@ -10,7 +10,7 @@ const DiffData = require("scripts/interfaces/fpa/data/diffData.js")
 
 require("./diffInspectorView.less")
 
-module.exports = @MobxReact.observer class extends InterfaceModelBase {
+module.exports = @MobxReact.observer class extends InterfaceViewBase {
     constructor(props) {
         super(props)
 
