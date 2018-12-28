@@ -242,3 +242,9 @@ function getPoolResults(poolData) {
     })
 }
 module.exports.getPoolResults = getPoolResults
+
+function getTimeString(timeMs) {
+    let timeDate = new Date(timeMs)
+    return `${timeDate.getMinutes()}:${("0" + timeDate.getSeconds()).slice(-2)}`
+}
+module.exports.getTimeString = getTimeString

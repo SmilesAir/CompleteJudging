@@ -14,6 +14,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.state = {}
         this.touchAreaRef = React.createRef()
         this.name = "Difficulty Judge"
+        this.interface = Interfaces.diff
     }
 
     getNumbers() {
@@ -35,7 +36,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     getNumberOutView() {
         if (this.getStateNumberOut() !== undefined) {
-            let popupClassnames = `popupContainer ${Interfaces.diff.obs.editIndex === undefined ? "" : "editing"}`
+            let popupClassnames = `popupContainer ${this.interface.obs.editIndex === undefined ? "" : "editing"}`
 
             return (
                 <div className="overlay">
@@ -76,7 +77,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onMouseMove(event) {
-        if (event.buttons === 1 || Interfaces.diff.obs.editIndex !== undefined) {
+        if (event.buttons === 1 || this.interface.obs.editIndex !== undefined) {
             this.updateNumberOut(event.clientX)
         }
     }
@@ -86,7 +87,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onParentTouchMove(event) {
-        if (Interfaces.diff.obs.editIndex !== undefined) {
+        if (this.interface.obs.editIndex !== undefined) {
             let inputContainer = document.getElementsByClassName("inputContainer")[0]
             let bounds = inputContainer.getBoundingClientRect()
 
@@ -107,13 +108,13 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         event.preventDefault()
         event.stopPropagation()
         
-        if (Interfaces.diff.obs.editIndex === undefined) {
+        if (this.interface.obs.editIndex === undefined) {
             let score = this.getStateNumberOut()
             if (score !== undefined) {
-                Interfaces.diff.addScore(score)
+                this.interface.addScore(score)
             }
         } else {
-            Interfaces.diff.endEdit(this.getStateNumberOut())
+            this.interface.endEdit(this.getStateNumberOut())
         }
 
         this.state.numberOut = undefined
@@ -121,7 +122,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     render() {
-        if (Interfaces.diff.obs.playingPool === undefined) {
+        if (this.interface.obs.playingPool === undefined) {
             return <div className="diffTopContainer">Waiting for Head Judge</div>
         }
 
@@ -166,11 +167,11 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onEditStart() {
-        Interfaces.diff.startEdit(this.markIndex)
+        this.interface.startEdit(this.markIndex)
     }
 
     render() {
-        let score = Interfaces.diff.obs.results.teamScoreList[Interfaces.diff.obs.playingTeamIndex].scores[this.markIndex]
+        let score = this.interface.obs.results.teamScoreList[this.interface.obs.playingTeamIndex].scores[this.markIndex]
         let classname = `markContainer ${score === 0 ? "markZero" : ""}`
 
         return (
@@ -191,11 +192,11 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     getGroupViews() {
-        if (Interfaces.diff.obs.results === undefined) {
+        if (this.interface.obs.results === undefined) {
             return undefined
         }
 
-        let teamScores = Interfaces.diff.obs.results.teamScoreList[Interfaces.diff.obs.playingTeamIndex]
+        let teamScores = this.interface.obs.results.teamScoreList[this.interface.obs.playingTeamIndex]
         if (teamScores === undefined) {
             return undefined
         }

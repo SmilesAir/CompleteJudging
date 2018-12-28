@@ -4,7 +4,6 @@ const Mobx = require("mobx")
 const Enums = require("scripts/stores/enumStore.js")
 const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
-const DataAction = require("scripts/actions/dataAction.js")
 const DataStore = require("scripts/stores/dataStore.js")
 
 module.exports = class extends InterfaceModelBase {

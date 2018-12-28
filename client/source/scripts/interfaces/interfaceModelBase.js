@@ -7,7 +7,7 @@ const DataStore = require("scripts/stores/dataStore.js")
 class InterfaceModelBase {
     constructor() {
         this.type = Enums.EInterface.invalid
-        this.updateIntervalMs = 5000
+        this.updateIntervalMs = 3000
     }
 
     init() {
@@ -32,6 +32,20 @@ class InterfaceModelBase {
             this.observableHash = awsData.observableHash
             this.obs.routineLengthSeconds = awsData.observable.routineLengthSeconds
             this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
+
+            if (this.obs.startTime === undefined && awsData.observable.startTime !== undefined) {
+                this.obs.startTime = awsData.observable.startTime
+                this.onRoutineStart()
+            } else if (this.obs.startTime !== undefined && awsData.observable.startTime === undefined) {
+                this.obs.startTime = undefined
+                this.onRoutineStop()
+            } else {
+                this.obs.startTime = awsData.observable.startTime
+            }
+        }
+
+        if (awsData.serverTime !== undefined) {
+            MainStore.serverTimeOffset = awsData.serverTime - Date.now()
         }
 
         return {
@@ -58,6 +72,28 @@ class InterfaceModelBase {
         }).catch((error) => {
             console.log("Error: Set Playing Pool", error)
         })
+    }
+
+    getRoutineTimeMs() {
+        return MainStore.routineTimeMs
+    }
+
+    onRoutineStart() {
+        if (this.routineUpdateHandle !== undefined) {
+            clearInterval(this.routineUpdateHandle)
+        }
+
+        this.routineUpdateHandle = setInterval(() => {
+            this.onRoutineUpdate()
+        }, 200)
+    }
+
+    onRoutineUpdate() {
+        MainStore.routineTimeMs = this.obs.startTime !== undefined ? Date.now() - this.obs.startTime + MainStore.serverTimeOffset : undefined
+    }
+
+    onRoutineStop() {
+        clearInterval(this.routineUpdateHandle)
     }
 }
 module.exports = InterfaceModelBase

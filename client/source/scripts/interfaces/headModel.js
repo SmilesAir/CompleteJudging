@@ -19,9 +19,12 @@ module.exports = class extends InterfaceModelBase {
         this.observableHash = undefined
 
         this.obs = Mobx.observable({
+            startTime: undefined,
             routineLengthSeconds: 60,
             playingPool: undefined,
-            playingTeamIndex: undefined
+            playingTeamIndex: undefined,
+            isJudging: false,
+            judgingTimeMs: 0
         })
 
         this.awsData = undefined
@@ -42,7 +45,8 @@ module.exports = class extends InterfaceModelBase {
             observableHash: uuid4(),
             observable: {
                 routineLengthSeconds: this.obs.routineLengthSeconds,
-                playingTeamIndex: this.obs.playingTeamIndex
+                playingTeamIndex: this.obs.playingTeamIndex,
+                startTime: this.obs.startTime
             }
         }
     }
@@ -64,11 +68,16 @@ module.exports = class extends InterfaceModelBase {
             if (this.obs.playingTeamIndex !== index) {
                 this.obs.playingTeamIndex = index
                 this.awsData.observable.playingTeamIndex = index
-                this.awsData.observableHash = uuid4()
+                this.dirtyObs()
 
                 this.sendDataToAWS()
             }
         }
+    }
+
+    dirtyObs() {
+        this.awsData.observableHash = uuid4()
+        this.awsData.observable.startTime = this.obs.startTime
     }
 
     updateFromAws(awsData) {
@@ -98,5 +107,35 @@ module.exports = class extends InterfaceModelBase {
         }).catch((error) => {
             console.log("Error: Set Playing Pool", error)
         })
+    }
+
+    update() {
+        this.obs.judgingTimeMs = Date.now() - this.obs.startTime
+    }
+
+    onStartClick() {
+        if (!this.obs.isJudging) {
+            this.obs.isJudging = true
+
+            this.obs.startTime = Date.now()
+            this.dirtyObs()
+            this.sendDataToAWS()
+
+            this.updateHandle = setInterval(() => {
+                this.update()
+            }, 100)
+        }
+    }
+
+    onStopClick() {
+        this.obs.isJudging = false
+        
+        clearInterval(this.updateHandle)
+
+        this.obs.judgingTimeMs = 0
+        this.obs.startTime = undefined
+
+        this.dirtyObs()
+        this.sendDataToAWS()
     }
 }

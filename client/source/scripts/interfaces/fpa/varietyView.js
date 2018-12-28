@@ -13,13 +13,14 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         super()
 
         this.name = "Variety Judge"
+        this.interface = Interfaces.variety
         this.state = {
             moveCount: 0
         }
     }
 
     onInputEnd(number) {
-        Interfaces.variety.setQualityScore(number)
+        this.interface.setQualityScore(number)
 
         this.state.qualityScore = number
         this.setState(this.state)
@@ -52,18 +53,18 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.setState(this.state)
 
 
-        Interfaces.variety.setQuantityScore(this.state.moveCount)
+        this.interface.setQuantityScore(this.state.moveCount)
     }
 
     decrementMoveCount() {
         this.state.moveCount = Math.max(0, this.state.moveCount - 1)
         this.setState(this.state)
 
-        Interfaces.variety.setQuantityScore(this.state.moveCount)
+        this.interface.setQuantityScore(this.state.moveCount)
     }
 
     render() {
-        if (Interfaces.variety.obs.playingPool === undefined) {
+        if (this.interface.obs.playingPool === undefined) {
             return <div className="varietyContainer">Waiting for Head Judge</div>
         }
 

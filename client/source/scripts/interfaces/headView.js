@@ -10,27 +10,20 @@ require("./headView.less")
 module.exports = @MobxReact.observer class extends InterfaceViewBase {
     constructor() {
         super()
-
-        this.startTime = undefined
-
-        this.state = {
-            buttonText: "Click on First Throw"
-        }
     }
 
     getTimeElement() {
-        let remainingTimeMs = Interfaces.head.obs.routineLengthSeconds * 1000
-        if (this.startTime !== undefined) {
-            remainingTimeMs -= Date.now() - this.startTime
+        let judgingTimeDate = new Date(Interfaces.head.obs.judgingTimeMs)
+        let judgingTime = `${judgingTimeDate.getMinutes()}:${("0" + judgingTimeDate.getSeconds()).slice(-2)}`
+        let remainingTime = DataAction.getTimeString(Math.max(0, Interfaces.head.obs.routineLengthSeconds * 1000 - Interfaces.head.obs.judgingTimeMs))
 
-            setTimeout(() => {
-                this.forceUpdate()
-            }, 100)
-        }
-
-        let timeDate = new Date(remainingTimeMs)
-
-        return <div>Time Remaining: {timeDate.getMinutes()}:{timeDate.getSeconds()}</div>
+        return (
+            <div>
+                Time judging: {judgingTime}
+                {"   /   "}
+                Remaining Time: {remainingTime}
+            </div>
+        )
     }
 
     getPlayingTeamElement() {
@@ -63,14 +56,12 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         )
     }
 
-    onButtonClick() {
-        if (this.startTime === undefined) {
-            this.setState({
-                buttonText: "Judging Active. Triple Click to Cancel"
-            })
+    onStartButtonClick() {
+        Interfaces.head.onStartClick()
+    }
 
-            this.startTime = Date.now()
-        }
+    onStopButtonClick() {
+        Interfaces.head.onStopClick()
     }
 
     render() {
@@ -84,7 +75,12 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 <div className="poolDetailsContainer">{DataAction.getFullPoolDescription(Interfaces.head.obs.playingPool)}</div>
                 {this.getTimeElement()}
                 {this.getPlayingTeamElement()}
-                <button className="startButton" onClick={() => this.onButtonClick()}>{this.state.buttonText}</button>
+                <button className="startButton" onClick={() => this.onStartButtonClick()}>
+                    {Interfaces.head.obs.isJudging ? "Judging Active" : "Click on First Throw"}
+                </button>
+                <button className="startButton" onClick={() => this.onStopButtonClick()}>
+                    Stop
+                </button>
                 {this.getTeamsElement()}
             </div>
         )

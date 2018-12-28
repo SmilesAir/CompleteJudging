@@ -14,5 +14,7 @@ module.exports = Mobx.observable({
     userId: undefined,
     showControlsHeader: true,
     interfaceObs: undefined,
-    constants: {}
+    constants: {},
+    serverTimeOffset: undefined,
+    routineTimeMs: undefined
 })

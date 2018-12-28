@@ -56,7 +56,9 @@ module.exports.getTournamentKey = function(tournamentName) {
 module.exports.getActivePool = async function(tournamentName) {
     let tournamentKey = await module.exports.getTournamentKey(tournamentName)
     if (tournamentKey.playingPoolKey !== undefined) {
-        return module.exports.getPoolData(tournamentKey.playingPoolKey)
+        let pool = await module.exports.getPoolData(tournamentKey.playingPoolKey)
+        pool.serverTime = Date.now()
+        return pool
     } else {
         throw new Error(`${tournamentName} doesn't have a playing pool`)
     }
