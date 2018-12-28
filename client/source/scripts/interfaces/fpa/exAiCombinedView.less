@@ -1,0 +1,64 @@
+
+.exAiCombinedContainer {
+    grid-area: interface;
+    display: grid;
+    grid-template-areas:
+        "header"
+        "ai"
+        "ex";
+    grid-template-rows: 2em 1fr 1fr;
+
+    border-radius: .5em;
+    padding: .5em;
+
+    background-color: white;
+
+    overflow: auto;
+
+    user-select: none;
+
+    .header {
+        grid-area: header;
+
+        background-color: lightblue;
+    }
+
+    .aiContainer {
+        grid-area: ai;
+
+        background-color: khaki;
+    }
+
+    .exContainer {
+        grid-area: ex;
+        display: flex;
+        flex-direction: column;
+
+        background-color: yellowgreen;
+
+        .exElementContainer {
+            display: flex;
+
+            flex-grow: 1;
+
+            .removeButton {
+                flex-grow: 1;
+            }
+
+            .addButton {
+                flex-grow: 3;
+            }
+
+            .countText {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                flex-grow: .5;
+                max-width: 2em;
+
+                font-size: 2.5em;
+            }
+        }
+    }
+}

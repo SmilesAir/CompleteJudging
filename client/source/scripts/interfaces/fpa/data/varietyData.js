@@ -50,7 +50,7 @@ module.exports.verify = function(resultsData) {
 module.exports.getSummary = function(resultsData, teamIndex) {
     if (module.exports.verify(resultsData)) {
         let team = resultsData.teamScoreList[teamIndex]
-        return team.quantityScore * team.qualityScore / 100
+        return `V: ${team.quantityScore * team.qualityScore / 100}`
     }
 
     return undefined

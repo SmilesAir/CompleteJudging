@@ -56,7 +56,7 @@ module.exports.getSummary = function(resultsData, teamIndex) {
         }
 
         let count = Math.max(1, scoreList.scores.length)
-        return (sum / count).toFixed(2)
+        return `D: ${(sum / count).toFixed(2)}`
     }
 
     return undefined
