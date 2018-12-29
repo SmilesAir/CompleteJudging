@@ -65,6 +65,22 @@ module.exports = class extends InterfaceModelBase {
         return this.obs.results.teamScoreList[this.obs.playingTeamIndex]
     }
 
+    incrementMinor(counterKey) {
+        let teamResults = this.getActiveResultsData()
+        let aiData = teamResults.getAiData(counterKey)
+        ++aiData.minorCount
+
+        return aiData.minorCount
+    }
+
+    incrementMajor(counterKey) {
+        let teamResults = this.getActiveResultsData()
+        let aiData = teamResults.getAiData(counterKey)
+        ++aiData.majorCount
+
+        return aiData.majorCount
+    }
+
     incrementDeduction(point) {
         let teamResults = this.getActiveResultsData()
         let newCount = teamResults.getPointCount(point) + 1

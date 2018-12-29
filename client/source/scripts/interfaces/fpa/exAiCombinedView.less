@@ -25,8 +25,24 @@
 
     .aiContainer {
         grid-area: ai;
+        display: flex;
+        flex-direction: column;
 
         background-color: khaki;
+
+        .aiCounterContainer {
+            display: flex;
+
+            flex-grow: 1;
+
+            .aiMinorIncrement {
+                flex-grow: 1;
+            }
+
+            .aiMajorIncrement {
+                flex-grow: 1;
+            }
+        }
     }
 
     .exContainer {

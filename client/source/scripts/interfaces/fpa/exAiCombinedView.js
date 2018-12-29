@@ -14,6 +14,23 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.name = "Ex/Ai Judge"
         this.interface = Interfaces.exAiCombined
         this.state = {
+            aiCounters: {
+                music: {
+                    name: "Music",
+                    minorCount: 0,
+                    majorCount: 0
+                },
+                teamwork: {
+                    name: "Teamwork",
+                    minorCount: 0,
+                    majorCount: 0
+                },
+                general: {
+                    name: "General Impression",
+                    minorCount: 0,
+                    majorCount: 0
+                }
+            },
             pointDeductions: {
                 "1": 0,
                 "2": 0,
@@ -30,6 +47,18 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.setState(this.state)
     }
 
+    onMinorClick(counterKey) {
+        this.state.aiCounters[counterKey].minorCount = this.interface.incrementMinor(counterKey)
+
+        this.setState(this.state)
+    }
+
+    onMajorClick(counterKey) {
+        this.state.aiCounters[counterKey].majorCount = this.interface.incrementMajor(counterKey)
+
+        this.setState(this.state)
+    }
+
     onAddClick(point) {
         let newCount = this.interface.incrementDeduction(point)
         this.state.pointDeductions[point] = newCount
@@ -40,6 +69,25 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         let newCount = this.interface.decrementDeduction(point)
         this.state.pointDeductions[point] = newCount
         this.setState(this.state)
+    }
+
+    getAiCounterElements() {
+        let counterElements = []
+        for (let counterKey in this.state.aiCounters) {
+            let counter = this.state.aiCounters[counterKey]
+            counterElements.push(
+                <div key={counter.name} className="aiCounterContainer">
+                    <button className="aiMinorIncrement" onClick={() => this.onMinorClick(counterKey)}>{counter.name} Minor ({counter.minorCount})</button>
+                    <button className="aiMajorIncrement" onClick={() => this.onMajorClick(counterKey)}>{counter.name} Major ({counter.majorCount})</button>
+                </div>
+            )
+        }
+
+        return (
+            <div className="aiContainer">
+                {counterElements}
+            </div>
+        )
     }
 
     getExElements() {
@@ -70,8 +118,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return (
             <div className="exAiCombinedContainer">
                 {this.getJudgeHeaderElement()}
-                <div className="aiContainer">
-                </div>
+                {this.getAiCounterElements()}
                 {this.getExElements()}
             </div>
         )

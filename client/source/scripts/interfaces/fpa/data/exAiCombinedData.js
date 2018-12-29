@@ -12,13 +12,29 @@ module.exports.getDefaultConstants = function() {
 
 class TeamExAiCombinedScores {
     constructor() {
-        this.music = 0
-        this.teamwork = 0
-        this.general = 0
+        this.music = {
+            score: 0,
+            minorCount: 0,
+            majorCount: 0
+        }
+        this.teamwork = {
+            score: 0,
+            minorCount: 0,
+            majorCount: 0
+        }
+        this.general = {
+            score: 0,
+            minorCount: 0,
+            majorCount: 0
+        }
         this.point1Count = 0
         this.point2Count = 0
         this.point3Count = 0
         this.point5Count = 0
+    }
+
+    getAiData(key) {
+        return this[key]
     }
 
     getPointCount(number) {
