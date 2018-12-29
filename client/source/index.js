@@ -18,6 +18,8 @@ const DataAction = require("scripts/actions/dataAction.js")
 const OverlayView = require("scripts/views/overlayView.js")
 const DiffInspectorView = require("scripts/interfaces/fpa/diffInspectorView.js")
 const ExAiCombinedView = require("scripts/interfaces/fpa/exAiCombinedView.js")
+const BlockPromptView = require("scripts/views/blockPromptView.js")
+const CommonAction = require("scripts/actions/commonAction.js")
 
 require("./index.less")
 
@@ -43,6 +45,10 @@ require("./index.less")
 
         DataAction.init()
         Interfaces.init()
+
+        this.state = {
+            showFullscreenPrompt: CommonAction.isMobile()
+        }
     }
 
     render() {
@@ -53,6 +59,13 @@ require("./index.less")
                 <HeaderView />
                 <InterfaceView />
                 <OverlayView />
+                {
+                    this.state.showFullscreenPrompt ? <BlockPromptView promptText="Go Fullscreen" onClick={() => {
+                        document.body.requestFullscreen()
+                        this.state.showFullscreenPrompt = false
+                        this.setState(this.state)
+                    }}/> : undefined
+                }
             </div>
         )
     }
