@@ -1,10 +1,10 @@
 const React = require("react")
 const MobxReact = require("mobx-react")
 
-const MainStore = require("scripts/stores/mainStore.js")
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const NumberLinePickerView = require("scripts/views/numberLinePickerView.js")
+const CommonAction = require("scripts/actions/commonAction.js")
 
 require("./varietyView.less")
 
@@ -20,6 +20,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onInputEnd(number) {
+        CommonAction.vibrateSingleMedium()
+
         this.interface.setQualityScore(number)
 
         this.state.qualityScore = number
@@ -49,6 +51,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     incrementMoveCount() {
+        CommonAction.vibrateSingleShort()
+
         ++this.state.moveCount
         this.setState(this.state)
 
@@ -57,6 +61,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     decrementMoveCount() {
+        CommonAction.vibrateDoubleShort()
+
         this.state.moveCount = Math.max(0, this.state.moveCount - 1)
         this.setState(this.state)
 
@@ -76,8 +82,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     <div>Quality Score: {this.state.qualityScore}</div>
                 </div>
                 <div className="quantityContainer">
-                    <button className="quantityButton" onClick={() => this.incrementMoveCount()} onKeyDown={(event) => this.onIncrementButtonKeyDown(event)}>Increment</button>
                     <button className="quantityButton" onClick={() => this.decrementMoveCount()} onKeyDown={(event) => this.onDecrementButtonKeyDown(event)}>Decrement</button>
+                    <button className="quantityButton" onClick={() => this.incrementMoveCount()} onKeyDown={(event) => this.onIncrementButtonKeyDown(event)}>Increment</button>
                 </div>
                 <NumberLinePickerView onInputEnd={(event) => this.onInputEnd(event)}/>
             </div>

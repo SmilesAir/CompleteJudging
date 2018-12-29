@@ -3,6 +3,7 @@ const MobxReact = require("mobx-react")
 
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
+const CommonAction = require("scripts/actions/commonAction.js")
 
 require("./diffView.less")
 
@@ -107,6 +108,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     onParentInputEnd(event) {
         event.preventDefault()
         event.stopPropagation()
+
+        CommonAction.vibrateSingleMedium()
         
         if (this.interface.obs.editIndex === undefined) {
             let score = this.getStateNumberOut()
@@ -156,13 +159,14 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         super(props)
 
         this.markIndex = props.markIndex
+        this.interface = Interfaces.diff
     }
 
-    onTouchStart(event) {
+    onTouchStart() {
         this.onEditStart()
     }
 
-    onMouseDown(event) {
+    onMouseDown() {
         this.onEditStart()
     }
 
@@ -189,6 +193,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         super()
 
         this.marksPerGroup = 5
+        this.interface = Interfaces.diff
     }
 
     getGroupViews() {
