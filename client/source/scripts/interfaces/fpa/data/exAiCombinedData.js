@@ -106,7 +106,9 @@ module.exports.getTotalDeductions = function(resultsData, teamIndex) {
 module.exports.getSummary = function(resultsData, teamIndex) {
     if (module.exports.verify(resultsData)) {
         let team = resultsData.teamScoreList[teamIndex]
-        return `A: ${(team.music + team.teamwork + team.general) / 3} E: ${module.exports.getTotalDeductions(resultsData, teamIndex)}`
+        let ai = ((team.music.score + team.teamwork.score + team.general.score) / 3).toFixed(2)
+        let ex = module.exports.getTotalDeductions(resultsData, teamIndex).toFixed(2)
+        return `A: ${ai} E: ${ex}`
     }
 
     return undefined
