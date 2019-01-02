@@ -85,4 +85,51 @@
             }
         }
     }
+
+    .sliderContainer {
+        position: relative;
+        width: 11vh;
+        height: 11vh;
+
+        margin: 10px;
+    
+        background-color: beige;
+        
+        overflow: hidden;
+
+        .innerSliderContainer {
+            width: 11vh;
+            height: 11vh;
+            overflow-x: hidden;
+            overflow-y: scroll;
+
+            display: flex;
+            flex-direction: column;
+        
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: y mandatory;
+
+            .slide {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+    
+                font-size: 2em;
+                
+                flex-shrink: 0;
+                width: 100%;
+                height: 50%;
+            }
+
+            .snap {
+                scroll-snap-align: center;
+            }
+        }
+
+        .innerSliderContainer::-webkit-scrollbar {
+            display: none;
+        }
+    }
 }
+
+

@@ -234,7 +234,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     render() {
         return (
-            <div className="timeMarksContainer">
+            <div id="asdf" className="timeMarksContainer">
                 {this.getGroupViews()}
             </div>
         )
