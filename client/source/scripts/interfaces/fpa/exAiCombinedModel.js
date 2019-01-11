@@ -109,5 +109,14 @@ module.exports = class extends InterfaceModelBase {
         
         return newCount
     }
+
+    setAiScore(value, key) {
+        let teamResults = this.getActiveResultsData()
+        teamResults.getAiData(key).score = value
+
+        console.log(teamResults)
+
+        this.reportScores()
+    }
 }
 

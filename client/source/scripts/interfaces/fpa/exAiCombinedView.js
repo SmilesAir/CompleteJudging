@@ -17,17 +17,20 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 music: {
                     name: "Music",
                     minorCount: 0,
-                    majorCount: 0
+                    majorCount: 0,
+                    score: 0
                 },
                 teamwork: {
                     name: "Teamwork",
                     minorCount: 0,
-                    majorCount: 0
+                    majorCount: 0,
+                    score: 0
                 },
                 general: {
                     name: "General",
                     minorCount: 0,
-                    majorCount: 0
+                    majorCount: 0,
+                    score: 0
                 }
             },
             pointDeductions: {
@@ -84,32 +87,23 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         })
     }
 
+    onAiSliderChanged(value, key) {
+        this.state.aiCounters[key].score = value
+        this.setState(this.state)
+
+        this.interface.setAiScore(value, key)
+    }
+
     getAiCounterElements() {
         let counterElements = []
         for (let counterKey in this.state.aiCounters) {
             let counter = this.state.aiCounters[counterKey]
             counterElements.push(
                 <div key={counter.name} className="aiCounterContainer">
-                    <button className="aiMinorIncrement" onClick={() => this.onMinorClick(counterKey)}>
-                        <div>
-                            {counter.name}
-                        </div>
-                        <div>
-                            Minor ({counter.minorCount})
-                        </div>
-                    </button>
-                    <button className="aiMajorIncrement" onClick={() => this.onMajorClick(counterKey)}>
-                        <div>
-                            {counter.name}
-                        </div>
-                        <div>
-                            Major ({counter.majorCount})
-                        </div>
-                    </button>
                     <SuggestionSlider
                         name={counter.name}
-                        minorCount={counter.minorCount}
-                        onChanged={(value) => this.onMusicChanged(value)}
+                        value={counter.score}
+                        onChanged={(value) => this.onAiSliderChanged(value, counterKey)}
                         onMouseMoveCallbackList={this.onMouseMoveCallbackList}
                         onMouseUpCallbackList={this.onMouseUpCallbackList}
                     />
@@ -118,10 +112,6 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         }
 
         return counterElements
-    }
-
-    onMusicChanged(value) {
-        console.log(value)
     }
 
     getAiElements() {
@@ -138,8 +128,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             let pointName = `.${point}`
             return (
                 <div key={point} className="exElementContainer">
-                    <button className="removeButton" onClick={() => this.onRemoveClick(point)}>Remove {pointName}</button>
-                    <button className="addButton" onClick={() => this.onAddClick(point)}>Add {pointName}</button>
+                    <button className="removeButton" onClick={() => this.onRemoveClick(point)}>Decrement</button>
+                    <button className="addButton" onClick={() => this.onAddClick(point)}>{pointName} Deduction</button>
                     <div className="countText">{this.state.pointDeductions[point]}</div>
                 </div>
             )
@@ -177,7 +167,7 @@ class SuggestionSlider extends React.Component {
 
         this.name = props.name
         this.state = {}
-        this.state.value = 0
+        this.state.suggestedValue = props.suggestedValue
 
         props.onMouseMoveCallbackList.push((event) => this.onMouseMove(event))
         props.onMouseUpCallbackList.push(() => this.onMouseUp())
@@ -189,7 +179,16 @@ class SuggestionSlider extends React.Component {
         this.scroll = 0
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidMount() {
+        this.scroll = this.getSlideHeight() / 2
+        this.ref.current.scrollTop = this.scroll
+    }
+
+    componentDidUpdate() {
+        if (this.state.suggestedValue !== this.props.suggestedValue) {
+            this.state.suggestedValue = this.props.suggestedValue
+            this.setState(this.state)
+        }
     }
 
     onMouseDown() {
@@ -200,14 +199,35 @@ class SuggestionSlider extends React.Component {
     onMouseMove(event) {
         if (this.state.dragging) {
             this.scroll -= event.movementY
+            this.scroll = Math.max(this.getSlideHeight() * .5, Math.min(this.scroll, this.getSlideHeight() * 10.5))
 
             this.ref.current.scrollTop = this.scroll
         }
     }
 
+    getSlideHeight() {
+        return this.ref.current.childNodes[0].clientHeight
+    }
+
     onMouseUp() {
-        this.state.dragging = false
-        this.setState(this.state)
+        if (this.state.dragging) {
+            this.state.dragging = false
+            this.setState(this.state)
+
+            this.props.onChanged(Math.floor(this.scroll / this.getSlideHeight()))
+        }
+    }
+
+    getSuggestedComponent() {
+        if (this.state.suggestedValue !== undefined) {
+            return (
+                <div className="suggested">
+                    {this.state.suggestedValue}
+                </div>
+            )
+        }
+
+        return undefined
     }
 
     render() {
@@ -224,9 +244,15 @@ class SuggestionSlider extends React.Component {
 
         return (
             <div className="sliderContainer" onMouseDown={() => this.onMouseDown()}>
+                <div className="sliderName">
+                    <div>
+                        {this.name}
+                    </div>
+                </div>
                 <div className="innerSliderContainer" ref={this.ref}>
                     {slideList}
                 </div>
+                {this.getSuggestedComponent()}
             </div>
         )
     }

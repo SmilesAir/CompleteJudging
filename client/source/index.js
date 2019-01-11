@@ -57,7 +57,9 @@ require("./index.less")
             method: "GET"
         }).then((response) => {
             console.log(response)
-        }).catch((error) => {console.log(error)})
+        }).catch((error) => {
+            console.log(error)
+        })
     }
 
     render() {
