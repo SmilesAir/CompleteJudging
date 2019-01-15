@@ -65,14 +65,23 @@ module.exports = class extends InterfaceModelBase {
     setPlayingTeam(teamData) {
         let index = this.obs.playingPool.teamList.indexOf(teamData)
         if (index !== -1) {
-            if (this.obs.playingTeamIndex !== index) {
-                this.obs.playingTeamIndex = index
-                this.awsData.observable.playingTeamIndex = index
-                this.dirtyObs()
-
-                this.sendDataToAWS()
-            }
+            this.setPlayingTeamIndex(index)
         }
+    }
+
+    setPlayingTeamIndex(index) {
+        if (this.obs.playingTeamIndex !== index) {
+            this.obs.playingTeamIndex = index
+            this.awsData.observable.playingTeamIndex = index
+            this.dirtyObs()
+
+            this.sendDataToAWS()
+        }
+    }
+
+    moveToNextTeam() {
+        let isLastTeam = this.obs.playingTeamIndex >= this.obs.playingPool.teamList.length - 1
+        this.setPlayingTeamIndex(isLastTeam ? undefined : this.obs.playingTeamIndex + 1)
     }
 
     dirtyObs() {
@@ -83,6 +92,7 @@ module.exports = class extends InterfaceModelBase {
     updateFromAws(awsData) {
         this.obs.playingPool = new DataStore.PoolData(awsData.pool)
         this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
+        this.obs.routineLengthSeconds = awsData.observable.routineLengthSeconds
 
         this.awsData = awsData
     }
@@ -98,7 +108,8 @@ module.exports = class extends InterfaceModelBase {
                     tournamentName: MainStore.tournamentName,
                     data: this.awsData
                 })
-            }).then((response) => {
+            }
+        ).then((response) => {
             return response.json()
         }).then((response) => {
             if (response.status < 400) {
@@ -113,6 +124,14 @@ module.exports = class extends InterfaceModelBase {
         this.obs.judgingTimeMs = Date.now() - this.obs.startTime
     }
 
+    hasRoutineTimeElapsed() {
+        return this.obs.judgingTimeMs / 1000 > this.obs.routineLengthSeconds
+    }
+
+    isDuringRoutineTime() {
+        return this.obs.isJudging && !this.hasRoutineTimeElapsed()
+    }
+
     onStartClick() {
         if (!this.obs.isJudging) {
             this.obs.isJudging = true
@@ -124,10 +143,14 @@ module.exports = class extends InterfaceModelBase {
             this.updateHandle = setInterval(() => {
                 this.update()
             }, 100)
+        } else if (this.hasRoutineTimeElapsed()) {
+            this.onStopClick(true)
+
+            this.moveToNextTeam()
         }
     }
 
-    onStopClick() {
+    onStopClick(skipAwsUpdate) {
         this.obs.isJudging = false
         
         clearInterval(this.updateHandle)
@@ -135,7 +158,9 @@ module.exports = class extends InterfaceModelBase {
         this.obs.judgingTimeMs = 0
         this.obs.startTime = undefined
 
-        this.dirtyObs()
-        this.sendDataToAWS()
+        if (!skipAwsUpdate) {
+            this.dirtyObs()
+            this.sendDataToAWS()
+        }
     }
 }

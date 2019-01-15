@@ -1,2 +1,11 @@
 Only init interfaces that are open
 Don't ping backend when not an active interfaces
+Sometimes the scores don't report. Repo: variety quantity increment quickly
+
+Make sure correct team gets the results
+Restore results on judges when team switches
+Allow editing of scores on judges
+Judges. Are you finished popup
+
+
+

@@ -3,6 +3,7 @@
 const Enums = require("scripts/stores/enumStore.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
+const DataAction = require("scripts/actions/dataAction.js")
 
 class InterfaceModelBase {
     constructor() {
@@ -61,7 +62,8 @@ class InterfaceModelBase {
                 headers: {
                     "Content-Type": "application/json"
                 }
-            }).then((response) => {
+            }
+        ).then((response) => {
             if (response.status < 400) {
                 return response.json()
             } else {
@@ -94,6 +96,14 @@ class InterfaceModelBase {
 
     onRoutineStop() {
         clearInterval(this.routineUpdateHandle)
+    }
+
+    getCurrentTeamString() {
+        if (this.obs.playingPool !== undefined && this.obs.playingTeamIndex !== undefined) {
+            return `[${DataAction.getTeamPlayers(this.obs.playingPool.teamList[this.obs.playingTeamIndex], ", ")}]`
+        }
+
+        return undefined
     }
 }
 module.exports = InterfaceModelBase

@@ -49,17 +49,6 @@ require("./index.less")
         this.state = {
             showFullscreenPrompt: CommonAction.isMobile()
         }
-
-        window.fetch("https://ef6c1se05k.execute-api.us-west-2.amazonaws.com/development/testLambda/rawr", {
-            headers: {
-                "Content-Type": "application/json"
-            },
-            method: "GET"
-        }).then((response) => {
-            console.log(response)
-        }).catch((error) => {
-            console.log(error)
-        })
     }
 
     render() {

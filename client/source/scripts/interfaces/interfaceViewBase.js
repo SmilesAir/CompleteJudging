@@ -12,9 +12,13 @@ class InterfaceViewBase extends React.Component {
         this.name = "Missing Interface Name"
     }
 
+    getTeamString() {
+        return this.interface.getCurrentTeamString() || "No Team Set"
+    }
+
     getJudgeHeaderElement() {
         let timeString = `${DataAction.getTimeString(this.interface.getRoutineTimeMs() || 0)} / ${DataAction.getTimeString(this.interface.obs.routineLengthSeconds * 1000)}`
-        let headerString = `${this.name} - ${MainStore.userId} - ${timeString}`
+        let headerString = `${this.name} - ${MainStore.userId} - ${timeString} - ${this.getTeamString()}`
         return (
             <div className="judgeHeader">
                 {headerString}

@@ -64,6 +64,20 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         Interfaces.head.onStopClick()
     }
 
+    getStartButtonText() {
+        if (Interfaces.head.obs.playingTeamIndex === undefined) {
+            return "Set Playing Team"
+        } else if (Interfaces.head.obs.isJudging) {
+            if (Interfaces.head.hasRoutineTimeElapsed()) {
+                return "Judging Finished. Select Next Team."
+            } else {
+                return "Judging Active"
+            }
+        } else {
+            return "Click on First Throw"
+        }
+    }
+
     render() {
         if (Interfaces.head.obs.playingPool === undefined) {
             return <div className="headTopContainer">Set playing pool for Head Judge to function</div>
@@ -75,10 +89,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 <div className="poolDetailsContainer">{DataAction.getFullPoolDescription(Interfaces.head.obs.playingPool)}</div>
                 {this.getTimeElement()}
                 {this.getPlayingTeamElement()}
-                <button className="startButton" onClick={() => this.onStartButtonClick()}>
-                    {Interfaces.head.obs.isJudging ? "Judging Active" : "Click on First Throw"}
+                <button disabled={Interfaces.head.isDuringRoutineTime() || Interfaces.head.obs.playingTeamIndex === undefined} className="startButton" onClick={() => this.onStartButtonClick()}>
+                    {this.getStartButtonText()}
                 </button>
-                <button className="startButton" onClick={() => this.onStopButtonClick()}>
+                <button disabled={!Interfaces.head.obs.isJudging} className="startButton" onClick={() => this.onStopButtonClick()}>
                     Stop
                 </button>
                 {this.getTeamsElement()}

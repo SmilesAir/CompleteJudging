@@ -67,7 +67,8 @@ function loadDataFromDynamo(info) {
                             divisionIndex: division.division,
                             roundIndex: round.round,
                             poolIndex: pool.pool,
-                            teamList: teamList
+                            teamList: teamList,
+                            routineLengthSeconds: round.routineLength * 60
                         }
 
                         poolList.push(newPool)
@@ -92,10 +93,10 @@ function getFullPlayerName(id) {
 }
 module.exports.getFullPlayerName = getFullPlayerName
 
-function getTeamPlayers(team) {
+function getTeamPlayers(team, divider = " - ") {
     return team.playerList.map((playerId) => {
         return getFullPlayerName(playerId)
-    }).join(" - ")
+    }).join(divider)
 }
 module.exports.getTeamPlayers = getTeamPlayers
 

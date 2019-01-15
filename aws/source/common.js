@@ -171,20 +171,16 @@ module.exports.updateTournamentKeyWithObject = async function(tournamentName, ne
     let updateExp = "set " + expresssions.join(", ")
 
     let tournamentKey = await module.exports.getTournamentKey(tournamentName)
-    if (tournamentKey.playingPoolKey !== undefined) {
-        let updatePoolParams = {
-            TableName: process.env.ACTIVE_TOURNAMENT_KEYS,
-            Key: { "key": tournamentName },
-            UpdateExpression: updateExp,
-            ExpressionAttributeNames: names,
-            ExpressionAttributeValues: values
-        }
-        return docClient.update(updatePoolParams).promise().catch((error) => {
-            throw new Error(`Update active pool for ${tournamentName}. ${error}`)
-        })
-    } else {
-        throw new Error(`${tournamentName} doesn't have a playing pool`)
+    let updatePoolParams = {
+        TableName: process.env.ACTIVE_TOURNAMENT_KEYS,
+        Key: { "key": tournamentName },
+        UpdateExpression: updateExp,
+        ExpressionAttributeNames: names,
+        ExpressionAttributeValues: values
     }
+    return docClient.update(updatePoolParams).promise().catch((error) => {
+        throw new Error(`Update active pool for ${tournamentName}. ${error}`)
+    })
 }
 
 module.exports.updateTournamentKeyPlayingPool = async function(tournamentName, playingPoolKey) {

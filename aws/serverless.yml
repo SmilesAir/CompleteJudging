@@ -43,13 +43,6 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ACTIVE_RESULTS}"
 
 functions:
-  testLambda:
-    handler: source/test.testLambda
-    events:
-      - http:
-          path: testPost
-          method: post
-          cors: true
   createTournament:
     handler: source/createTournament.handler
     events:

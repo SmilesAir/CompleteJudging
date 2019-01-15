@@ -15,7 +15,7 @@ module.exports.handler = (e, c, cb) => { Common.handler(e, c, cb, async (event, 
     try {
         activePool = await Common.getActivePool(tournamentName)
     } catch(error) {
-        throw new Error(`Can't get active pool. ${tournamentName}`)
+        console.log(`No active pool currenty set. ${tournamentName}`)
     }
 
     let tournamentKey = await Common.getTournamentKey(tournamentName)
@@ -69,9 +69,12 @@ module.exports.handler = (e, c, cb) => { Common.handler(e, c, cb, async (event, 
             TableName : process.env.ACTIVE_POOLS,
             Item: newPoolItem
         }
-        return docClient.put(putPlayingPoolParams).promise().catch((error) => {
+
+        await docClient.put(putPlayingPoolParams).promise().catch((error) => {
             throw new Error(`Put new playing pool for ${tournamentName}`)
         })
+
+        return putPlayingPoolParams
     }
 })}
 
