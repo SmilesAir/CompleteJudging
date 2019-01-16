@@ -18,7 +18,7 @@ class InterfaceViewBase extends React.Component {
 
     getJudgeHeaderElement() {
         let timeString = `${DataAction.getTimeString(this.interface.getRoutineTimeMs() || 0)} / ${DataAction.getTimeString(this.interface.obs.routineLengthSeconds * 1000)}`
-        let headerString = `${this.name} - ${MainStore.userId} - ${timeString} - ${this.getTeamString()}`
+        let headerString = `${this.name} - ${MainStore.userId} - ${this.interface.isEditing() ? "EDITING" : timeString} - ${this.getTeamString()}`
         return (
             <div className="judgeHeader">
                 {headerString}

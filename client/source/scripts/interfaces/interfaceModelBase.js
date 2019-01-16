@@ -1,4 +1,5 @@
 
+const Mobx = require("mobx")
 
 const Enums = require("scripts/stores/enumStore.js")
 const MainStore = require("scripts/stores/mainStore.js")
@@ -9,6 +10,14 @@ class InterfaceModelBase {
     constructor() {
         this.type = Enums.EInterface.invalid
         this.updateIntervalMs = 3000
+
+        this.obs = Mobx.observable({
+            routineLengthSeconds: 60,
+            playingPool: undefined,
+            playingTeamIndex: undefined,
+            editTeamIndex: undefined,
+            results: undefined
+        })
     }
 
     init() {
@@ -98,9 +107,17 @@ class InterfaceModelBase {
         clearInterval(this.routineUpdateHandle)
     }
 
+    isEditing() {
+        return this.obs.editTeamIndex !== undefined
+    }
+
     getCurrentTeamString() {
-        if (this.obs.playingPool !== undefined && this.obs.playingTeamIndex !== undefined) {
-            return `[${DataAction.getTeamPlayers(this.obs.playingPool.teamList[this.obs.playingTeamIndex], ", ")}]`
+        if (this.obs.playingPool !== undefined) {
+            if (this.isEditing()) {
+                return `[${DataAction.getTeamPlayers(this.obs.playingPool.teamList[this.obs.editTeamIndex], ", ")}]`
+            } else if (this.obs.playingTeamIndex !== undefined) {
+                return `[${DataAction.getTeamPlayers(this.obs.playingPool.teamList[this.obs.playingTeamIndex], ", ")}]`
+            }
         }
 
         return undefined

@@ -16,14 +16,8 @@ module.exports = class extends InterfaceModelBase {
         this.playPoolHash = undefined
         this.observableHash = undefined
 
-        this.obs = Mobx.observable({
-            playingPool: undefined,
-            routineLengthSeconds: undefined,
-            playingTeamIndex: undefined,
-            results: undefined,
-            dragTeamIndex: undefined,
-            editIndex: undefined
-        })
+        this.obs.dragTeamIndex = undefined
+        this.obs.editIndex = undefined
     }
 
     init() {

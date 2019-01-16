@@ -31,16 +31,25 @@ require("./overlayView.less")
     }
 
     getInfo() {
-        let activeInterface = Interfaces.list[MainStore.activeInterface]
-        let playingIndex = activeInterface !== undefined && activeInterface.obs !== undefined ? activeInterface.obs.playingTeamIndex : undefined
-
         let teamViews = []
         if (MainStore.interfaceObs !== undefined && MainStore.interfaceObs.playingPool !== undefined) {
             let key = 0
             teamViews = MainStore.interfaceObs.playingPool.teamList.map((team) => {
+                let isEditing = MainStore.interfaceObs.editTeamIndex === key
+                let isPlaying = MainStore.interfaceObs.playingTeamIndex === key
+                let teamIndex = key
                 return (
-                    <div key={key++} className={`teamContainer ${playingIndex === key - 1 ? "playing" : ""}`}>
-                        {DataAction.getTeamPlayers(team)}
+                    <div
+                        key={key++}
+                        className={`teamContainer ${isPlaying ? "playing" : ""}`}
+                        onPointerUp={() => {
+                            if (teamIndex === MainStore.interfaceObs.playingTeamIndex) {
+                                MainStore.interfaceObs.editTeamIndex = undefined
+                            } else {
+                                MainStore.interfaceObs.editTeamIndex = teamIndex
+                            }
+                        }}>
+                        {DataAction.getTeamPlayers(team)}{isEditing ? " - EDITING" : ""}
                     </div>
                 )
             })

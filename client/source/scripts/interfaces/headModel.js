@@ -1,5 +1,4 @@
 
-const Mobx = require("mobx")
 const uuid4 = require("uuid/v4")
 
 const Enums = require("scripts/stores/enumStore.js")
@@ -18,14 +17,9 @@ module.exports = class extends InterfaceModelBase {
         this.playPoolHash = undefined
         this.observableHash = undefined
 
-        this.obs = Mobx.observable({
-            startTime: undefined,
-            routineLengthSeconds: 60,
-            playingPool: undefined,
-            playingTeamIndex: undefined,
-            isJudging: false,
-            judgingTimeMs: 0
-        })
+        this.obs.startTime = undefined
+        this.obs.isJudging = false
+        this.obs.judgingTimeMs = 0
 
         this.awsData = undefined
     }
