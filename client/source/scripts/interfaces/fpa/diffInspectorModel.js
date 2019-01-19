@@ -42,7 +42,7 @@ module.exports = class extends InterfaceModelBase {
             this.playPoolHash = awsData.poolHash
             this.obs.playingPool = new DataStore.PoolData(awsData.pool)
 
-            DataAction.getPoolResults(this.obs.playingPool).then(() => {
+            DataAction.fillPoolResults(this.obs.playingPool).then(() => {
                 this.obs.results = this.obs.playingPool.results
             })
         }

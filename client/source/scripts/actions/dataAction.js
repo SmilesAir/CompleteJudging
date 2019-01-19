@@ -227,19 +227,38 @@ function verifyDataConstants(constants) {
 }
 module.exports.verifyDataConstants = verifyDataConstants
 
-function getPoolResults(poolData) {
+function fillPoolResults(poolData) {
     return fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/getPoolResults?tournamentName=${MainStore.tournamentName}&divisionIndex=${poolData.divisionIndex}&roundIndex=${poolData.roundIndex}&poolIndex=${poolData.poolIndex}`,
         {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
             }
-        }).then((response) => {
+        }
+    ).then((response) => {
         return response.json()
     }).then((response) => {
         poolData.results = response
     }).catch((error) => {
-        console.log("Refresh Tournament Info Error", error)
+        console.log("Fill Pool Results Error", error)
+    })
+}
+module.exports.fillPoolResults = fillPoolResults
+
+function getPoolResults(divisionIndex, roundIndex, poolIndex) {
+    return fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/getPoolResults?tournamentName=${MainStore.tournamentName}&divisionIndex=${divisionIndex}&roundIndex=${roundIndex}&poolIndex=${poolIndex}`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+    ).then((response) => {
+        return response.json()
+    }).then((response) => {
+        return response
+    }).catch((error) => {
+        console.log("Get Pool Results Error", error)
     })
 }
 module.exports.getPoolResults = getPoolResults

@@ -48,6 +48,8 @@ require("./overlayView.less")
                             } else {
                                 MainStore.interfaceObs.editTeamIndex = teamIndex
                             }
+
+                            Interfaces.activeInterface.fillWithResults()
                         }}>
                         {DataAction.getTeamPlayers(team)}{isEditing ? " - EDITING" : ""}
                     </div>

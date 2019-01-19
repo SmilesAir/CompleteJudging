@@ -78,7 +78,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                         </div>
                         <div className="controls">
                             <button onClick={() => this.onSetPool(pool)}>Set Pool</button>
-                            <button onClick={() => DataAction.getPoolResults(pool)}>Get Results</button>
+                            <button onClick={() => DataAction.fillPoolResults(pool)}>Get Results</button>
                         </div>
                         <div className="teams">
                             {this.getTeamComponents(pool)}

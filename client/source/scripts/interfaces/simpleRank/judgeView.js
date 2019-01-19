@@ -64,7 +64,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     getIsPlaying() {
-        return this.interface.obs.playingTeamIndex === this.teamIndex
+        return this.interface.getActiveTeamIndex() === this.teamIndex
     }
 
     getHasPlayed() {

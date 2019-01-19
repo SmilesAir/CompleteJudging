@@ -10,6 +10,14 @@ class InterfaceViewBase extends React.Component {
         super()
 
         this.name = "Missing Interface Name"
+
+        setTimeout(() => {
+            this.init()
+        }, 1)
+    }
+
+    init() {
+        this.interface.fillWithResultsFunc = () => this.fillWithResults()
     }
 
     getTeamString() {
@@ -24,6 +32,10 @@ class InterfaceViewBase extends React.Component {
                 {headerString}
             </div>
         )
+    }
+
+    fillWithResults() {
+        console.error(`${this.name} is missing override for fillWithResults`)
     }
 }
 module.exports = InterfaceViewBase

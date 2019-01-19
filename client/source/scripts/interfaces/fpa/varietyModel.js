@@ -36,7 +36,7 @@ module.exports = class extends InterfaceModelBase {
         let dirty = super.updateFromAws(awsData)
         
         if (dirty.poolDirty) {
-            this.obs.results = new VarietyData.DataClass(this.obs.playingPool)
+            this.obs.results = this.obs.results || new VarietyData.DataClass(this.obs.playingPool)
         }
     }
 
@@ -58,13 +58,13 @@ module.exports = class extends InterfaceModelBase {
     }
 
     setQualityScore(score) {
-        this.obs.results.setQualityScore(this.obs.playingTeamIndex, score)
+        this.obs.results.setQualityScore(this.getActiveTeamIndex(), score)
 
         this.reportScores()
     }
 
     setQuantityScore(score) {
-        this.obs.results.setQuantityScore(this.obs.playingTeamIndex, score)
+        this.obs.results.setQuantityScore(this.getActiveTeamIndex(), score)
 
         this.reportScores()
     }

@@ -35,7 +35,7 @@ module.exports = class extends InterfaceModelBase {
         let dirty = super.updateFromAws(awsData)
         
         if (dirty.poolDirty) {
-            this.obs.results = new ResultsDataRank(this.obs.playingPool)
+            this.obs.results = this.obs.results || new ResultsDataRank(this.obs.playingPool)
         }
     }
 
@@ -62,11 +62,11 @@ module.exports = class extends InterfaceModelBase {
         let newPointsList = []
         let teamList = this.obs.playingPool.teamList
         let pointsList = this.obs.results.rawPointsList
-        let playingTeam = teamList[this.obs.playingTeamIndex]
+        let playingTeam = teamList[this.getActiveTeamIndex()]
         for (let teamIndex = 0; teamIndex < teamList.length; ++teamIndex) {
             let team = teamList[teamIndex]
             let points = pointsList[teamIndex]
-            if (teamIndex === this.obs.playingTeamIndex || team.played === true) {
+            if (teamIndex === this.getActiveTeamIndex() || team.played === true) {
                 let inserted = false
                 for (let sortedIndex = 0; sortedIndex < newPointsList.length; ++sortedIndex) {
                     let sortedPoints = newPointsList[sortedIndex]

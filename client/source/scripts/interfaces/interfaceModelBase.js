@@ -41,7 +41,11 @@ class InterfaceModelBase {
         if (obsDirty) {
             this.observableHash = awsData.observableHash
             this.obs.routineLengthSeconds = awsData.observable.routineLengthSeconds
-            this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
+            if (this.obs.playingTeamIndex !== awsData.observable.playingTeamIndex) {
+                this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
+
+                this.fillWithResults()
+            }
 
             if (this.obs.startTime === undefined && awsData.observable.startTime !== undefined) {
                 this.obs.startTime = awsData.observable.startTime
@@ -64,7 +68,27 @@ class InterfaceModelBase {
         }
     }
 
+    updateResultsFromAws(results) {
+        if (this.obs.results === undefined) {
+            let foundResults = false
+            for (let result of results) {
+                if (result.judgeName === MainStore.userId) {
+                    foundResults = true
+
+                    this.createResultsData(result.data)
+                }
+            }
+
+            if (foundResults) {
+                this.fillWithResults()
+            } else {
+                this.createResultsData()
+            }
+        }
+    }
+
     queryPoolData(tournamentName) {
+        let awsData = undefined
         fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/getPlayingPool?tournamentName=${tournamentName}`,
             {
                 method: "GET",
@@ -79,7 +103,12 @@ class InterfaceModelBase {
                 throw new Error(response.statusText)
             }
         }).then((response) => {
-            this.updateFromAws(response)
+            awsData = response
+            let pool = awsData.pool
+            return DataAction.getPoolResults(pool.divisionIndex, pool.roundIndex, pool.poolIndex)
+        }).then((results) => {
+            this.updateFromAws(awsData)
+            this.updateResultsFromAws(results)
         }).catch((error) => {
             console.log("Error: Set Playing Pool", error)
         })
@@ -113,14 +142,30 @@ class InterfaceModelBase {
 
     getCurrentTeamString() {
         if (this.obs.playingPool !== undefined) {
-            if (this.isEditing()) {
-                return `[${DataAction.getTeamPlayers(this.obs.playingPool.teamList[this.obs.editTeamIndex], ", ")}]`
-            } else if (this.obs.playingTeamIndex !== undefined) {
-                return `[${DataAction.getTeamPlayers(this.obs.playingPool.teamList[this.obs.playingTeamIndex], ", ")}]`
-            }
+            return `[${DataAction.getTeamPlayers(this.obs.playingPool.teamList[this.getActiveTeamIndex()], ", ")}]`
         }
 
         return undefined
+    }
+
+    fillWithResults() {
+        if (this.fillWithResultsFunc !== undefined) {
+            this.fillWithResultsFunc()
+        } else {
+            console.error(`${this.name} view missing fillWithResultsFunc`)
+        }
+    }
+
+    createResultsData() {
+        console.error(`${this.name} view missing override createResultsData`)
+    }
+
+    getActiveResultsData() {
+        return this.obs.results && this.obs.results.teamScoreList[this.getActiveTeamIndex()]
+    }
+
+    getActiveTeamIndex() {
+        return this.isEditing() ? this.obs.editTeamIndex : this.obs.playingTeamIndex
     }
 }
 module.exports = InterfaceModelBase

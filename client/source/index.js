@@ -39,6 +39,7 @@ require("./index.less")
         }
 
         MainStore.startupTournamentName = url.searchParams.get("tournamentName")
+        MainStore.tournamentName = MainStore.startupTournamentName
         MainStore.userId = url.searchParams.get("userId")
         let headerParam = url.searchParams.get("header")
         MainStore.showControlsHeader = headerParam === null || headerParam === true
@@ -52,7 +53,7 @@ require("./index.less")
     }
 
     render() {
-        let classname = `mainContainer ${MainStore.showControlsHeader ? "" : "noHeader"} ${MainStore.interfaceObs.editTeamIndex !== undefined ? "editMode" : ""}`
+        let classname = `mainContainer ${MainStore.showControlsHeader ? "" : "noHeader"} ${(MainStore.interfaceObs && MainStore.interfaceObs.editTeamIndex) !== undefined ? "editMode" : ""}`
 
         return (
             <div className={classname}>

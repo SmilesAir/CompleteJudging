@@ -65,7 +65,7 @@ class TeamExAiCombinedScores {
 }
 
 module.exports.DataClass = class extends DataStore.ResultsDataBase {
-    constructor(poolData) {
+    constructor(poolData, results) {
         super(Enums.EInterface.exAiCombined, poolData.divisionIndex, poolData.roundIndex, poolData.poolIndex, poolData.teamList)
 
         this.teamScoreList = []
@@ -74,6 +74,11 @@ module.exports.DataClass = class extends DataStore.ResultsDataBase {
         }
 
         this.teamScoreList = Mobx.observable(this.teamScoreList)
+
+        for (let i = 0; i < results.teamScoreList.length; ++i) {
+            let data = results.teamScoreList[i]
+            this.setScores(i, data.music, data.teamwork, data.general, data.point1Count, data.point2Count, data.point3Count, data.point5Count)
+        }
     }
 
     setScores(teamIndex, music, teamwork, general, p1, p2, p3, p5) {

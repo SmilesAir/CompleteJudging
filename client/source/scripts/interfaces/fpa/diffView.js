@@ -175,7 +175,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     render() {
-        let score = this.interface.obs.results.teamScoreList[this.interface.obs.playingTeamIndex].scores[this.markIndex]
+        let score = this.interface.obs.results.teamScoreList[this.interface.getActiveTeamIndex()].scores[this.markIndex]
         let classname = `markContainer ${score === 0 ? "markZero" : ""}`
 
         return (
@@ -201,7 +201,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             return undefined
         }
 
-        let teamScores = this.interface.obs.results.teamScoreList[this.interface.obs.playingTeamIndex]
+        let teamScores = this.interface.obs.results.teamScoreList[this.interface.getActiveTeamIndex()]
         if (teamScores === undefined) {
             return undefined
         }

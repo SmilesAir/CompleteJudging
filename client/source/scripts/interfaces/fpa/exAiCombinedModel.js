@@ -1,6 +1,4 @@
 
-const Mobx = require("mobx")
-
 const Enums = require("scripts/stores/enumStore.js")
 const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
@@ -30,12 +28,8 @@ module.exports = class extends InterfaceModelBase {
         }, this.updateIntervalMs)
     }
 
-    updateFromAws(awsData) {
-        let dirty = super.updateFromAws(awsData)
-        
-        if (dirty.poolDirty) {
-            this.obs.results = new ExAiCombinedData.DataClass(this.obs.playingPool)
-        }
+    createResultsData(results) {
+        this.obs.results = new ExAiCombinedData.DataClass(this.obs.playingPool, results)
     }
 
     reportScores() {
@@ -53,10 +47,6 @@ module.exports = class extends InterfaceModelBase {
             }).catch((error) => {
             console.log("Report Scores Error:", error)
         })
-    }
-
-    getActiveResultsData() {
-        return this.obs.results.teamScoreList[this.obs.playingTeamIndex]
     }
 
     incrementMinor(counterKey) {
@@ -106,8 +96,6 @@ module.exports = class extends InterfaceModelBase {
     setAiScore(value, key) {
         let teamResults = this.getActiveResultsData()
         teamResults.getAiData(key).score = value
-
-        console.log(teamResults)
 
         this.reportScores()
     }

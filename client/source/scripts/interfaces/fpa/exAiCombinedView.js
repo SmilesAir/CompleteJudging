@@ -44,6 +44,23 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.onMouseUpCallbackList = []
     }
 
+    fillWithResults() {
+        let teamResults = this.interface.getActiveResultsData()
+        
+        if (teamResults !== undefined) {
+            this.state.aiCounters.music.score = teamResults.getAiData("music").score
+            this.state.aiCounters.teamwork.score = teamResults.getAiData("teamwork").score
+            this.state.aiCounters.general.score = teamResults.getAiData("general").score
+
+            this.state.pointDeductions["1"] = teamResults.getPointCount(1)
+            this.state.pointDeductions["2"] = teamResults.getPointCount(2)
+            this.state.pointDeductions["3"] = teamResults.getPointCount(3)
+            this.state.pointDeductions["5"] = teamResults.getPointCount(5)
+
+            this.setState(this.state)
+        }
+    }
+
     onInputEnd(number) {
         this.interface.setQualityScore(number)
 
@@ -189,6 +206,12 @@ class SuggestionSlider extends React.Component {
             this.state.suggestedValue = this.props.suggestedValue
             this.setState(this.state)
         }
+
+        if (this.state.value !== this.props.value) {
+            this.state.value = this.props.value
+            this.setScroll(this.state.value * this.getSlideHeight())
+            this.setState(this.state)
+        }
     }
 
     onMouseDown() {
@@ -198,24 +221,29 @@ class SuggestionSlider extends React.Component {
 
     onMouseMove(event) {
         if (this.state.dragging) {
-            this.scroll -= event.movementY
-            this.scroll = Math.max(this.getSlideHeight() * .5, Math.min(this.scroll, this.getSlideHeight() * 10.5))
-
-            this.ref.current.scrollTop = this.scroll
+            this.setScroll(this.scroll - event.movementY)
         }
-    }
-
-    getSlideHeight() {
-        return this.ref.current.childNodes[0].clientHeight
     }
 
     onMouseUp() {
         if (this.state.dragging) {
             this.state.dragging = false
-            this.setState(this.state)
 
-            this.props.onChanged(Math.floor(this.scroll / this.getSlideHeight()))
+            this.state.value = Math.floor(this.scroll / this.getSlideHeight())
+            this.props.onChanged(this.state.value)
+
+            this.setState(this.state)
         }
+    }
+
+    setScroll(y) {
+        this.scroll = Math.max(this.getSlideHeight() * .5, Math.min(y, this.getSlideHeight() * 10.5))
+
+        this.ref.current.scrollTop = this.scroll
+    }
+
+    getSlideHeight() {
+        return this.ref.current.childNodes[0].clientHeight
     }
 
     getSuggestedComponent() {
