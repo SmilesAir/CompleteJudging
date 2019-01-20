@@ -18,6 +18,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.interface = Interfaces.diff
     }
 
+    fillWithResults() {
+        // Not needed
+    }
+
     getNumbers() {
         let numberList = []
         for (let i = 0; i <= 10; ++i) {

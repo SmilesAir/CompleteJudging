@@ -27,7 +27,7 @@ class TeamDiffScores {
 }
 
 module.exports.DataClass = class extends DataStore.ResultsDataBase {
-    constructor(poolData) {
+    constructor(poolData, results) {
         super(Enums.EInterface.diff, poolData.divisionIndex, poolData.roundIndex, poolData.poolIndex, poolData.teamList)
 
         this.teamScoreList = []
@@ -36,6 +36,15 @@ module.exports.DataClass = class extends DataStore.ResultsDataBase {
         }
 
         this.teamScoreList = Mobx.observable(this.teamScoreList)
+
+        if (results !== undefined) {
+            for (let resultIndex = 0; resultIndex < results.teamScoreList.length; ++resultIndex) {
+                let data = results.teamScoreList[resultIndex]
+                for (let score of data.scores) {
+                    this.addScore(resultIndex, score)
+                }
+            }
+        }
     }
 
     addScore(teamIndex, score) {

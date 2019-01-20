@@ -75,9 +75,11 @@ module.exports.DataClass = class extends DataStore.ResultsDataBase {
 
         this.teamScoreList = Mobx.observable(this.teamScoreList)
 
-        for (let i = 0; i < results.teamScoreList.length; ++i) {
-            let data = results.teamScoreList[i]
-            this.setScores(i, data.music, data.teamwork, data.general, data.point1Count, data.point2Count, data.point3Count, data.point5Count)
+        if (results !== undefined) {
+            for (let i = 0; i < results.teamScoreList.length; ++i) {
+                let data = results.teamScoreList[i]
+                this.setScores(i, data.music, data.teamwork, data.general, data.point1Count, data.point2Count, data.point3Count, data.point5Count)
+            }
         }
     }
 

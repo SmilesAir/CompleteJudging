@@ -18,7 +18,7 @@ class TeamVarietyScores {
 }
 
 module.exports.DataClass = class extends DataStore.ResultsDataBase {
-    constructor(poolData) {
+    constructor(poolData, results) {
         super(Enums.EInterface.variety, poolData.divisionIndex, poolData.roundIndex, poolData.poolIndex, poolData.teamList)
 
         this.teamScoreList = []
@@ -27,11 +27,18 @@ module.exports.DataClass = class extends DataStore.ResultsDataBase {
         }
 
         this.teamScoreList = Mobx.observable(this.teamScoreList)
+
+        if (results !== undefined) {
+            for (let resultIndex = 0; resultIndex < results.teamScoreList.length; ++resultIndex) {
+                let data = results.teamScoreList[resultIndex]
+                this.setScores(resultIndex, data.quantityScore, data.qualityScore)
+            }
+        }
     }
 
     setScores(teamIndex, quantity, quality) {
-        this.setQuantityScore(quantity)
-        this.setQualityScore(quality)
+        this.setQuantityScore(teamIndex, quantity)
+        this.setQualityScore(teamIndex, quality)
     }
 
     setQuantityScore(teamIndex, quantity) {

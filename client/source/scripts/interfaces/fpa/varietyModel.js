@@ -32,12 +32,8 @@ module.exports = class extends InterfaceModelBase {
         }, this.updateIntervalMs)
     }
 
-    updateFromAws(awsData) {
-        let dirty = super.updateFromAws(awsData)
-        
-        if (dirty.poolDirty) {
-            this.obs.results = this.obs.results || new VarietyData.DataClass(this.obs.playingPool)
-        }
+    createResultsData(results) {
+        this.obs.results = new VarietyData.DataClass(this.obs.playingPool, results)
     }
 
     reportScores() {

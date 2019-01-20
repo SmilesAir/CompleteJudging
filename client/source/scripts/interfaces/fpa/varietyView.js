@@ -19,6 +19,16 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         }
     }
 
+    fillWithResults() {
+        let teamResults = this.interface.getActiveResultsData()
+        
+        if (teamResults !== undefined) {
+            this.state.moveCount = teamResults.quantityScore
+            this.state.qualityScore = teamResults.qualityScore
+            this.setState(this.state)
+        }
+    }
+
     onInputEnd(number) {
         CommonAction.vibrateSingleMedium()
 
