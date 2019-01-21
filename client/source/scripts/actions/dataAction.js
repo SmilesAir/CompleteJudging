@@ -169,6 +169,11 @@ function getResultsSummary(results) {
 }
 module.exports.getResultsSummary = getResultsSummary
 
+function getResultsProcessed(scoreData, teamIndex) {
+    return DataStore.dataModel.getResultsProcessed(scoreData, teamIndex)
+}
+module.exports.getResultsProcessed = getResultsProcessed
+
 function getResultsInspected(results, teamIndex) {
     return DataStore.dataModel.getResultsInspected(results, teamIndex)
 }

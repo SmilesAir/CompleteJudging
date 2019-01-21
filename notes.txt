@@ -7,5 +7,6 @@ Restore results on judges when team switches
 Allow editing of scores on judges
 Judges. Are you finished popup
 
-
+Anouncer interface
+rename data classes for more clarity between DataModel and the data inside it
 

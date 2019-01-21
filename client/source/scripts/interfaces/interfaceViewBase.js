@@ -17,7 +17,9 @@ class InterfaceViewBase extends React.Component {
     }
 
     init() {
-        this.interface.fillWithResultsFunc = () => this.fillWithResults()
+        if (this.interface !== undefined) {
+            this.interface.fillWithResultsFunc = () => this.fillWithResults()
+        }
     }
 
     getTeamString() {

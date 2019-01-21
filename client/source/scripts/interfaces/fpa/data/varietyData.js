@@ -62,3 +62,16 @@ module.exports.getSummary = function(resultsData, teamIndex) {
 
     return undefined
 }
+
+module.exports.getProcessed = function(data) {
+    let processed = []
+
+    processed.push({
+        Quantity: data.quantityScore
+    })
+    processed.push({
+        Quality: data.qualityScore
+    })
+
+    return processed
+}

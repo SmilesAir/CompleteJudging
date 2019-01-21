@@ -142,7 +142,7 @@ class InterfaceModelBase {
 
     getCurrentTeamString() {
         let teamIndex = this.getActiveTeamIndex()
-        if (this.obs.playingPool !== undefined && teamIndex) {
+        if (this.obs.playingPool !== undefined && teamIndex !== undefined) {
             return `[${DataAction.getTeamPlayers(this.obs.playingPool.teamList[teamIndex], ", ")}]`
         }
 

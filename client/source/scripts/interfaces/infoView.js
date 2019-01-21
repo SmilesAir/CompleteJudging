@@ -5,10 +5,26 @@ const MainStore = require("scripts/stores/mainStore.js")
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
+const ResultsView = require("scripts/views/resultsView.js")
 
 require("./infoView.less")
 
 module.exports = @MobxReact.observer class extends InterfaceViewBase {
+    constructor() {
+        super()
+
+        this.state = {
+            resultsPool: undefined
+        }
+    }
+
+    gotoResultsTabActive(pool) {
+        this.resultsTabRef.checked = true
+
+        this.state.resultsPool = pool
+        this.setState(this.state)
+    }
+
     render() {
         return (
             <div className="infoContainer">
@@ -18,9 +34,14 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 <label className="infoLabel" htmlFor="tab2">Players and Teams</label>
                 <input className="infoTab" id="tab3" type="radio" name="tabs" defaultChecked />
                 <label className="infoLabel" htmlFor="tab3">Pools</label>
+                <input ref={ (ref) => this.resultsTabRef = ref } className="infoTab" id="tab4" type="radio" name="tabs" />
+                <label className="infoLabel" htmlFor="tab4">Results</label>
                 <TournamentSelection/>
                 <PlayerAndTeams/>
-                <PoolsView/>
+                <PoolsView gotoResultsTabActive={(pool) => this.gotoResultsTabActive(pool)} />
+                <div id="content4" className="infoTabContent">
+                    <ResultsView pool={this.state.resultsPool} />
+                </div>
             </div>
         )
     }
@@ -31,7 +52,11 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         if (MainStore.saveData !== undefined) {
             let playerNumber = 1
             return MainStore.saveData.playerList.map((player) => {
-                return (<div key={playerNumber}>{playerNumber++}. {player.firstName} {player.lastName} - {player.rank}</div>)
+                return (
+                    <div key={playerNumber}>
+                        {playerNumber++}. {player.firstName} {player.lastName} - {player.rank}
+                    </div>
+                )
             })
         } else {
             return undefined
@@ -47,6 +72,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 }
 
 @MobxReact.observer class PoolsView extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+
     getTeamComponents(pool) {
         let key = 0
         return pool.teamList.map((team) => {
@@ -59,10 +88,19 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         Interfaces.head.setPlayingPool(pool)
     }
 
-    getResults(results) {
+    onFullResultsClick(pool) {
+        DataAction.fillPoolResults(pool)
+        this.props.gotoResultsTabActive(pool)
+    }
+
+    getResults(pool) {
         return (
             <div className="results">
-                {DataAction.getResultsSummary(results)}
+                <div>
+                    {"Results Summary   "}
+                    <button onClick={() => this.onFullResultsClick(pool)}>See Full Results</button>
+                </div>
+                {DataAction.getResultsSummary(pool.results)}
             </div>
         )
     }
@@ -78,12 +116,12 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                         </div>
                         <div className="controls">
                             <button onClick={() => this.onSetPool(pool)}>Set Pool</button>
-                            <button onClick={() => DataAction.fillPoolResults(pool)}>Get Results</button>
+                            <button onClick={() => DataAction.fillPoolResults(pool)}>Get Results Summary</button>
                         </div>
                         <div className="teams">
                             {this.getTeamComponents(pool)}
                         </div>
-                        {this.getResults(pool.results)}
+                        {this.getResults(pool)}
                     </div>
                 )
             })
@@ -143,20 +181,19 @@ class PlayerAndTeams extends React.Component {
     onSubmit(event) {
         event.preventDefault()
 
-        fetch("https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/createTournament",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ tournamentName: this.state.newTournamentName })
-            }).then((response) => {
-                if (response.status < 400) {
-                    Interfaces.info.refreshTournamentInfoList()
-                }
-            }).catch((error) => {
-                console.log("Create Tournament Error", error)
-            })
+        fetch("https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/createTournament", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ tournamentName: this.state.newTournamentName })
+        }).then((response) => {
+            if (response.status < 400) {
+                Interfaces.info.refreshTournamentInfoList()
+            }
+        }).catch((error) => {
+            console.log("Create Tournament Error", error)
+        })
     }
 
     onChange(event) {
@@ -166,7 +203,7 @@ class PlayerAndTeams extends React.Component {
     render() {
         return (
             <div id="content1" className="infoTabContent">
-                <form onSubmit={(event) => {this.onSubmit(event)}}>
+                <form onSubmit={(event) => this.onSubmit(event)}>
                     <label>
                         New Tournament Name:
                         <input type="text" value={this.state.value} onChange={(event) => {this.onChange(event)}}/>
@@ -179,3 +216,5 @@ class PlayerAndTeams extends React.Component {
         )
     }
 }
+
+
