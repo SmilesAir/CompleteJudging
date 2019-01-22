@@ -79,7 +79,7 @@ function getAverage(scores, adjusted) {
     return avg / scores.length
 }
 
-function getTopAverage(inScores, topNum, adjusted) {
+function getTopAverage(inScores, adjusted) {
     let scores = inScores.slice(0)
     scores.sort((a, b) => {
         if (a > b) {
@@ -91,7 +91,7 @@ function getTopAverage(inScores, topNum, adjusted) {
         return 0
     })
 
-    return getAverage(scores.slice(scores.length - topNum), adjusted)
+    return getAverage(scores.slice(scores.length - MainStore.constants.diff.top), adjusted)
 }
 
 function getAdjustedScore(score) {
@@ -106,11 +106,10 @@ module.exports.getInspected = function(resultData, teamIndex) {
         let scores = resultData.data.teamScoreList[teamIndex].scores
         str += scores.join(" ")
 
-        let constants = MainStore.constants.diff
         let top = constants.top
-        str += ` Raw: ${getAverage(scores, false).toFixed(2)} Top (${top}): ${getTopAverage(scores, top, false).toFixed(2)}`
-        str += ` Adj Raw: ${getAverage(scores, true).toFixed(2)} Adj Top (${top}): ${getTopAverage(scores, top, true).toFixed(2)}`
-        str += ` Adj Sum Raw: ${getAdjustedScore(getAverage(scores, false)).toFixed(2)} Adj Sum Top (${top}): ${getAdjustedScore(getTopAverage(scores, top, false)).toFixed(2)}`
+        str += ` Raw: ${getAverage(scores, false).toFixed(2)} Top (${top}): ${getTopAverage(scores, false).toFixed(2)}`
+        str += ` Adj Raw: ${getAverage(scores, true).toFixed(2)} Adj Top (${top}): ${getTopAverage(scores, true).toFixed(2)}`
+        str += ` Adj Sum Raw: ${getAdjustedScore(getAverage(scores, false)).toFixed(2)} Adj Sum Top (${top}): ${getAdjustedScore(getTopAverage(scores, false)).toFixed(2)}`
 
         return (
             <div className="inspectedResults" key={teamIndex}>{str}</div>
@@ -118,4 +117,22 @@ module.exports.getInspected = function(resultData, teamIndex) {
     }
 
     return undefined
+}
+
+module.exports.getProcessed = function(data, preProcessedData) {
+    let processed = []
+
+    processed.push({
+        Phrases: data.scores.length
+    })
+    processed.push({
+        Score: getTopAverage(data.scores, true)
+    })
+
+    return processed
+}
+
+module.exports.getPreProcessed = function(data, preProcessedData) {
+    preProcessedData.totalPhraseCount = (preProcessedData.phraseCount || 0) + data.scores.length
+    preProcessedData.diffJudgeCount = (preProcessedData.diffJudgesCount || 0) + 1
 }

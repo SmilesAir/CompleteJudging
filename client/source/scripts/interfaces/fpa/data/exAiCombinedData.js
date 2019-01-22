@@ -101,16 +101,63 @@ module.exports.verify = function(resultsData) {
 
 module.exports.getTotalDeductions = function(resultsData, teamIndex) {
     let team = resultsData.teamScoreList[teamIndex]
-    return team.point1Count * .1 + team.point2Count * .2 + team.point3Count * .3 + team.point5Count * .5
+    return calcDeductions(team)
+}
+
+function calcAiScore(data) {
+    return (data.music.score + data.teamwork.score + data.general.score) / 3
+}
+
+// https://www.wolframalpha.com/input/?i=y+%3D+(((50+-+x)+%2F+50)+%5E+2),+x+from+0+to+50
+function calcDeductions(data, phraseCount, routineLengthSeconds) {
+    let raw = data.point1Count * .1 + data.point2Count * .2 + data.point3Count * .3 + data.point5Count * .5
+    if (phraseCount !== undefined && routineLengthSeconds !== undefined) {
+        let start = routineLengthSeconds / 180 * 15
+        let end = routineLengthSeconds / 180 * 60
+        let delta = end - start
+        
+        let scaler = Math.pow((delta - Math.max(0, phraseCount - start)) / delta, 2)
+        return raw * scaler
+    } else {
+        return raw
+    }
 }
 
 module.exports.getSummary = function(resultsData, teamIndex) {
     if (module.exports.verify(resultsData)) {
         let team = resultsData.teamScoreList[teamIndex]
-        let ai = ((team.music.score + team.teamwork.score + team.general.score) / 3).toFixed(2)
+        let ai = calcAiScore(team).toFixed(2)
         let ex = module.exports.getTotalDeductions(resultsData, teamIndex).toFixed(2)
         return `A: ${ai} E: ${ex}`
     }
 
     return undefined
+}
+
+module.exports.getProcessed = function(data, preProcessedData) {
+    let processed = []
+
+    processed.push({
+        Music: data.music.score
+    })
+    processed.push({
+        Teamwork: data.teamwork.score
+    })
+    processed.push({
+        General: data.general.score
+    })
+
+    processed.push({
+        Deductions: calcDeductions(data)
+    })
+    let adjusted = calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds)
+    processed.push({
+        Adjusted: adjusted
+    })
+
+    processed.push({
+        Score: calcAiScore(data) - adjusted
+    })
+
+    return processed
 }

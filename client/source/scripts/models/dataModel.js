@@ -81,13 +81,24 @@ module.exports = class {
         return undefined
     }
 
-    getResultsProcessed(data, teamIndex) {
+    getResultsProcessed(data, teamIndex, preProcessedData) {
         let model = this.getModel(data)
         if (model !== undefined) {
             if (model.getProcessed !== undefined) {
-                return model.getProcessed(data.teamScoreList[teamIndex])
+                return model.getProcessed(data.teamScoreList[teamIndex], preProcessedData)
             } else {
                 console.error(`No getProcessed for ${model}`)
+            }
+        }
+
+        return undefined
+    }
+
+    preProcessedData(data, teamIndex, preProcessedData) {
+        let model = this.getModel(data)
+        if (model !== undefined) {
+            if (model.getPreProcessed !== undefined) {
+                return model.getPreProcessed(data.teamScoreList[teamIndex], preProcessedData)
             }
         }
 

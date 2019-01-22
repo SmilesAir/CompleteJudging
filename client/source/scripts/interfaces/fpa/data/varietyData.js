@@ -63,7 +63,7 @@ module.exports.getSummary = function(resultsData, teamIndex) {
     return undefined
 }
 
-module.exports.getProcessed = function(data) {
+module.exports.getProcessed = function(data, preProcessedData) {
     let processed = []
 
     processed.push({
@@ -71,6 +71,11 @@ module.exports.getProcessed = function(data) {
     })
     processed.push({
         Quality: data.qualityScore
+    })
+
+    let base = preProcessedData.routineLengthSeconds / 180 * 80
+    processed.push({
+        Score: data.qualityScore * data.quantityScore / base
     })
 
     return processed
