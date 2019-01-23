@@ -27,7 +27,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         let results = DataAction.getResultsProcessed(this.props.pool)
 
         let columns = []
-        let teamElements = [ <div key="header1" className="team">-----</div>, <div key="header2" className="team">-----</div> ]
+        let teamElements = [ <div key="header1" className="team">-</div>, <div key="header2" className="team">-</div> ]
         for (let teamName of teamNamesList) {
             teamElements.push(
                 <div key={teamName} className="team">
@@ -43,16 +43,35 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         )
 
         let judgeOutputList = []
+        let totalScoreList = undefined
         for (let teamNames in results) {
             let teamDataList = results[teamNames]
             for (let data of teamDataList) {
-                if (data.judgeName !== undefined && judgeOutputList.findIndex((judgeOutput) => {
+                if (data.judgeName === undefined) {
+                    if (totalScoreList === undefined) {
+                        totalScoreList = []
+
+                        judgeOutputList.push({
+                            judgeName: "---",
+                            descList: [ {
+                                descName: "Total Score",
+                                valueList: totalScoreList
+                            } ]
+                        })
+                    }
+                    
+                    totalScoreList.push(data.TotalScore.toFixed(2))
+
+                } else if (judgeOutputList.findIndex((judgeOutput) => {
                     return judgeOutput.judgeName === data.judgeName
                 }) === -1) {
                     let descList = []
                     for (let processedData of data.processed) {
                         for (let descName in processedData) {
-                            descList.push(descName)
+                            descList.push({
+                                descName: descName,
+                                valueList: []
+                            })
                         }
                     }
 
@@ -67,15 +86,15 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                         return data.judgeName === out.judgeName
                     })
 
-                    let valueList = []
                     for (let processedData of data.processed) {
                         for (let descName in processedData) {
+                            let valueList = judgeOutput.descList.find((descOutput) => {
+                                return descOutput.descName === descName
+                            }).valueList
+
                             valueList.push(processedData[descName].toFixed(2))
                         }
                     }
-
-                    judgeOutput.valueList = judgeOutput.valueList || []
-                    judgeOutput.valueList.push(valueList)
                 }
             }
         }
@@ -85,19 +104,20 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                 <div key={judgeOutput.judgeName} className="column">
                     <div className="judge">{judgeOutput.judgeName}</div>
                     <div className="descriptionContainer">
-                        {judgeOutput.descList.map((desc) => {
-                            return <div key={desc} className="description">{desc}</div>
+                        {judgeOutput.descList.map((descOutput) => {
+                            let valueElements = descOutput.valueList.map((value) => {
+                                return <div key={value + Math.random()} className="value">{value}</div>
+                            })
+
+                            return (
+                                <div key={`container-${descOutput.descName}`}>
+                                    <div key={descOutput.descName} className="description">{descOutput.descName}</div>
+                                    {valueElements}
+                                </div>
+                            )
                         })}
                     </div>
-                    {judgeOutput.valueList.map((teamValueList) => {
-                        return (
-                            <div key={teamValueList} className="valueContainer">
-                                {teamValueList.map((value) => {
-                                    return <div key={value} className="value">{value}</div>
-                                })}
-                            </div>
-                        )
-                    })}
+                    
                 </div>
             )
         }
