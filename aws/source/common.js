@@ -110,13 +110,14 @@ module.exports.getExisitingPoolItem = function(tournamentKey, poolName) {
 module.exports.getResultData = function(resultsKey) {
     let getParams = {
         TableName : process.env.ACTIVE_RESULTS,
-        Key: { key: resultsKey }
+        Key: resultsKey
     }
+    console.log(getParams)
     return docClient.get(getParams).promise().then((response) => {
         console.log(response.Item)
         return {
-            judgeName: resultsKey.split('-')[0],
-            data: response.Item.Item
+            judgeName: resultsKey.judgeName,
+            data: response.Item.data
         }
     }).catch((error) => {
         throw new Error(`Get from active results. ${error}`)
