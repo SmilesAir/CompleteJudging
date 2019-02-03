@@ -197,3 +197,44 @@ module.exports.updateTournamentKeyPlayingPool = async function(tournamentName, p
         throw new Error(`Update active pool for ${tournamentName}. ${error}`)
     })
 }
+
+module.exports.getBackupResults = function(judgeName, startTime) {
+    let queryStartTime = startTime === 0 ? Date.now() : startTime - 1
+    let params = {
+        TableName: process.env.ACTIVE_RESULTS,
+        ProjectionExpression: "judgeName, #time, #data",
+        KeyConditionExpression: "judgeName = :judgeName and #time between :startTime and :endTime",
+        ExpressionAttributeNames: {
+            "#time": "time",
+            "#data": "data"
+        },
+        ExpressionAttributeValues: {
+            ":judgeName": judgeName,
+            ":startTime": queryStartTime - 60 * 60 * 1000,
+            ":endTime": queryStartTime
+        }
+    }
+
+    console.log(params)
+
+    return docClient.query(params).promise().then((response) => {
+        let ret = []
+        for (let result of response.Items) {
+            ret.push({
+                time: result.time,
+                data: result.data
+            })
+        }
+
+        ret.sort((a, b) => {
+            return b.time - a.time
+        })
+
+        return {
+            resultsList: ret
+        }
+    }).catch((error) => {
+        throw new Error(`${tournamentName}. Can't query backup results. ${error}`)
+    })
+}
+

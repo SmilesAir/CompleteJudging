@@ -99,6 +99,13 @@ functions:
           path: getPoolResults
           method: get
           cors: true
+  getBackupResults:
+    handler: source/getBackupResults.handler
+    events:
+      - http:
+          path: judge/{judgeName}/time/{startTime}/getBackupResults
+          method: get
+          cors: true
 
 resources:
   Resources:

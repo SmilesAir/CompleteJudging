@@ -16,6 +16,7 @@ class InterfaceModelBase {
             playingPool: undefined,
             playingTeamIndex: undefined,
             editTeamIndex: undefined,
+            backupModeEnabled: false,
             results: undefined
         })
     }
@@ -140,6 +141,10 @@ class InterfaceModelBase {
         return this.obs.editTeamIndex !== undefined
     }
 
+    isBackupModeEnabled() {
+        return this.obs.backupModeEnabled
+    }
+
     getCurrentTeamString() {
         let teamIndex = this.getActiveTeamIndex()
         if (this.obs.playingPool !== undefined && teamIndex !== undefined) {
@@ -167,6 +172,59 @@ class InterfaceModelBase {
 
     getActiveTeamIndex() {
         return this.isEditing() ? this.obs.editTeamIndex : this.obs.playingTeamIndex
+    }
+
+    initBackupMode() {
+        this.backupResultsList = []
+        this.backupIndex = undefined
+
+        this.queryBackupResults()
+    }
+
+    queryBackupResults() {
+        let startTime = this.backupResultsList.length > 0 ? this.backupResultsList[this.backupResultsList.length - 1].time : 0
+        fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/judge/${MainStore.userId}/time/${startTime}/getBackupResults`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        ).then((response) => {
+            if (response.status < 400) {
+                return response.json()
+            } else {
+                throw new Error(response.statusText)
+            }
+        }).then((response) => {
+            if (response.resultsList !== undefined) {
+                this.backupResultsList = this.backupResultsList.concat(response.resultsList)
+
+                this.backupIndex = this.backupIndex || 0
+            }
+        }).catch((error) => {
+            console.error(error)
+        })
+    }
+
+    moveToOlderBackup() {
+        if (this.backupIndex < this.backupResultsList.length - 1) {
+            ++this.backupIndex
+
+            this.obs.results = this.backupResultsList[this.backupIndex].data
+            
+            this.fillWithResults()
+        }
+    }
+
+    moveToNewerBackup() {
+        if (this.backupIndex > 0) {
+            --this.backupIndex
+
+            this.obs.results = this.backupResultsList[this.backupIndex].data
+            
+            this.fillWithResults()
+        }
     }
 }
 module.exports = InterfaceModelBase

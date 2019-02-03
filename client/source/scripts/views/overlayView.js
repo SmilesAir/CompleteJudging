@@ -26,8 +26,21 @@ require("./overlayView.less")
                 <div>
                     {MainStore.userId}
                 </div>
+                <div className="backupControlsContainer">
+                    <button onClick={() => this.onBackupModeEnableClick()}>Enabled Backup Mode</button>
+                    <button disabled={!MainStore.interfaceObs.backupModeEnabled} onClick={() => Interfaces.activeInterface.moveToNewerBackup()}>Newer</button>
+                    <button disabled={!MainStore.interfaceObs.backupModeEnabled} onClick={() => Interfaces.activeInterface.moveToOlderBackup()}>Older</button>
+                </div>
             </div>
         )
+    }
+
+    onBackupModeEnableClick() {
+        MainStore.interfaceObs.backupModeEnabled = !MainStore.interfaceObs.backupModeEnabled
+
+        if (MainStore.interfaceObs.backupModeEnabled) {
+            Interfaces.activeInterface.initBackupMode()
+        }
     }
 
     getInfo() {

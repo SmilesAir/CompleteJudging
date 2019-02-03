@@ -53,7 +53,7 @@ require("./index.less")
     }
 
     render() {
-        let classname = `mainContainer ${MainStore.showControlsHeader ? "" : "noHeader"} ${(MainStore.interfaceObs && MainStore.interfaceObs.editTeamIndex) !== undefined ? "editMode" : ""}`
+        let classname = `mainContainer ${MainStore.showControlsHeader ? "" : "noHeader"} ${Interfaces.activeInterface.isEditing() || Interfaces.activeInterface.isBackupModeEnabled() ? "editMode" : ""}`
 
         return (
             <div className={classname}>
