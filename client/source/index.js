@@ -18,6 +18,7 @@ const DataAction = require("scripts/actions/dataAction.js")
 const OverlayView = require("scripts/views/overlayView.js")
 const DiffInspectorView = require("scripts/interfaces/fpa/diffInspectorView.js")
 const ExAiCombinedView = require("scripts/interfaces/fpa/exAiCombinedView.js")
+const AnnouncerView = require("scripts/interfaces/announcerView.js")
 const BlockPromptView = require("scripts/views/blockPromptView.js")
 const CommonAction = require("scripts/actions/commonAction.js")
 
@@ -52,8 +53,12 @@ require("./index.less")
         }
     }
 
+    isAlertState() {
+        return Interfaces.activeInterface.isEditing() || Interfaces.activeInterface.isBackupModeEnabled() || Interfaces.head && Interfaces.head.obs.passiveMode
+    }
+
     render() {
-        let classname = `mainContainer ${MainStore.showControlsHeader ? "" : "noHeader"} ${Interfaces.activeInterface.isEditing() || Interfaces.activeInterface.isBackupModeEnabled() ? "editMode" : ""}`
+        let classname = `mainContainer ${MainStore.showControlsHeader ? "" : "noHeader"} ${this.isAlertState() ? "alertState" : ""}`
 
         return (
             <div className={classname}>
@@ -138,6 +143,9 @@ require("./index.less")
             break
         case Enums.EInterface.exAiCombined:
             activeInterface = <ExAiCombinedView />
+            break
+        case Enums.EInterface.announcer:
+            activeInterface = <AnnouncerView />
             break
         }
 

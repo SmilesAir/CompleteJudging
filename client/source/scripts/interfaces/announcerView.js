@@ -5,14 +5,22 @@ const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
 
-require("./headView.less")
+require("./announcerView.less")
 
 module.exports = @MobxReact.observer class extends InterfaceViewBase {
     constructor() {
         super()
 
-        this.interface = Interfaces.head
+        this.interface = Interfaces.announcer
         this.obs = this.interface.obs
+
+        this.holdReadyMs = 500
+
+        this.state = {
+            buttonDownTime: 0,
+            buttonDown: false,
+            cancelTapCount: 0
+        }
     }
 
     getTimeElement() {
@@ -40,7 +48,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onTeamClick(teamData) {
-        Interfaces.head.setPlayingTeam(teamData)
+        this.interface.setPlayingTeam(teamData)
     }
 
     getTeamsElement() {
@@ -60,29 +68,89 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onStartButtonClick() {
-        Interfaces.head.onStartClick()
+        this.interface.onStartClick()
     }
 
     onStopButtonClick() {
-        Interfaces.head.onStopClick()
+        this.interface.onStopClick()
     }
 
-    getStartButtonText() {
+    getButtonText() {
         if (this.obs.playingTeamIndex === undefined) {
             return "Set Playing Team"
         } else if (this.obs.isJudging) {
-            if (Interfaces.head.hasRoutineTimeElapsed()) {
-                return "Judging Finished. Select Next Team."
+            if (this.interface.hasRoutineTimeElapsed()) {
+                return "Judging Finished. Wait for Judges, then TAP to READY"
             } else {
-                return "Judging Active"
+                return "Judging Active. TAP repeatedly to STOP"
             }
+        } else if (this.isButtonReady()) {
+            return "READY. Release on First Throw"
         } else {
-            return "Click on First Throw"
+            return "HOLD to READY"
         }
+    }
+
+    isButtonReady() {
+        return this.state.buttonDownTime >= this.holdReadyMs
     }
 
     onPassiveButtonClick() {
         this.interface.setPassiveMode(!this.obs.passiveMode)
+    }
+
+    updateWhenMainButtonDown() {
+        if (this.obs.playingTeamIndex === undefined) {
+            // Do nothing
+        } else if (this.obs.isJudging) {
+            if (this.interface.hasRoutineTimeElapsed()) {
+                this.interface.stopRoutine()
+                this.interface.moveToNextTeam()
+            } else {
+                ++this.state.cancelTapCount
+                this.setState(this.state)
+
+                if (this.state.cancelTapCount > 3) {
+                    this.interface.stopRoutine()
+                }
+            }
+        } else {
+            this.state.buttonDownTime += 50
+            this.state.buttonDown = true
+            this.setState(this.state)
+        }
+    }
+
+    onMainButtonDown() {
+        this.updateHandle = setInterval(() => {
+            this.updateWhenMainButtonDown()
+        }, 50)
+    }
+
+    onMainButtonUp() {
+        if (this.isButtonReady()) {
+            this.startRoutine()
+        }
+
+        clearInterval(this.updateHandle)
+
+        this.state.buttonDownTime = 0
+        this.state.buttonDown = false
+        this.setState(this.state)
+    }
+
+    onMainButtonLeave() {
+        clearInterval(this.updateHandle)
+
+        this.state.buttonDownTime = 0
+        this.state.buttonDown = false
+        this.setState(this.state)
+    }
+
+    startRoutine() {
+        this.state.cancelTapCount = 0
+
+        this.interface.startRoutine()
     }
 
     render() {
@@ -90,23 +158,27 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             return <div className="headTopContainer">Set playing pool for Head Judge to function</div>
         }
 
+        let downScaler = Math.min(1, this.state.buttonDownTime / this.holdReadyMs)
+
+        let mainButtonStyle = {
+            backgroundColor: this.state.buttonDown ? `rgb(100, ${100 + 155 * downScaler}, 100)` : "gainsboro"
+        }
+
         return (
-            <div className="headTopContainer">
+            <div className="announcerTopContainer">
                 <div className="header">
                     <div>
-                        Head Judge
+                        Announcer
                     </div>
                     <button className="passiveButton" onClick={() => this.onPassiveButtonClick()}>{this.obs.passiveMode ? "Disable Passive Mode" : "Enable Passive Mode"}</button>
                 </div>
                 <div className="poolDetailsContainer">{DataAction.getFullPoolDescription(this.obs.playingPool)}</div>
                 {this.getTimeElement()}
                 {this.getPlayingTeamElement()}
-                <button disabled={Interfaces.head.isDuringRoutineTime() || this.obs.playingTeamIndex === undefined} className="startButton" onClick={() => this.onStartButtonClick()}>
-                    {this.getStartButtonText()}
-                </button>
-                <button disabled={!this.obs.isJudging} className="startButton" onClick={() => this.onStopButtonClick()}>
-                    Stop
-                </button>
+                <div className="mainButton" style={mainButtonStyle}
+                    onPointerDown={() => this.onMainButtonDown()}
+                    onPointerUp={() => this.onMainButtonUp()}
+                    onPointerLeave={() => this.onMainButtonLeave()}>{this.getButtonText()}</div>
                 {this.getTeamsElement()}
             </div>
         )

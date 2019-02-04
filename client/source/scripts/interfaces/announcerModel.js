@@ -10,8 +10,8 @@ module.exports = class extends InterfaceModelBase {
     constructor() {
         super()
 
-        this.name = "Head Judge"
-        this.type = Enums.EInterface.head
+        this.name = "Announcer"
+        this.type = Enums.EInterface.announcer
 
         this.playingPoolKey = undefined
         this.playPoolHash = undefined
@@ -137,7 +137,7 @@ module.exports = class extends InterfaceModelBase {
         return this.obs.isJudging && !this.hasRoutineTimeElapsed()
     }
 
-    onStartClick() {
+    startRoutine() {
         if (!this.obs.isJudging) {
             this.obs.isJudging = true
 
@@ -148,14 +148,10 @@ module.exports = class extends InterfaceModelBase {
             this.updateHandle = setInterval(() => {
                 this.update()
             }, 100)
-        } else if (this.hasRoutineTimeElapsed()) {
-            this.onStopClick(true)
-
-            this.moveToNextTeam()
         }
     }
 
-    onStopClick(skipAwsUpdate) {
+    stopRoutine() {
         this.obs.isJudging = false
         
         clearInterval(this.updateHandle)
@@ -163,10 +159,8 @@ module.exports = class extends InterfaceModelBase {
         this.obs.judgingTimeMs = 0
         this.obs.startTime = undefined
 
-        if (!skipAwsUpdate) {
-            this.dirtyObs()
-            this.sendDataToAWS()
-        }
+        this.dirtyObs()
+        this.sendDataToAWS()
     }
 
     setPassiveMode(enabled) {
