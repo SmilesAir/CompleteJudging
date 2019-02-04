@@ -236,6 +236,14 @@ class SuggestionSlider extends React.Component {
         }
     }
 
+    onTounchEnd() {
+        this.setScroll(this.ref.current.scrollTop)
+        this.state.value = Math.floor(this.scroll / this.getSlideHeight())
+        this.props.onChanged(this.state.value)
+
+        this.setState(this.state)
+    }
+
     setScroll(y) {
         this.scroll = Math.max(this.getSlideHeight() * .5, Math.min(y, this.getSlideHeight() * 10.5))
 
@@ -271,7 +279,9 @@ class SuggestionSlider extends React.Component {
         }
 
         return (
-            <div className="sliderContainer" onMouseDown={() => this.onMouseDown()}>
+            <div className="sliderContainer"
+                onMouseDown={() => this.onMouseDown()}
+                onTouchEnd={() => this.onTounchEnd()}>
                 <div className="sliderName">
                     <div>
                         {this.name}
