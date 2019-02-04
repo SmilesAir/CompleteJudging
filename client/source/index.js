@@ -49,7 +49,7 @@ require("./index.less")
         Interfaces.init()
 
         this.state = {
-            showFullscreenPrompt: CommonAction.isMobile()
+            showFullscreenPrompt: CommonAction.isMobile() && !CommonAction.isiOS()
         }
     }
 

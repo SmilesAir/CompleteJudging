@@ -3,7 +3,6 @@ const MobxReact = require("mobx-react")
 
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
-const CommonAction = require("scripts/actions/commonAction.js")
 
 require("./diffView.less")
 
@@ -74,10 +73,12 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onTouchEnd(event) {
+        console.log("touch end")
         this.onParentInputEnd(event)
     }
 
     onMouseDown(event) {
+        console.log("mouse up")
         this.updateNumberOut(event.clientX)
     }
 
@@ -110,22 +111,30 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onParentInputEnd(event) {
-        event.preventDefault()
-        event.stopPropagation()
+        console.log("parent input end")
 
-        CommonAction.vibrateSingleMedium()
-        
-        if (this.interface.obs.editIndex === undefined) {
-            let score = this.getStateNumberOut()
-            if (score !== undefined) {
-                this.interface.addScore(score)
+        try {
+            event.preventDefault()
+            event.stopPropagation()
+
+            CommonAction.vibrateSingleMedium()
+            
+            if (this.interface.obs.editIndex === undefined) {
+                let score = this.getStateNumberOut()
+                if (score !== undefined) {
+                    this.interface.addScore(score)
+                }
+            } else {
+                this.interface.endEdit(this.getStateNumberOut())
             }
-        } else {
-            this.interface.endEdit(this.getStateNumberOut())
+
+            this.state.numberOut = undefined
+            this.setState(this.state)
+        } catch (error) {
+            console.log(error)
         }
 
-        this.state.numberOut = undefined
-        this.setState(this.state)
+        console.log("parent input end done")
     }
 
     render() {
@@ -150,6 +159,9 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     onMouseLeave={(event) => this.onMouseUp(event)}>
                     <div className="touchArea" ref={this.touchAreaRef}>
                         {this.getNumbers()}
+                    </div>
+                    <div className="removeArea">
+                        Drop Here to Remove
                     </div>
                 </div>
                 {this.getNumberOutView()}

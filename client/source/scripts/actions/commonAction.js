@@ -1,23 +1,28 @@
 
+function vibrate(param) {
+    if (!module.exports.isiOS()) {
+        navigator.vibrate(param)
+    }
+}
 
 module.exports.vibrateSingleShort = function() {
-    navigator.vibrate(50)
+    vibrate(50)
 }
 
 module.exports.vibrateSingleMedium = function() {
-    navigator.vibrate(150)
+    vibrate(150)
 }
 
 module.exports.vibrateSingleLong = function() {
-    navigator.vibrate(250)
+    vibrate(250)
 }
 
 module.exports.vibrateDoubleShort = function() {
-    navigator.vibrate([ 50, 100, 50 ])
+    vibrate([ 50, 100, 50 ])
 }
 
 module.exports.vibrateTripleShort = function() {
-    navigator.vibrate([ 50, 100, 50, 100, 50 ])
+    vibrate([ 50, 100, 50, 100, 50 ])
 }
 
 function regexMobile(str) {
@@ -27,4 +32,8 @@ function regexMobile(str) {
 
 module.exports.isMobile = function() {
     return regexMobile(navigator.userAgent) || regexMobile(navigator.vendor) || regexMobile(window.opera)
+}
+
+module.exports.isiOS = function() {
+    return (/(iPad|iPhone|iPod)/g).test(navigator.userAgent)
 }

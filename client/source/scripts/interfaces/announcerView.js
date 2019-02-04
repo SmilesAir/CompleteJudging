@@ -4,6 +4,7 @@ const MobxReact = require("mobx-react")
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
+const CommonAction = require("scripts/actions/commonAction.js")
 
 require("./announcerView.less")
 
@@ -102,18 +103,6 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     updateWhenMainButtonDown() {
         if (this.obs.playingTeamIndex === undefined) {
             // Do nothing
-        } else if (this.obs.isJudging) {
-            if (this.interface.hasRoutineTimeElapsed()) {
-                this.interface.stopRoutine()
-                this.interface.moveToNextTeam()
-            } else {
-                ++this.state.cancelTapCount
-                this.setState(this.state)
-
-                if (this.state.cancelTapCount > 3) {
-                    this.interface.stopRoutine()
-                }
-            }
         } else {
             this.state.buttonDownTime += 50
             this.state.buttonDown = true
@@ -122,9 +111,23 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onMainButtonDown() {
-        this.updateHandle = setInterval(() => {
-            this.updateWhenMainButtonDown()
-        }, 50)
+        if (this.obs.isJudging) {
+            if (this.interface.hasRoutineTimeElapsed()) {
+                this.interface.stopRoutine()
+                this.interface.moveToNextTeam()
+            } else {
+                ++this.state.cancelTapCount
+                this.setState(this.state)
+
+                if (this.state.cancelTapCount > 5) {
+                    this.interface.stopRoutine()
+                }
+            }
+        } else if (this.updateHandle === undefined) {
+            this.updateHandle = setInterval(() => {
+                this.updateWhenMainButtonDown()
+            }, 50)
+        }
     }
 
     onMainButtonUp() {
@@ -132,15 +135,30 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             this.startRoutine()
         }
 
-        clearInterval(this.updateHandle)
-
-        this.state.buttonDownTime = 0
-        this.state.buttonDown = false
-        this.setState(this.state)
+        this.inputStopped()
     }
 
     onMainButtonLeave() {
+        if (!this.obs.isJudging) {
+            this.inputStopped()
+        }
+    }
+
+    onTouchStart() {
+        if (CommonAction.isiOS()) {
+            this.onMainButtonDown()
+        }
+    }
+
+    onTouchEnd() {
+        if (CommonAction.isiOS()) {
+            this.onMainButtonUp()
+        }
+    }
+
+    inputStopped() {
         clearInterval(this.updateHandle)
+        this.updateHandle = undefined
 
         this.state.buttonDownTime = 0
         this.state.buttonDown = false
@@ -178,7 +196,9 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 <div className="mainButton" style={mainButtonStyle}
                     onPointerDown={() => this.onMainButtonDown()}
                     onPointerUp={() => this.onMainButtonUp()}
-                    onPointerLeave={() => this.onMainButtonLeave()}>{this.getButtonText()}</div>
+                    onPointerLeave={() => this.onMainButtonLeave()}
+                    onTouchStart={() => this.onTouchStart()}
+                    onTouchEnd={() => this.onTouchEnd()}>{this.getButtonText()}</div>
                 {this.getTeamsElement()}
             </div>
         )
