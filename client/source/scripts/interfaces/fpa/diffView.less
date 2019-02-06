@@ -6,7 +6,7 @@
         "header"
         "timeMarks"
         "input";
-    grid-template-rows: 2em 2fr 1fr;
+    grid-template-rows: 2em 3fr 1fr;
 
     border-radius: .5em;
     padding: .5em;
@@ -47,51 +47,53 @@
             background-color: lightsalmon;
         }
     }
-}
 
-.timeMarksContainer {
-    grid-area: timeMarks;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-
-    background-color: greenyellow;
-
-    .groupContainer {
+    .timeMarksContainer {
+        grid-area: timeMarks;
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        flex-wrap: wrap;
+    
+        background-color: greenyellow;
 
-        --margin-mark: .5vh;
-        --mark-size: 10vh;
-
-        height: calc(var(--mark-size) + 1vh);
-
-        margin: 1vh;
-
-        background-color: azure;
-
-        padding-right: var(--margin-mark);
-
-        .markContainer {
+        overflow: auto;
+    
+        .groupContainer {
             display: flex;
-            align-items: center;
-            justify-content: center;
-
-            width: var(--mark-size);
-            height: var(--mark-size);
-
-            margin: var(--margin-mark) 0vh var(--margin-mark) var(--margin-mark);
-
-            background-color: aqua;
-
-            font-size: 7vh;
-
-            cursor: pointer;
-        }
-        
-        .markZero {
-            color: gray;
+            flex-direction: row;
+            justify-content: space-between;
+    
+            --margin-mark: .5vh;
+            --mark-size: 10vh;
+    
+            height: calc(var(--mark-size) + 1vh);
+    
+            margin: 1vh;
+    
+            background-color: azure;
+    
+            padding-right: var(--margin-mark);
+    
+            .markContainer {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+    
+                width: var(--mark-size);
+                height: var(--mark-size);
+    
+                margin: var(--margin-mark) 0vh var(--margin-mark) var(--margin-mark);
+    
+                background-color: aqua;
+    
+                font-size: 7vh;
+    
+                cursor: pointer;
+            }
+            
+            .markZero {
+                color: gray;
+            }
         }
     }
 }

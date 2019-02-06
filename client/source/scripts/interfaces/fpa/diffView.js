@@ -3,6 +3,7 @@ const MobxReact = require("mobx-react")
 
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
+const CommonAction = require("scripts/actions/commonAction.js")
 
 require("./diffView.less")
 
@@ -73,23 +74,23 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onTouchEnd(event) {
-        console.log("touch end")
         this.onParentInputEnd(event)
     }
 
     onMouseDown(event) {
-        console.log("mouse up")
         this.updateNumberOut(event.clientX)
+        this.inputNumberDown = true
     }
 
     onMouseMove(event) {
-        if (event.buttons === 1 || this.interface.obs.editIndex !== undefined) {
+        if (this.inputNumberDown || this.interface.obs.editIndex !== undefined) {
             this.updateNumberOut(event.clientX)
         }
     }
 
     onMouseUp(event) {
         this.onParentInputEnd(event)
+        this.inputNumberDown = false
     }
 
     onParentTouchMove(event) {
@@ -108,33 +109,31 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 this.updateNumberOut(x)
             }
         }
+
+        console.log("touch move")
     }
 
     onParentInputEnd(event) {
-        console.log("parent input end")
+        event.preventDefault()
+        event.stopPropagation()
+        
+        if (this.interface.obs.editIndex === undefined) {
+            let score = this.getStateNumberOut()
+            if (score !== undefined) {
+                this.interface.addScore(score)
 
-        try {
-            event.preventDefault()
-            event.stopPropagation()
-
-            CommonAction.vibrateSingleMedium()
-            
-            if (this.interface.obs.editIndex === undefined) {
-                let score = this.getStateNumberOut()
-                if (score !== undefined) {
-                    this.interface.addScore(score)
-                }
-            } else {
-                this.interface.endEdit(this.getStateNumberOut())
+                CommonAction.vibrateSingleMedium()
             }
-
-            this.state.numberOut = undefined
-            this.setState(this.state)
-        } catch (error) {
-            console.log(error)
+        } else {
+            this.interface.endEdit(this.getStateNumberOut())
         }
 
-        console.log("parent input end done")
+        this.state.numberOut = undefined
+        this.setState(this.state)
+    }
+
+    onParentInputStart(event) {
+
     }
 
     render() {
@@ -144,6 +143,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
         return (
             <div className="diffTopContainer"
+                onTouchStart={(event) => this.onParentInputStart(event)}
                 onMouseUp={(event) => this.onParentInputEnd(event)}
                 onTouchMove={(event) => this.onParentTouchMove(event)}
                 onTouchEnd={(event) => this.onParentInputEnd(event)}>

@@ -1,10 +1,10 @@
 
-const Mobx = require("mobx")
 
 const Enums = require("scripts/stores/enumStore.js")
 const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DiffData = require("scripts/interfaces/fpa/data/diffData.js")
+const CommonAction = require("scripts/actions/commonAction.js")
 
 module.exports = class extends InterfaceModelBase {
     constructor() {
@@ -67,6 +67,8 @@ module.exports = class extends InterfaceModelBase {
     endEdit(score) {
         if (score !== undefined && this.obs.editIndex !== undefined) {
             this.obs.results.teamScoreList[this.getActiveTeamIndex()].scores[this.obs.editIndex] = score
+
+            CommonAction.vibrateSingleMedium()
 
             this.reportScores()
         }
