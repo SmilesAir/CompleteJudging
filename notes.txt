@@ -1,10 +1,16 @@
 Only init interfaces that are open
 Don't ping backend when not an active interfaces
 Sometimes the scores don't report. Repo: variety quantity increment quickly
+AI sliders aren't calculating score properly
+ios overlay doesn't open
+ios able to select numbers on diff numberline
+
 
 Scores on teams in overlay
 Judges. Are you finished popup
 
+
 Anouncer interface
 rename data classes for more clarity between DataModel and the data inside it
 
+keep the active editing diff score hilighted when editing

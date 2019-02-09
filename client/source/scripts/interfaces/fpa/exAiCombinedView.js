@@ -209,7 +209,7 @@ class SuggestionSlider extends React.Component {
 
         if (this.state.value !== this.props.value) {
             this.state.value = this.props.value
-            this.setScroll(this.state.value * this.getSlideHeight())
+            this.setScroll((this.state.value + .5) * this.getSlideHeight())
             this.setState(this.state)
         }
     }
@@ -237,11 +237,21 @@ class SuggestionSlider extends React.Component {
     }
 
     onTounchEnd() {
-        this.setScroll(this.ref.current.scrollTop)
-        this.state.value = Math.floor(this.scroll / this.getSlideHeight())
-        this.props.onChanged(this.state.value)
+        this.momentumUpdate()
+    }
 
-        this.setState(this.state)
+    momentumUpdate() {
+        if (this.prevScroll !== this.ref.current.scrollTop) {
+            this.setScroll(this.ref.current.scrollTop)
+            this.state.value = Math.floor(this.scroll / this.getSlideHeight())
+            this.props.onChanged(this.state.value)
+
+            this.setState(this.state)
+
+            setTimeout(() => this.momentumUpdate(), 1000)
+        }
+
+        this.prevScroll = this.ref.current.scrollTop
     }
 
     setScroll(y) {
