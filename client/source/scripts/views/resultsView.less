@@ -23,28 +23,30 @@
     .content {
         display: flex;
 
-        .team {
+        overflow: auto;
+
+        .cellBase {
+            white-space:nowrap;
+
             border: solid;
             border-color: gray;
             border-width: 1px;
+        }
+
+        .team {
+            .cellBase;
         }
 
         .column {
-            border: solid;
-            border-color: gray;
-            border-width: 1px;
+            .cellBase;
         }
 
         .description {
-            border: solid;
-            border-color: gray;
-            border-width: 1px;
+            .cellBase;
         }
 
         .judge {
-            border: solid;
-            border-color: gray;
-            border-width: 1px;
+            .cellBase;
 
             text-align: center;
         }
@@ -58,9 +60,7 @@
         }
 
         .value {
-            border: solid;
-            border-color: gray;
-            border-width: 1px;
+            .cellBase;
         }
     }
 }

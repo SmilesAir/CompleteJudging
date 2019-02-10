@@ -81,13 +81,26 @@ module.exports = class {
         return undefined
     }
 
-    getResultsProcessed(data, teamIndex, preProcessedData) {
+    getFullResultsProcessed(data, teamIndex, preProcessedData) {
         let model = this.getModel(data)
         if (model !== undefined) {
-            if (model.getProcessed !== undefined) {
-                return model.getProcessed(data.teamScoreList[teamIndex], preProcessedData)
+            if (model.getFullProcessed !== undefined) {
+                return model.getFullProcessed(data.teamScoreList[teamIndex], preProcessedData)
             } else {
-                console.error(`No getProcessed for ${model}`)
+                console.error(`No getFullProcessed for ${model}`)
+            }
+        }
+
+        return undefined
+    }
+
+    getScoreboardResultsProcessed(data, teamIndex, preProcessedData) {
+        let model = this.getModel(data)
+        if (model !== undefined) {
+            if (model.getScoreboardProcessed !== undefined) {
+                return model.getScoreboardProcessed(data.teamScoreList[teamIndex], preProcessedData)
+            } else {
+                console.error(`No getScoreboardProcessed for ${model}`)
             }
         }
 

@@ -2,8 +2,6 @@
 const React = require("react")
 const MobxReact = require("mobx-react")
 
-const DataAction = require("scripts/actions/dataAction.js")
-
 require("./resultsView.less")
 
 module.exports = @MobxReact.observer class ResultsView extends React.Component {
@@ -12,19 +10,13 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
     }
 
     getTeamResults() {
+        let results = this.props.resultsData
         let teamNamesList = []
-        for (let judgeData of this.props.pool.results) {
-            for (let teamIndex = 0; teamIndex < judgeData.data.teamScoreList.length; ++teamIndex) {
-                let teamData = judgeData.data.teamList[teamIndex]
-
-                let teamNames = DataAction.getTeamPlayers(teamData)
-                if (!teamNamesList.includes(teamNames)) {
-                    teamNamesList.push(teamNames)
-                }
+        for (let team in results) {
+            if (!teamNamesList.includes(team)) {
+                teamNamesList.push(team)
             }
         }
-
-        let results = DataAction.getResultsProcessed(this.props.pool)
 
         let columns = []
         let teamElements = [ <div key="header1" className="team">-</div>, <div key="header2" className="team">-</div> ]
@@ -92,7 +84,8 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                                 return descOutput.descName === descName
                             }).valueList
 
-                            valueList.push(processedData[descName].toFixed(2))
+                            let value = processedData[descName] || 0
+                            valueList.push(value.toFixed(2))
                         }
                     }
                 }
@@ -110,25 +103,22 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                             })
 
                             return (
-                                <div key={`container-${descOutput.descName}`}>
+                                <div key={"container-" + descOutput.descName}>
                                     <div key={descOutput.descName} className="description">{descOutput.descName}</div>
                                     {valueElements}
                                 </div>
                             )
                         })}
                     </div>
-                    
                 </div>
             )
         }
-
-        console.log(results)
 
         return columns
     }
 
     render() {
-        if (this.props.pool === undefined || this.props.pool.results === undefined) {
+        if (this.props.title === undefined || this.props.resultsData === undefined) {
             return (
                 <div>
                     Set results from Pools tab
@@ -139,7 +129,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         return (
             <div className="resultsContainer">
                 <div className="header">
-                    Results for {DataAction.getFullPoolDescription(this.props.pool)}
+                    {this.props.title}
                 </div>
                 <div className="content">
                     {this.getTeamResults()}

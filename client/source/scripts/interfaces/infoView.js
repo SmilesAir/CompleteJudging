@@ -40,7 +40,11 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 <PlayerAndTeams/>
                 <PoolsView gotoResultsTabActive={(pool) => this.gotoResultsTabActive(pool)} />
                 <div id="content4" className="infoTabContent">
-                    <ResultsView pool={this.state.resultsPool} />
+                    {
+                        this.state.resultsPool !== undefined && this.state.resultsPool.results !== undefined ? <ResultsView
+                            resultsData={DataAction.getFullResultsProcessed(this.state.resultsPool)}
+                            title={"Results for " + DataAction.getFullPoolDescription(this.state.resultsPool)}/> : null
+                    }
                 </div>
             </div>
         )

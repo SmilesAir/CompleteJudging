@@ -134,7 +134,35 @@ module.exports.getSummary = function(resultsData, teamIndex) {
     return undefined
 }
 
-module.exports.getProcessed = function(data, preProcessedData) {
+module.exports.getFullProcessed = function(data, preProcessedData) {
+    let processed = []
+
+    processed.push({
+        Music: data.music.score
+    })
+    processed.push({
+        Teamwork: data.teamwork.score
+    })
+    processed.push({
+        General: data.general.score
+    })
+
+    processed.push({
+        Deductions: calcDeductions(data)
+    })
+    let adjusted = calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds)
+    processed.push({
+        Adjusted: adjusted
+    })
+
+    processed.push({
+        Score: calcAiScore(data) - adjusted
+    })
+
+    return processed
+}
+
+module.exports.getScoreboardProcessed = function(data, preProcessedData) {
     let processed = []
 
     processed.push({

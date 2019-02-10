@@ -12,7 +12,7 @@ module.exports.getDefaultConstants = function() {
         offset: -3,
         power: 1.5,
         scale: 1 / 1.9,
-        top: 3
+        top: 6
     }
 }
 
@@ -79,7 +79,7 @@ function getAverage(scores, adjusted) {
     return avg / scores.length
 }
 
-function getTopAverage(inScores, adjusted) {
+function getTopAverage(inScores, adjusted, routineLengthSeconds) {
     let scores = inScores.slice(0)
     scores.sort((a, b) => {
         if (a > b) {
@@ -91,7 +91,8 @@ function getTopAverage(inScores, adjusted) {
         return 0
     })
 
-    return getAverage(scores.slice(scores.length - MainStore.constants.diff.top), adjusted)
+    let top = MainStore.constants.diff.top * routineLengthSeconds / 180
+    return getAverage(scores.slice(scores.length - top), adjusted)
 }
 
 function getAdjustedScore(score) {
@@ -119,14 +120,27 @@ module.exports.getInspected = function(resultData, teamIndex) {
     return undefined
 }
 
-module.exports.getProcessed = function(data, preProcessedData) {
+module.exports.getFullProcessed = function(data, preProcessedData) {
     let processed = []
 
     processed.push({
         Phrases: data.scores.length
     })
     processed.push({
-        Score: getTopAverage(data.scores, true)
+        Score: getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
+    })
+
+    return processed
+}
+
+module.exports.getScoreboardProcessed = function(data, preProcessedData) {
+    let processed = []
+
+    processed.push({
+        Phrases: data.scores.length
+    })
+    processed.push({
+        Score: getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
     })
 
     return processed

@@ -13,7 +13,7 @@ module.exports.getDefaultConstants = function() {
 class TeamVarietyScores {
     constructor() {
         this.quantityScore = 0
-        this.qualityScore = 4
+        this.qualityScore = 0
     }
 }
 
@@ -63,7 +63,12 @@ module.exports.getSummary = function(resultsData, teamIndex) {
     return undefined
 }
 
-module.exports.getProcessed = function(data, preProcessedData) {
+function calcScore(data, preProcessedData) {
+    let base = preProcessedData.routineLengthSeconds / 180 * 50
+    return data.qualityScore * data.quantityScore / base
+}
+
+module.exports.getFullProcessed = function(data, preProcessedData) {
     let processed = []
 
     processed.push({
@@ -73,9 +78,26 @@ module.exports.getProcessed = function(data, preProcessedData) {
         Quality: data.qualityScore
     })
 
-    let base = preProcessedData.routineLengthSeconds / 180 * 80
+    
     processed.push({
-        Score: data.qualityScore * data.quantityScore / base
+        Score: calcScore(data, preProcessedData)
+    })
+
+    return processed
+}
+
+module.exports.getScoreboardProcessed = function(data, preProcessedData) {
+    let processed = []
+
+    processed.push({
+        Quantity: data.quantityScore
+    })
+    processed.push({
+        Quality: data.qualityScore
+    })
+
+    processed.push({
+        Score: calcScore(data, preProcessedData)
     })
 
     return processed

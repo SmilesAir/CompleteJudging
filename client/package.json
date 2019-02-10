@@ -19,7 +19,7 @@
         "deploy": "aws s3 sync ./builds/web s3://completejudging-development"
     },
     "dependencies": {
-        "aws-sdk": "2.316.0",
+        "aws-sdk": "^2.316.0",
         "mobx": "^5.1.2",
         "mobx-react": "^5.2.8",
         "react": "^16.5.2",

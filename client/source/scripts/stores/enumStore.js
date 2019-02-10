@@ -12,5 +12,6 @@ module.exports.EInterface = {
     variety: 7,
     diffInspector: 8,
     exAiCombined: 9,
-    announcer: 10
+    announcer: 10,
+    scoreboard: 11
 }

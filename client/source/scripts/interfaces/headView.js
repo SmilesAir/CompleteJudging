@@ -97,6 +97,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                         Head Judge
                     </div>
                     <button className="passiveButton" onClick={() => this.onPassiveButtonClick()}>{this.obs.passiveMode ? "Disable Passive Mode" : "Enable Passive Mode"}</button>
+                    <button className="uploadScoreboardButton" onClick={() => this.interface.uploadScoreboardData()}>Update Scoreboard</button>
                 </div>
                 <div className="poolDetailsContainer">{DataAction.getFullPoolDescription(this.obs.playingPool)}</div>
                 {this.getTimeElement()}

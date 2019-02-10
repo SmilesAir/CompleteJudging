@@ -12,6 +12,7 @@ provider:
     TOURNAMENT_INFO: ${self:provider.stage}-tournamentInfo
     ACTIVE_POOLS: ${self:provider.stage}-activePools
     ACTIVE_RESULTS: ${self:provider.stage}-activeResults
+    RESULTS_BUCKET: completejudging-results
 
   iamRoleStatements:
     - Effect: Allow
@@ -41,6 +42,12 @@ provider:
         - dynamodb:GetItem
         - dynamodb:PutItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ACTIVE_RESULTS}"
+    - Effect: Allow
+      Action:
+        - s3:GetObject
+        - s3:PutObject
+        - s3:PutObjectAcl
+      Resource: "arn:aws:s3:::${self:provider.environment.RESULTS_BUCKET}/*"
 
 functions:
   createTournament:
@@ -106,6 +113,13 @@ functions:
           path: judge/{judgeName}/time/{startTime}/getBackupResults
           method: get
           cors: true
+  setScoreboardData:
+    handler: source/setScoreboardData.handler
+    events:
+      - http:
+          path: tournamentName/{tournamentName}/setScoreboardData
+          method: post
+          cors: true
 
 resources:
   Resources:
@@ -165,3 +179,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 3
           WriteCapacityUnits: 3
+    resultsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.RESULTS_BUCKET}
