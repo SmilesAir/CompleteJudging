@@ -78,7 +78,8 @@ require("./overlayView.less")
     }
 
     getInputComponent() {
-        return <div className="overlayInputContainer" onPointerDown={(event) => this.onPointerDown(event)}/>
+        return <div className="overlayInputContainer"
+            onMouseDown={(event) => this.onPointerDown(event)}/>
     }
 
     onPointerDown() {
