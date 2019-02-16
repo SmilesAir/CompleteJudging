@@ -118,3 +118,27 @@
 .poolsContainer {
     grid-area: poolsArea;
 }
+
+@media print {
+    @page {
+        size: landscape
+    }
+
+    body * {
+      visibility: hidden;
+    }
+
+    #content4 * {
+      visibility: visible;
+    }
+
+    #content4 {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    #noPrint {
+        visibility: hidden;
+    }
+}

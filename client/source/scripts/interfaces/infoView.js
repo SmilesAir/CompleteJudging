@@ -25,6 +25,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.setState(this.state)
     }
 
+    printResults() {
+        window.print()
+    }
+
     render() {
         return (
             <div className="infoContainer">
@@ -45,6 +49,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                             resultsData={DataAction.getFullResultsProcessed(this.state.resultsPool)}
                             title={"Results for " + DataAction.getFullPoolDescription(this.state.resultsPool)}/> : null
                     }
+                    <button id="noPrint" onClick={() => this.printResults()}>Print</button>
                 </div>
             </div>
         )
