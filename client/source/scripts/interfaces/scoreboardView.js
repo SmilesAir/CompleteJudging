@@ -31,7 +31,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         }).then((response) => {
             return response.json()
         }).then((response) => {
-            this.resultsData = response
+            this.resultsData = response.data
+            this.title = response.title
 
             this.forceUpdate()
         }).catch(() => {
@@ -46,7 +47,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
         return (
             <div className="scoreboardTopContainer">
-                <ResultsView title="test" resultsData={this.resultsData}/>
+                <ResultsView title={this.title} resultsData={this.resultsData}/>
             </div>
         )
     }

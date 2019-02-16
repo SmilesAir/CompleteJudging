@@ -191,7 +191,10 @@ module.exports = class extends InterfaceModelBase {
             fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/tournamentName/${MainStore.tournamentName}/setScoreboardData`, {
                 method: "POST",
                 body: JSON.stringify({
-                    scoreboardData: DataAction.getScoreboardResultsProcessed(this.obs.playingPool)
+                    scoreboardData: {
+                        title: DataAction.getFullPoolDescription(this.obs.playingPool),
+                        data: DataAction.getScoreboardResultsProcessed(this.obs.playingPool)
+                    }
                 })
             }).catch((error) => {
                 console.error(`Can't update scoreboard data. ${error}`)

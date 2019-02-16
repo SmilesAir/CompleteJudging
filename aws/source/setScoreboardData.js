@@ -17,14 +17,4 @@ module.exports.handler = (e, c, cb) => { Common.handler(e, c, cb, async (event, 
     s3.putObject(putParams).promise().catch((error) => {
         console.log(`Error updating s3 with scoreboard data. ${error}`)
     })
-
-    // let aclParams = {
-    //     Bucket: process.env.RESULTS_BUCKET,
-    //     GrantRead: "uri=http://acs.amazonaws.com/groups/global/AllUsers", 
-    //     Key: key
-    // }
-
-    // s3.putObjectAcl(aclParams).promise().catch((error) => {
-    //     console.log(`Error updating permissions. ${error}`)
-    // })
 })}

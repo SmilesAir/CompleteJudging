@@ -160,7 +160,8 @@ function getPoolNameFromIndex(index) {
 module.exports.getPoolNameFromIndex = getPoolNameFromIndex
 
 function getFullPoolDescription(pool) {
-    return `${getDivisionNameFromIndex(pool.divisionIndex)} ${getRoundNameFromIndex(pool.roundIndex)} ${getPoolNameFromIndex(pool.poolIndex)}`
+    let poolName = pool.roundIndex !== 0 ? ` ${getPoolNameFromIndex(pool.poolIndex)}` : ""
+    return `${getDivisionNameFromIndex(pool.divisionIndex)} ${getRoundNameFromIndex(pool.roundIndex)}${poolName}`
 }
 module.exports.getFullPoolDescription = getFullPoolDescription
 
