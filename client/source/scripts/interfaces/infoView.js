@@ -29,6 +29,27 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         window.print()
     }
 
+    getFullResultsElements() {
+        if (this.state.resultsPool !== undefined && this.state.resultsPool.results !== undefined) {
+            return (
+                <div>
+                    <button id="noPrint" onClick={() => this.printResults()}>Print</button>
+                    <ResultsView
+                        resultsData={DataAction.getFullResultsProcessed(this.state.resultsPool)}
+                        title={"Full Results for " + DataAction.getFullPoolDescription(this.state.resultsPool)}/>
+                    <ResultsView
+                        resultsData={DataAction.getDiffDetailedResultsProcessed(this.state.resultsPool)}
+                        title={"Diff Results for " + DataAction.getFullPoolDescription(this.state.resultsPool)}/>
+                    <ResultsView
+                        resultsData={DataAction.getExAiCombinedDetailedResultsProcessed(this.state.resultsPool)}
+                        title={"Ex/Ai Combined Results for " + DataAction.getFullPoolDescription(this.state.resultsPool)}/>
+                </div>
+            )
+        }
+
+        return null
+    }
+
     render() {
         return (
             <div className="infoContainer">
@@ -44,12 +65,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 <PlayerAndTeams/>
                 <PoolsView gotoResultsTabActive={(pool) => this.gotoResultsTabActive(pool)} />
                 <div id="content4" className="infoTabContent">
-                    {
-                        this.state.resultsPool !== undefined && this.state.resultsPool.results !== undefined ? <ResultsView
-                            resultsData={DataAction.getFullResultsProcessed(this.state.resultsPool)}
-                            title={"Results for " + DataAction.getFullPoolDescription(this.state.resultsPool)}/> : null
-                    }
-                    <button id="noPrint" onClick={() => this.printResults()}>Print</button>
+                    {this.getFullResultsElements()}
                 </div>
             </div>
         )

@@ -109,18 +109,22 @@ function calcAiScore(data) {
 }
 
 // https://www.wolframalpha.com/input/?i=y+%3D+(((50+-+x)+%2F+50)+%5E+2),+x+from+0+to+50
-function calcDeductions(data, phraseCount, routineLengthSeconds) {
-    let raw = data.point1Count * .1 + data.point2Count * .2 + data.point3Count * .3 + data.point5Count * .5
+function getExScaler(phraseCount, routineLengthSeconds) {
     if (phraseCount !== undefined && routineLengthSeconds !== undefined) {
         let start = routineLengthSeconds / 180 * 15
         let end = routineLengthSeconds / 180 * 60
         let delta = end - start
         
-        let scaler = Math.pow((delta - Math.max(0, phraseCount - start)) / delta, 2)
-        return raw * scaler
-    } else {
-        return raw
+        return Math.pow((delta - Math.max(0, phraseCount - start)) / delta, 2)
     }
+
+    return 1
+}
+
+function calcDeductions(data, phraseCount, routineLengthSeconds) {
+    let raw = data.point1Count * .1 + data.point2Count * .2 + data.point3Count * .3 + data.point5Count * .5
+    
+    return raw * getExScaler(phraseCount, routineLengthSeconds)
 }
 
 module.exports.getSummary = function(resultsData, teamIndex) {
@@ -138,25 +142,19 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
     let processed = []
 
     processed.push({
-        Music: data.music.score
-    })
-    processed.push({
-        Teamwork: data.teamwork.score
-    })
-    processed.push({
-        General: data.general.score
+        AI: calcAiScore(data)
     })
 
     processed.push({
-        Deductions: calcDeductions(data)
+        Ex: calcDeductions(data)
     })
     let adjusted = calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds)
     processed.push({
-        Adjusted: adjusted
+        Adj: adjusted
     })
 
     processed.push({
-        Score: calcAiScore(data) - adjusted
+        Score: calcAiScore(data)
     })
 
     return processed
@@ -185,6 +183,52 @@ module.exports.getScoreboardProcessed = function(data, preProcessedData) {
 
     processed.push({
         Score: calcAiScore(data) - adjusted
+    })
+
+    return processed
+}
+
+module.exports.getExAiCombinedDetailedProcessed = function(data, preProcessedData) {
+    let processed = []
+
+    processed.push({
+        Music: data.music.score
+    })
+    processed.push({
+        Team: data.teamwork.score
+    })
+    processed.push({
+        Gen: data.general.score
+    })
+    processed.push({
+        Score: calcAiScore(data)
+    })
+
+    processed.push({
+        ".1": data.point1Count
+    })
+    processed.push({
+        ".2": data.point2Count
+    })
+    processed.push({
+        ".3": data.point3Count
+    })
+    processed.push({
+        ".5": data.point5Count
+    })
+
+    let phraseCount = preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount)
+    processed.push({
+        Scaler: getExScaler(phraseCount, preProcessedData.routineLengthSeconds)
+    })
+
+    processed.push({
+        Raw: calcDeductions(data)
+    })
+
+    let adjusted = calcDeductions(data, phraseCount, preProcessedData.routineLengthSeconds)
+    processed.push({
+        Adj: adjusted
     })
 
     return processed

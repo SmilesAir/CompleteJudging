@@ -64,7 +64,7 @@ module.exports.getSummary = function(resultsData, teamIndex) {
             sum += score
         }
 
-        let count = Math.max(1, scoreList.scores.length)
+        let count = Math.max(1, getPhraseCount(scoreList.scores))
         return `D: ${(sum / count).toFixed(2)}`
     }
 
@@ -76,7 +76,7 @@ function getAverage(scores, adjusted) {
     for (let score of scores) {
         avg += adjusted ? getAdjustedScore(score) : score
     }
-    return avg / scores.length
+    return avg / getPhraseCount(scores)
 }
 
 function getTopAverage(inScores, adjusted, routineLengthSeconds) {
@@ -92,7 +92,7 @@ function getTopAverage(inScores, adjusted, routineLengthSeconds) {
     })
 
     let top = MainStore.constants.diff.top * routineLengthSeconds / 180
-    return getAverage(scores.slice(scores.length - top), adjusted)
+    return getAverage(scores.slice(getPhraseCount(scores) - top), adjusted)
 }
 
 function getAdjustedScore(score) {
@@ -124,7 +124,7 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
     let processed = []
 
     processed.push({
-        Phrases: data.scores.length
+        Phrases: getPhraseCount(data.scores)
     })
     processed.push({
         Score: getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
@@ -137,7 +137,24 @@ module.exports.getScoreboardProcessed = function(data, preProcessedData) {
     let processed = []
 
     processed.push({
-        Phrases: data.scores.length
+        Phrases: getPhraseCount(data.scores)
+    })
+    processed.push({
+        Score: getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
+    })
+
+    return processed
+}
+
+module.exports.getDiffDetailedProcessed = function(data, preProcessedData) {
+    let processed = []
+
+    processed.push({
+        Marks: data.scores.join(" ")
+    })
+
+    processed.push({
+        Phrases: getPhraseCount(data.scores)
     })
     processed.push({
         Score: getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
@@ -147,6 +164,17 @@ module.exports.getScoreboardProcessed = function(data, preProcessedData) {
 }
 
 module.exports.getPreProcessed = function(data, preProcessedData) {
-    preProcessedData.totalPhraseCount = (preProcessedData.phraseCount || 0) + data.scores.length
+    preProcessedData.totalPhraseCount = (preProcessedData.phraseCount || 0) + getPhraseCount(data.scores)
     preProcessedData.diffJudgeCount = (preProcessedData.diffJudgesCount || 0) + 1
+}
+
+function getPhraseCount(scoreList) {
+    let count = 0
+    for (let score of scoreList) {
+        if (score > 0) {
+            ++count
+        }
+    }
+
+    return count
 }

@@ -107,6 +107,28 @@ module.exports = class {
         return undefined
     }
 
+    getDiffDetailedResultsProcessed(data, teamIndex, preProcessedData) {
+        let model = this.getModel(data)
+        if (model !== undefined) {
+            if (model.getDiffDetailedProcessed !== undefined) {
+                return model.getDiffDetailedProcessed(data.teamScoreList[teamIndex], preProcessedData)
+            }
+        }
+
+        return undefined
+    }
+
+    getExAiCombinedDetailedResultsProcessed(data, teamIndex, preProcessedData) {
+        let model = this.getModel(data)
+        if (model !== undefined) {
+            if (model.getExAiCombinedDetailedProcessed !== undefined) {
+                return model.getExAiCombinedDetailedProcessed(data.teamScoreList[teamIndex], preProcessedData)
+            }
+        }
+
+        return undefined
+    }
+
     preProcessedData(data, teamIndex, preProcessedData) {
         let model = this.getModel(data)
         if (model !== undefined) {
