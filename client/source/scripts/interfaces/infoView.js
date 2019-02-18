@@ -35,14 +35,14 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 <div>
                     <button id="noPrint" onClick={() => this.printResults()}>Print</button>
                     <ResultsView
-                        resultsData={DataAction.getFullResultsProcessed(this.state.resultsPool)}
+                        resultsData={DataAction.getFullResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}
                         title={"Full Results for " + DataAction.getFullPoolDescription(this.state.resultsPool)}/>
                     <ResultsView
                         resultsData={DataAction.getDiffDetailedResultsProcessed(this.state.resultsPool)}
-                        title={"Diff Results for " + DataAction.getFullPoolDescription(this.state.resultsPool)}/>
+                        title={"Diff Results for " + DataAction.getFullPoolDescription(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}/>
                     <ResultsView
                         resultsData={DataAction.getExAiCombinedDetailedResultsProcessed(this.state.resultsPool)}
-                        title={"Ex/Ai Combined Results for " + DataAction.getFullPoolDescription(this.state.resultsPool)}/>
+                        title={"Ex/Ai Combined Results for " + DataAction.getFullPoolDescription(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}/>
                 </div>
             )
         }

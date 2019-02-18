@@ -164,8 +164,8 @@ module.exports.getDiffDetailedProcessed = function(data, preProcessedData) {
 }
 
 module.exports.getPreProcessed = function(data, preProcessedData) {
-    preProcessedData.totalPhraseCount = (preProcessedData.phraseCount || 0) + getPhraseCount(data.scores)
-    preProcessedData.diffJudgeCount = (preProcessedData.diffJudgesCount || 0) + 1
+    preProcessedData.totalPhraseCount = (preProcessedData.totalPhraseCount || 0) + getPhraseCount(data.scores)
+    preProcessedData.diffJudgeCount = (preProcessedData.diffJudgeCount || 0) + 1
 }
 
 function getPhraseCount(scoreList) {

@@ -47,7 +47,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         let teamIndex = -1
         let teamList = this.obs.playingPool.teamList.map((teamData) => {
             ++teamIndex
-            return <div key={teamIndex} className={`teamContainer ${this.obs.playingTeamIndex === teamIndex ? "playing" : ""}`}
+            let className = `teamContainer ${this.obs.playingTeamIndex === teamIndex ? "playing" : ""}`
+            return <div key={teamIndex} className={className}
                 onClick={() => this.onTeamClick(teamData)}>{teamData.getPlayerNamesString()}</div>
         })
 

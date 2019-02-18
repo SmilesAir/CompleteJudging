@@ -170,7 +170,7 @@ function getResultsSummary(results) {
 }
 module.exports.getResultsSummary = getResultsSummary
 
-function getResultsProcessed(pool, processFunc) {
+function getResultsProcessed(pool, routineLengthSeconds, processFunc) {
     let processedRet = {}
     let preProcess = {}
 
@@ -179,7 +179,7 @@ function getResultsProcessed(pool, processFunc) {
             let teamData = judgeData.data.teamList[teamIndex]
             let teamNames = getTeamPlayers(teamData)
             preProcess[teamNames] = preProcess[teamNames] || {
-                routineLengthSeconds: pool.routineLengthSeconds
+                routineLengthSeconds: routineLengthSeconds
             }
 
             DataStore.dataModel.preProcessedData(judgeData.data, teamIndex, preProcess[teamNames])
@@ -243,23 +243,23 @@ function getResultsProcessed(pool, processFunc) {
     return processedRet
 }
 
-function getFullResultsProcessed(pool) {
-    return getResultsProcessed(pool, DataStore.dataModel.getFullResultsProcessed)
+function getFullResultsProcessed(pool, routineLengthSeconds) {
+    return getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getFullResultsProcessed)
 }
 module.exports.getFullResultsProcessed = getFullResultsProcessed
 
-function getScoreboardResultsProcessed(pool) {
-    return getResultsProcessed(pool, DataStore.dataModel.getScoreboardResultsProcessed)
+function getScoreboardResultsProcessed(pool, routineLengthSeconds) {
+    return getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getScoreboardResultsProcessed)
 }
 module.exports.getScoreboardResultsProcessed = getScoreboardResultsProcessed
 
-function getDiffDetailedResultsProcessed(pool) {
-    return getResultsProcessed(pool, DataStore.dataModel.getDiffDetailedResultsProcessed)
+function getDiffDetailedResultsProcessed(pool, routineLengthSeconds) {
+    return getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getDiffDetailedResultsProcessed)
 }
 module.exports.getDiffDetailedResultsProcessed = getDiffDetailedResultsProcessed
 
-function getExAiCombinedDetailedResultsProcessed(pool) {
-    return getResultsProcessed(pool, DataStore.dataModel.getExAiCombinedDetailedResultsProcessed)
+function getExAiCombinedDetailedResultsProcessed(pool, routineLengthSeconds) {
+    return getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getExAiCombinedDetailedResultsProcessed)
 }
 module.exports.getExAiCombinedDetailedResultsProcessed = getExAiCombinedDetailedResultsProcessed
 

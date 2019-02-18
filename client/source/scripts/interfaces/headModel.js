@@ -40,7 +40,7 @@ module.exports = class extends InterfaceModelBase {
             pool: this.obs.playingPool,
             observableHash: uuid4(),
             observable: {
-                routineLengthSeconds: this.obs.routineLengthSeconds,
+                routineLengthSeconds: this.obs.playingPool.routineLengthSeconds,
                 playingTeamIndex: this.obs.playingTeamIndex,
                 startTime: this.obs.startTime
             }
@@ -193,7 +193,7 @@ module.exports = class extends InterfaceModelBase {
                 body: JSON.stringify({
                     scoreboardData: {
                         title: DataAction.getFullPoolDescription(this.obs.playingPool),
-                        data: DataAction.getScoreboardResultsProcessed(this.obs.playingPool)
+                        data: DataAction.getScoreboardResultsProcessed(this.obs.playingPool, this.obs.routineLengthSeconds)
                     }
                 })
             }).catch((error) => {
