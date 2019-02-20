@@ -188,12 +188,15 @@ module.exports = class extends InterfaceModelBase {
 
     uploadScoreboardData() {
         DataAction.fillPoolResults(this.obs.playingPool).then(() => {
+            let data = DataAction.getScoreboardResultsProcessed(this.obs.playingPool, this.obs.routineLengthSeconds)
+            console.log(data)
+
             fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/tournamentName/${MainStore.tournamentName}/setScoreboardData`, {
                 method: "POST",
                 body: JSON.stringify({
                     scoreboardData: {
                         title: DataAction.getFullPoolDescription(this.obs.playingPool),
-                        data: DataAction.getScoreboardResultsProcessed(this.obs.playingPool, this.obs.routineLengthSeconds)
+                        data: data
                     }
                 })
             }).catch((error) => {

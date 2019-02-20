@@ -40,6 +40,47 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         })
     }
 
+    getHeaderRow() {
+        return (
+            <div key={0} className="rowContainer headerRow">
+                <div>{"#"}</div>
+                <div>{"Team"}</div>
+                <div>{"Phrases"}</div>
+                <div>{"Unique"}</div>
+                <div>{"Diff"}</div>
+                <div>{"Ex"}</div>
+                <div>{"Score"}</div>
+            </div>
+        )
+    }
+
+    getRow(rank, teamNames, phraseCount, unique, diff, ex, totalScore) {
+        return (
+            <div key={teamNames} className="rowContainer">
+                <div className="rank">{rank}</div>
+                <div className="teamNames">{teamNames}</div>
+                <div className="phraseCount">{phraseCount}</div>
+                <div className="unique">{unique}</div>
+                <div className="diff">{diff}</div>
+                <div className="ex">{ex}</div>
+                <div className="score">{totalScore}</div>
+            </div>
+        )
+    }
+
+    getBoard(data) {
+        let rowList = []
+
+        rowList.push(this.getHeaderRow())
+
+        for (let rowData of data) {
+            let teamData = rowData.data
+            rowList.push(this.getRow(rowData.data.rank, rowData.teamNames, teamData.phrases, teamData.unique, teamData.diff.toFixed(2), -teamData.ex.toFixed(2), teamData.totalScore.toFixed(2)))
+        }
+
+        return rowList
+    }
+
     render() {
         if (this.resultsData === undefined) {
             return <div>No Scoreboard Data</div>
@@ -47,7 +88,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
         return (
             <div className="scoreboardTopContainer">
-                <ResultsView title={this.title} resultsData={this.resultsData}/>
+                <div>
+                    {this.title}
+                </div>
+                {this.getBoard(this.resultsData)}
             </div>
         )
     }

@@ -160,18 +160,11 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
     return processed
 }
 
-module.exports.getScoreboardProcessed = function(data, preProcessedData) {
-    let processed = []
+module.exports.getScoreboardProcessed = function(data, preProcessedData, processedData) {
+    processedData.rawEx = (processedData.rawEx || 0) + calcDeductions(data)
+    processedData.ex = (processedData.ex || 0) + calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds)
 
-    processed.push({
-        Deductions: calcDeductions(data)
-    })
-    let adjusted = calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds)
-    processed.push({
-        Adjusted: adjusted
-    })
-
-    return processed
+    return undefined
 }
 
 module.exports.getExAiCombinedDetailedProcessed = function(data, preProcessedData) {

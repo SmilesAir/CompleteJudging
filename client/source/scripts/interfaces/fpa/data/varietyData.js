@@ -86,19 +86,13 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
     return processed
 }
 
-module.exports.getScoreboardProcessed = function(data, preProcessedData) {
-    let processed = []
+module.exports.getScoreboardProcessed = function(data, preProcessedData, processedData) {
+    processedData.unique = Math.round(preProcessedData.totalQuantityCount / preProcessedData.varietyJudgeCount)
 
-    processed.push({
-        Quantity: data.quantityScore
-    })
-    processed.push({
-        Quality: data.qualityScore
-    })
+    return undefined
+}
 
-    processed.push({
-        Score: calcScore(data, preProcessedData)
-    })
-
-    return processed
+module.exports.getPreProcessed = function(data, preProcessedData) {
+    preProcessedData.totalQuantityCount = (preProcessedData.totalQuantityCount || 0) + data.quantityScore
+    preProcessedData.varietyJudgeCount = (preProcessedData.varietyJudgeCount || 0) + 1
 }

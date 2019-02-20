@@ -93,12 +93,25 @@ function getFullPlayerName(id) {
 }
 module.exports.getFullPlayerName = getFullPlayerName
 
+function getFullPlayerNameShort(id) {
+    let player = getPlayerData(id)
+    return player !== undefined ? `${player.firstName} ${player.lastName.slice(0, 1)}.` : undefined
+}
+module.exports.getFullPlayerNameShort = getFullPlayerNameShort
+
 function getTeamPlayers(team, divider = " - ") {
     return team.playerList.map((playerId) => {
         return getFullPlayerName(playerId)
     }).join(divider)
 }
 module.exports.getTeamPlayers = getTeamPlayers
+
+function getTeamPlayersShort(team, divider = " - ") {
+    return team.playerList.map((playerId) => {
+        return getFullPlayerNameShort(playerId)
+    }).join(divider)
+}
+module.exports.getTeamPlayersShort = getTeamPlayersShort
 
 function getPlayerData(id) {
     if (MainStore.saveData !== undefined) {
@@ -170,14 +183,22 @@ function getResultsSummary(results) {
 }
 module.exports.getResultsSummary = getResultsSummary
 
-function getResultsProcessed(pool, routineLengthSeconds, processFunc) {
-    let processedRet = {}
+function createTeamDataArray() {
+    return []
+}
+
+function createTeamDataObject() {
+    return {}
+}
+
+function getResultsProcessed(pool, routineLengthSeconds, processFunc, createTeamDataFunc) {
+    let processedRet = []
     let preProcess = {}
 
     for (let judgeData of pool.results) {
         for (let teamIndex = 0; teamIndex < judgeData.data.teamScoreList.length; ++teamIndex) {
             let teamData = judgeData.data.teamList[teamIndex]
-            let teamNames = getTeamPlayers(teamData)
+            let teamNames = getTeamPlayersShort(teamData)
             preProcess[teamNames] = preProcess[teamNames] || {
                 routineLengthSeconds: routineLengthSeconds
             }
@@ -189,13 +210,21 @@ function getResultsProcessed(pool, routineLengthSeconds, processFunc) {
     for (let judgeData of pool.results) {
         for (let teamIndex = 0; teamIndex < judgeData.data.teamScoreList.length; ++teamIndex) {
             let teamData = judgeData.data.teamList[teamIndex]
-            let teamNames = getTeamPlayers(teamData)
-            processedRet[teamNames] = processedRet[teamNames] || []
-            let processedData = processedRet[teamNames]
+            let teamNames = getTeamPlayersShort(teamData)
+            let processedData = processedRet.find((team) => {
+                return team.teamNames === teamNames
+            })
+            if (processedData === undefined) {
+                processedData = {
+                    teamNames: teamNames,
+                    data: createTeamDataFunc()
+                }
+                processedRet.push(processedData)
+            }
 
-            let processed = processFunc.bind(DataStore.dataModel)(judgeData.data, teamIndex, preProcess[teamNames])
+            let processed = processFunc.bind(DataStore.dataModel)(judgeData.data, teamIndex, preProcess[teamNames], processedData.data)
             if (processed !== undefined) {
-                processedData.push({
+                processedData.data.push({
                     judgeName: judgeData.judgeName,
                     processed: processed
                 })
@@ -203,63 +232,110 @@ function getResultsProcessed(pool, routineLengthSeconds, processFunc) {
         }
     }
 
-    for (let teamNames in processedRet) {
-        let teamDataList = processedRet[teamNames]
+    let hasProcessedData = false
+    for (let teamData of processedRet) {
+        let teamDataList = teamData.data
         let totalScore = 0
 
-        for (let judgeData of teamDataList) {
-            for (let scoreData of judgeData.processed) {
-                totalScore += scoreData.Score || 0
-                totalScore -= (scoreData.Adj || 0) + (scoreData.Adjusted || 0)
+        if (Array.isArray(teamDataList)) {
+            for (let judgeData of teamDataList) {
+                for (let scoreData of judgeData.processed) {
+                    totalScore += scoreData.Score || 0
+                    totalScore -= (scoreData.Adj || 0) + (scoreData.Adjusted || 0)
+
+                    hasData = true
+                }
             }
         }
 
-        teamDataList.push({
-            TotalScore: totalScore
-        })
+        if (hasProcessedData) {
+            teamDataList.push({
+                TotalScore: totalScore
+            })
+        }
     }
 
-    for (let teamNames in processedRet) {
-        let teamDataList = processedRet[teamNames]
-        teamDataList.sort((a, b) => {
-            if (a.judgeName !== undefined && b.judgeName === undefined) {
-                return -1
-            } else if (a.judgeName === undefined && b.judgeName !== undefined) {
-                return 1
-            } else if (a.judgeName === undefined && b.judgeName === undefined) {
-                return 0
+    if (!hasProcessedData) {
+        for (let data of processedRet) {
+            let teamData = data.data
+            let totalScore = 0
+
+            for (let key in teamData) {
+                if (key === "diff") {
+                    totalScore += teamData[key]
+                } else if (key === "ex") {
+                    totalScore -= teamData[key]
+                }
             }
 
-            if (a.judgeName.toLowerCase() < b.judgeName.toLowerCase()) {
-                return -1
-            } else if (a.judgeName.toLowerCase() > b.judgeName.toLowerCase()) {
-                return 1
-            } else {
-                return 0
-            }
-        })
+            teamData.totalScore = totalScore
+        }
+    }
+
+    for (let teamData of processedRet) {
+        let teamDataList = teamData.data
+        if (Array.isArray(teamDataList)) {
+            teamDataList.sort((a, b) => {
+                if (a.judgeName !== undefined && b.judgeName === undefined) {
+                    return -1
+                } else if (a.judgeName === undefined && b.judgeName !== undefined) {
+                    return 1
+                } else if (a.judgeName === undefined && b.judgeName === undefined) {
+                    return 0
+                }
+
+                if (a.judgeName.toLowerCase() < b.judgeName.toLowerCase()) {
+                    return -1
+                } else if (a.judgeName.toLowerCase() > b.judgeName.toLowerCase()) {
+                    return 1
+                } else {
+                    return 0
+                }
+            })
+        }
     }
 
     return processedRet
 }
 
 function getFullResultsProcessed(pool, routineLengthSeconds) {
-    return getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getFullResultsProcessed)
+    return getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getFullResultsProcessed, createTeamDataArray)
 }
 module.exports.getFullResultsProcessed = getFullResultsProcessed
 
 function getScoreboardResultsProcessed(pool, routineLengthSeconds) {
-    return getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getScoreboardResultsProcessed)
+    let processed = getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getScoreboardResultsProcessed, createTeamDataObject)
+
+    processed.sort((a, b) => {
+        if (a.data.totalScore === b.data.totalScore) {
+            return 0
+        }
+
+        return a.data.totalScore > b.data.totalScore ? -1 : 1
+    })
+
+    let rank = 1
+    let queueIndex = 0
+    for (let teamData of processed) {
+        if (teamData.data.totalScore !== 0) {
+            teamData.data.rank = rank++
+        } else {
+            teamData.data.rank = queueIndex === 0 ? "Next" : `${Math.round(queueIndex * routineLengthSeconds / 60 + 2)}m`
+            ++queueIndex
+        }
+    }
+
+    return processed
 }
 module.exports.getScoreboardResultsProcessed = getScoreboardResultsProcessed
 
 function getDiffDetailedResultsProcessed(pool, routineLengthSeconds) {
-    return getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getDiffDetailedResultsProcessed)
+    return getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getDiffDetailedResultsProcessed, createTeamDataArray)
 }
 module.exports.getDiffDetailedResultsProcessed = getDiffDetailedResultsProcessed
 
 function getExAiCombinedDetailedResultsProcessed(pool, routineLengthSeconds) {
-    return getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getExAiCombinedDetailedResultsProcessed)
+    return getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getExAiCombinedDetailedResultsProcessed, createTeamDataArray)
 }
 module.exports.getExAiCombinedDetailedResultsProcessed = getExAiCombinedDetailedResultsProcessed
 

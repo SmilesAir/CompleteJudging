@@ -12,9 +12,9 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
     getTeamResults() {
         let results = this.props.resultsData
         let teamNamesList = []
-        for (let team in results) {
-            if (!teamNamesList.includes(team)) {
-                teamNamesList.push(team)
+        for (let team of results) {
+            if (!teamNamesList.includes(team.teamNames)) {
+                teamNamesList.push(team.teamNames)
             }
         }
 
@@ -36,8 +36,8 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
 
         let judgeOutputList = []
         let totalScoreList = undefined
-        for (let teamNames in results) {
-            let teamDataList = results[teamNames]
+        for (let teamData of results) {
+            let teamDataList = teamData.data
             for (let data of teamDataList) {
                 if (data.judgeName === undefined) {
                     if (totalScoreList === undefined) {

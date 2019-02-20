@@ -76,7 +76,9 @@ function getAverage(scores, adjusted) {
     for (let score of scores) {
         avg += adjusted ? getAdjustedScore(score) : score
     }
-    return avg / getPhraseCount(scores)
+
+    let phraseCount = getPhraseCount(scores)
+    return phraseCount > 0 ? avg / phraseCount : 0
 }
 
 function getTopAverage(inScores, adjusted, routineLengthSeconds) {
@@ -133,17 +135,11 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
     return processed
 }
 
-module.exports.getScoreboardProcessed = function(data, preProcessedData) {
-    let processed = []
+module.exports.getScoreboardProcessed = function(data, preProcessedData, processedData) {
+    processedData.phrases = Math.round(preProcessedData.totalPhraseCount / preProcessedData.diffJudgeCount)
+    processedData.diff = (processedData.diff || 0) + getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
 
-    processed.push({
-        Phrases: getPhraseCount(data.scores)
-    })
-    processed.push({
-        Score: getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
-    })
-
-    return processed
+    return undefined
 }
 
 module.exports.getDiffDetailedProcessed = function(data, preProcessedData) {

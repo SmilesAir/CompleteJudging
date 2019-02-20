@@ -94,11 +94,11 @@ module.exports = class {
         return undefined
     }
 
-    getScoreboardResultsProcessed(data, teamIndex, preProcessedData) {
+    getScoreboardResultsProcessed(data, teamIndex, preProcessedData, processedData) {
         let model = this.getModel(data)
         if (model !== undefined) {
             if (model.getScoreboardProcessed !== undefined) {
-                return model.getScoreboardProcessed(data.teamScoreList[teamIndex], preProcessedData)
+                return model.getScoreboardProcessed(data.teamScoreList[teamIndex], preProcessedData, processedData)
             } else {
                 console.error(`No getScoreboardProcessed for ${model}`)
             }
