@@ -243,7 +243,7 @@ function getResultsProcessed(pool, routineLengthSeconds, processFunc, createTeam
                     totalScore += scoreData.Score || 0
                     totalScore -= (scoreData.Adj || 0) + (scoreData.Adjusted || 0)
 
-                    hasData = true
+                    hasProcessedData = true
                 }
             }
         }
@@ -261,7 +261,10 @@ function getResultsProcessed(pool, routineLengthSeconds, processFunc, createTeam
             let totalScore = 0
 
             for (let key in teamData) {
-                if (key === "diff") {
+                if (key === "diff" ||
+                    key === "variety" ||
+                    key === "ai") {
+
                     totalScore += teamData[key]
                 } else if (key === "ex") {
                     totalScore -= teamData[key]
@@ -303,8 +306,14 @@ function getFullResultsProcessed(pool, routineLengthSeconds) {
 }
 module.exports.getFullResultsProcessed = getFullResultsProcessed
 
-function getScoreboardResultsProcessed(pool, routineLengthSeconds) {
-    let processed = getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getScoreboardResultsProcessed, createTeamDataObject)
+function getScoreboardResultsProcessed(pool, routineLengthSeconds, incremental) {
+    let processed = getResultsProcessed(
+        pool,
+        routineLengthSeconds,
+        incremental ?
+            DataStore.dataModel.getIncrementalScoreboardResultsProcessed :
+            DataStore.dataModel.getScoreboardResultsProcessed,
+        createTeamDataObject)
 
     processed.sort((a, b) => {
         if (a.data.totalScore === b.data.totalScore) {
@@ -320,7 +329,7 @@ function getScoreboardResultsProcessed(pool, routineLengthSeconds) {
         if (teamData.data.totalScore !== 0) {
             teamData.data.rank = rank++
         } else {
-            teamData.data.rank = queueIndex === 0 ? "Next" : `${Math.round(queueIndex * routineLengthSeconds / 60 + 2)}m`
+            teamData.data.rank = queueIndex === 0 ? "^^^" : `${Math.round(queueIndex * routineLengthSeconds / 60 + 2)}m`
             ++queueIndex
         }
     }

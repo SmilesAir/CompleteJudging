@@ -155,7 +155,6 @@ module.exports = exports = {
         "max-depth": [ WARN, 8 ],
         "max-len": [ OFF, 132 ],
         "max-nested-callbacks": [ WARN, 8 ],
-        "max-params": [ WARN, 8 ],
         "new-cap": WARN,
         "new-parens": WARN,
         "no-array-constructor": WARN,

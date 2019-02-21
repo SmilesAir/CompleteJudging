@@ -94,6 +94,19 @@ module.exports = class {
         return undefined
     }
 
+    getIncrementalScoreboardResultsProcessed(data, teamIndex, preProcessedData, processedData) {
+        let model = this.getModel(data)
+        if (model !== undefined) {
+            if (model.getIncrementalScoreboardProcessed !== undefined) {
+                return model.getIncrementalScoreboardProcessed(data.teamScoreList[teamIndex], preProcessedData, processedData)
+            } else {
+                console.error(`No getIncrementalScoreboardProcessed for ${model}`)
+            }
+        }
+
+        return undefined
+    }
+
     getScoreboardResultsProcessed(data, teamIndex, preProcessedData, processedData) {
         let model = this.getModel(data)
         if (model !== undefined) {

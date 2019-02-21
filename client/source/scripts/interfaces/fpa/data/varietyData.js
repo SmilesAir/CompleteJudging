@@ -86,8 +86,13 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
     return processed
 }
 
+module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedData, processedData) {
+    processedData.unique = Math.round(preProcessedData.totalQuantityCount / preProcessedData.varietyJudgeCount)
+}
+
 module.exports.getScoreboardProcessed = function(data, preProcessedData, processedData) {
     processedData.unique = Math.round(preProcessedData.totalQuantityCount / preProcessedData.varietyJudgeCount)
+    processedData.variety = (processedData.variety || 0) + calcScore(data, preProcessedData)
 
     return undefined
 }

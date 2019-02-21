@@ -17,8 +17,8 @@
     .rowContainer {
         display: grid;
         grid-template-areas:
-            "rank teamNames phraseCount unique diff ex adjusted score";
-        grid-template-columns: 1fr 5fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            "rank teamNames phraseCount unique diff variety ai ex adjusted score";
+        grid-template-columns: 1fr 5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
         grid-gap: 2px;
 
         .base {
@@ -46,6 +46,14 @@
             .base;
         }
 
+        .variety {
+            .base;
+        }
+
+        .ai {
+            .base;
+        }
+
         .ex {
             .base;
         }
@@ -53,6 +61,13 @@
         .score {
             .base;
         }
+    }
+
+    .rowContainerIncremental {
+        grid-template-areas:
+            "rank teamNames phraseCount unique diff ex adjusted score";
+        grid-template-columns: 1fr 5fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-gap: 2px;
     }
 }
 

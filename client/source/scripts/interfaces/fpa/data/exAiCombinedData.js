@@ -160,8 +160,15 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
     return processed
 }
 
-module.exports.getScoreboardProcessed = function(data, preProcessedData, processedData) {
+module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedData, processedData) {
     processedData.rawEx = (processedData.rawEx || 0) + calcDeductions(data)
+    processedData.ex = (processedData.ex || 0) + calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds)
+    
+    return undefined
+}
+
+module.exports.getScoreboardProcessed = function(data, preProcessedData, processedData) {
+    processedData.ai = (processedData.ai || 0) + calcAiScore(data)
     processedData.ex = (processedData.ex || 0) + calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds)
 
     return undefined

@@ -23,6 +23,11 @@ module.exports = class extends InterfaceModelBase {
         this.obs.judgingTimeMs = 0
         this.obs.passiveMode = false
 
+        this.obs.autoUpdateScoreboard = false
+        this.obs.autoUpdateTimeRemaining = 0
+        this.autoUpdateScoreboardHandle = undefined
+        this.autoUpdateTimeRemainingHandle = undefined
+
         this.awsData = undefined
     }
 
@@ -186,7 +191,29 @@ module.exports = class extends InterfaceModelBase {
         // unused
     }
 
-    uploadScoreboardData() {
+    uploadIncrementalScoreboardData() {
+        DataAction.fillPoolResults(this.obs.playingPool).then(() => {
+            let data = DataAction.getScoreboardResultsProcessed(this.obs.playingPool, this.obs.routineLengthSeconds, true)
+            console.log(data)
+
+            fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/tournamentName/${MainStore.tournamentName}/setScoreboardData`, {
+                method: "POST",
+                body: JSON.stringify({
+                    scoreboardData: {
+                        title: DataAction.getFullPoolDescription(this.obs.playingPool),
+                        data: data,
+                        incremental: true
+                    }
+                })
+            }).catch((error) => {
+                console.error(`Can't update scoreboard data. ${error}`)
+            })
+        })
+    }
+
+    finalizeScoreboardData() {
+        this.setEnabledAutoUpdateScoreboard(false)
+
         DataAction.fillPoolResults(this.obs.playingPool).then(() => {
             let data = DataAction.getScoreboardResultsProcessed(this.obs.playingPool, this.obs.routineLengthSeconds)
             console.log(data)
@@ -203,5 +230,29 @@ module.exports = class extends InterfaceModelBase {
                 console.error(`Can't update scoreboard data. ${error}`)
             })
         })
+    }
+
+    toggleAutoUpdateScoreboard() {
+        this.setEnabledAutoUpdateScoreboard(!this.obs.autoUpdateScoreboard)
+    }
+
+    setEnabledAutoUpdateScoreboard(enabled) {
+        this.obs.autoUpdateScoreboard = enabled
+
+        if (enabled) {
+            const updateIntervalMs = 9 * 1000
+            this.obs.autoUpdateTimeRemaining = updateIntervalMs
+            this.autoUpdateScoreboardHandle = setInterval(() => {
+                this.obs.autoUpdateTimeRemaining = updateIntervalMs
+                this.uploadIncrementalScoreboardData()
+            }, updateIntervalMs)
+
+            this.autoUpdateTimeRemainingHandle = setInterval(() => {
+                this.obs.autoUpdateTimeRemaining -= 100
+            }, 100)
+        } else {
+            clearInterval(this.autoUpdateScoreboardHandle)
+            clearInterval(this.autoUpdateTimeRemainingHandle)
+        }
     }
 }

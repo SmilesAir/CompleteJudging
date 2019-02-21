@@ -7,11 +7,12 @@ const DataStore = require("scripts/stores/dataStore.js")
 const Enums = require("scripts/stores/enumStore.js")
 
 module.exports.getDefaultConstants = function() {
+    //https://www.wolframalpha.com/input/?i=y+%3D+((x+-+3)+%5E+1.5)+*+0.539949,+x+%3D+0+to+10
     return {
         name: "diff",
         offset: -3,
         power: 1.5,
-        scale: 1 / 1.9,
+        scale: .539949,
         top: 6
     }
 }
@@ -133,6 +134,10 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
     })
 
     return processed
+}
+
+module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedData, processedData) {
+    return module.exports.getScoreboardProcessed(data, preProcessedData, processedData)
 }
 
 module.exports.getScoreboardProcessed = function(data, preProcessedData, processedData) {
