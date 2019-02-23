@@ -26,6 +26,23 @@ module.exports = class {
                 }
             }
         }
+
+        this.getConstantsFromCloud()
+    }
+
+    async getConstantsFromCloud() {
+        await fetch("https://s3-us-west-2.amazonaws.com/completejudging-constants/base-constants.json", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((response) => {
+            return response.json()
+        }).then((response) => {
+            MainStore.constants = Object.assign(MainStore.constants, response)
+        }).catch(() => {
+            console.error("Can't query constants from s3")
+        })
     }
 
     getModel(data) {

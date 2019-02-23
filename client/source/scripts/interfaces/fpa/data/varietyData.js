@@ -6,7 +6,8 @@ const Enums = require("scripts/stores/enumStore.js")
 
 module.exports.getDefaultConstants = function() {
     return {
-        name: "variety"
+        name: "variety",
+        basePerSecond: 50 / 60
     }
 }
 

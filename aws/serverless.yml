@@ -13,6 +13,7 @@ provider:
     ACTIVE_POOLS: ${self:provider.stage}-activePools
     ACTIVE_RESULTS: ${self:provider.stage}-activeResults
     RESULTS_BUCKET: completejudging-results
+    CONSTANTS_BUCKET: completejudging-constants
 
   iamRoleStatements:
     - Effect: Allow
@@ -48,6 +49,12 @@ provider:
         - s3:PutObject
         - s3:PutObjectAcl
       Resource: "arn:aws:s3:::${self:provider.environment.RESULTS_BUCKET}/*"
+    - Effect: Allow
+      Action:
+        - s3:GetObject
+        - s3:PutObject
+        - s3:PutObjectAcl
+      Resource: "arn:aws:s3:::${self:provider.environment.CONSTANTS_BUCKET}/*"
 
 functions:
   createTournament:
@@ -183,3 +190,7 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:provider.environment.RESULTS_BUCKET}
+    constantsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.CONSTANTS_BUCKET}

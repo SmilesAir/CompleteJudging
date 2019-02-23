@@ -22,6 +22,7 @@ const AnnouncerView = require("scripts/interfaces/announcerView.js")
 const ScoreboardView = require("scripts/interfaces/scoreboardView.js")
 const BlockPromptView = require("scripts/views/blockPromptView.js")
 const CommonAction = require("scripts/actions/commonAction.js")
+const DataStore = require("scripts/stores/dataStore.js")
 
 require("./index.less")
 

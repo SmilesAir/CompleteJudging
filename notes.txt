@@ -3,12 +3,12 @@ Don't ping backend when not an active interfaces
 Sometimes the scores don't report. Repo: variety quantity increment quickly
 ios overlay doesn't open
 ios able to select numbers on diff numberline
-why doesn't 10, 10 in diff not give a 10 diff score
-phrase count off by 1 in scoreboard
 
 
 Scores on teams in overlay
 Judges. Are you finished popup
+Add time to scoreboard. Real time and routine time
+Add rank to full results
 
 
 Anouncer interface
