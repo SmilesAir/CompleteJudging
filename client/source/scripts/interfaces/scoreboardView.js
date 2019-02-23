@@ -25,6 +25,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         fetch(`https://s3-us-west-2.amazonaws.com/completejudging-results/${MainStore.tournamentName.replace(" ", "+")}-results.json`, {
             method: "GET",
             headers: {
+                "Pragma": "no-cache",
+                "Cache-Control": "no-cache",
                 "Content-Type": "application/json"
             }
         }).then((response) => {

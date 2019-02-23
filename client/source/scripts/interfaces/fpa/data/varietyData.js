@@ -1,13 +1,14 @@
 
 const Mobx = require("mobx")
 
+const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
 const Enums = require("scripts/stores/enumStore.js")
 
 module.exports.getDefaultConstants = function() {
     return {
         name: "variety",
-        basePerSecond: 50 / 60
+        basePerSecond: 0.25
     }
 }
 
@@ -65,7 +66,8 @@ module.exports.getSummary = function(resultsData, teamIndex) {
 }
 
 function calcScore(data, preProcessedData) {
-    let base = preProcessedData.routineLengthSeconds / 180 * 50
+    let constants = MainStore.constants.variety
+    let base = preProcessedData.routineLengthSeconds * constants.basePerSecond
     return data.qualityScore * data.quantityScore / base
 }
 

@@ -1,12 +1,16 @@
 
 const Mobx = require("mobx")
 
+const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
 const Enums = require("scripts/stores/enumStore.js")
 
 module.exports.getDefaultConstants = function() {
     return {
-        name: "exAiCombined"
+        name: "exAiCombined",
+        startCountPerSecond: 0.08,
+        endCountPerSecond: 0.333,
+        xScaler: 0.5
     }
 }
 
@@ -108,14 +112,17 @@ function calcAiScore(data) {
     return (data.music.score + data.teamwork.score + data.general.score) / 3
 }
 
-// https://www.wolframalpha.com/input/?i=y+%3D+(((50+-+x)+%2F+50)+%5E+2),+x+from+0+to+50
+// https://www.wolframalpha.com/input/?i=y+%3D+(((50+-+x+%2F+2)+%2F+50)+%5E+2),+x+from+0+to+50
 function getExScaler(phraseCount, routineLengthSeconds) {
     if (phraseCount !== undefined && routineLengthSeconds !== undefined) {
-        let start = routineLengthSeconds / 180 * 15
-        let end = routineLengthSeconds / 180 * 60
+        let constants = MainStore.constants.exAiCombined
+        let start = routineLengthSeconds * constants.startCountPerSecond
+        let end = routineLengthSeconds * constants.endCountPerSecond
         let delta = end - start
-        
-        return Math.pow((delta - Math.max(0, phraseCount - start)) / delta, 2)
+
+        if (phraseCount > start) {
+            return Math.pow((delta - Math.max(0, Math.min(end, phraseCount - start) / constants.xScaler)) / delta, 2)
+        }
     }
 
     return 1

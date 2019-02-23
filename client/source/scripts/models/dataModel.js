@@ -34,12 +34,16 @@ module.exports = class {
         await fetch("https://s3-us-west-2.amazonaws.com/completejudging-constants/base-constants.json", {
             method: "GET",
             headers: {
+                "Pragma": "no-cache",
+                "Cache-Control": "no-cache",
                 "Content-Type": "application/json"
             }
         }).then((response) => {
             return response.json()
         }).then((response) => {
-            MainStore.constants = Object.assign(MainStore.constants, response)
+            for (let key in response) {
+                MainStore.constants[key] = Object.assign(MainStore.constants[key], response[key])
+            }
         }).catch(() => {
             console.error("Can't query constants from s3")
         })
