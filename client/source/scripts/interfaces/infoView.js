@@ -38,10 +38,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                         resultsData={DataAction.getFullResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}
                         title={"Full Results for " + DataAction.getFullPoolDescription(this.state.resultsPool)}/>
                     <ResultsView
-                        resultsData={DataAction.getDiffDetailedResultsProcessed(this.state.resultsPool)}
+                        resultsData={DataAction.getDiffDetailedResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}
                         title={"Diff Results for " + DataAction.getFullPoolDescription(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}/>
                     <ResultsView
-                        resultsData={DataAction.getExAiCombinedDetailedResultsProcessed(this.state.resultsPool)}
+                        resultsData={DataAction.getExAiCombinedDetailedResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}
                         title={"Ex/Ai Combined Results for " + DataAction.getFullPoolDescription(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}/>
                 </div>
             )
