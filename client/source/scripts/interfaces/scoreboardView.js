@@ -102,6 +102,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         )
     }
 
+    getPrettyValue(value) {
+        return (value || 0).toFixed(2)
+    }
+
     getBoard(data) {
         let rowList = []
 
@@ -110,8 +114,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         for (let rowData of data) {
             let teamData = rowData.data
             rowList.push(this.incremental ?
-                this.getIncrementalRow(rowData.data.rank, rowData.teamNames, teamData.phrases, teamData.unique, teamData.diff.toFixed(2), -teamData.ex.toFixed(2), teamData.totalScore.toFixed(2)) :
-                this.getRow(rowData.data.rank, rowData.teamNames, teamData.phrases, teamData.unique, teamData.diff.toFixed(2), teamData.variety.toFixed(2), teamData.ai.toFixed(2), -teamData.ex.toFixed(2), teamData.totalScore.toFixed(2)))
+                this.getIncrementalRow(rowData.data.rank, rowData.teamNames, teamData.phrases, teamData.unique, this.getPrettyValue(teamData.diff), this.getPrettyValue(-teamData.ex), this.getPrettyValue(teamData.totalScore)) :
+                this.getRow(rowData.data.rank, rowData.teamNames, teamData.phrases, teamData.unique, this.getPrettyValue(teamData.diff), this.getPrettyValue(teamData.variety), this.getPrettyValue(teamData.ai), this.getPrettyValue(-teamData.ex), this.getPrettyValue(teamData.totalScore)))
         }
 
         return rowList
