@@ -7,7 +7,7 @@
         "top": 6
     },
     "variety": {
-        "basePerSecond": 0.25
+        "basePerSecond": 0.5
     },
     "exAiCombined": {
         "startCountPerSecond": 0.08,
