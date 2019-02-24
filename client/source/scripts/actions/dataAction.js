@@ -329,7 +329,7 @@ function getScoreboardResultsProcessed(pool, routineLengthSeconds, incremental) 
         if (teamData.data.totalScore !== 0) {
             teamData.data.rank = rank++
         } else {
-            teamData.data.rank = queueIndex === 0 ? "^^^" : `${Math.round(queueIndex * routineLengthSeconds / 60 + 2)}m`
+            teamData.data.rank = queueIndex === 0 ? "^^^" : `${Math.round(queueIndex * (routineLengthSeconds / 60 + 2))}m`
             ++queueIndex
         }
     }
