@@ -3,14 +3,12 @@ Don't ping backend when not an active interfaces
 Sometimes the scores don't report. Repo: variety quantity increment quickly
 ios overlay doesn't open
 ios able to select numbers on diff numberline
-scoreboard doesn't work till first results
 something weird with updating routine length without refreshing page
 
 
 Scores on teams in overlay
 Judges. Are you finished popup
 Add time to scoreboard. Real time and routine time
-Add rank to full results
 Polling for scoreboard and judges should get less frequent when not finding differences
     Finalize can stop scoreboard updates, or set to 1 min interval or something
 

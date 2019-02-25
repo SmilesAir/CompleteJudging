@@ -207,28 +207,38 @@ function getResultsProcessed(pool, routineLengthSeconds, processFunc, createTeam
         }
     }
 
-    for (let judgeData of pool.results) {
-        for (let teamIndex = 0; teamIndex < judgeData.data.teamScoreList.length; ++teamIndex) {
-            let teamData = judgeData.data.teamList[teamIndex]
-            let teamNames = getTeamPlayersShort(teamData)
-            let processedData = processedRet.find((team) => {
-                return team.teamNames === teamNames
-            })
-            if (processedData === undefined) {
-                processedData = {
-                    teamNames: teamNames,
-                    data: createTeamDataFunc()
-                }
-                processedRet.push(processedData)
-            }
-
-            let processed = processFunc.bind(DataStore.dataModel)(judgeData.data, teamIndex, preProcess[teamNames], processedData.data)
-            if (processed !== undefined) {
-                processedData.data.push({
-                    judgeName: judgeData.judgeName,
-                    processed: processed
+    if (pool.results.length > 0) {
+        for (let judgeData of pool.results) {
+            for (let teamIndex = 0; teamIndex < judgeData.data.teamScoreList.length; ++teamIndex) {
+                let teamData = judgeData.data.teamList[teamIndex]
+                let teamNames = getTeamPlayersShort(teamData)
+                let processedData = processedRet.find((team) => {
+                    return team.teamNames === teamNames
                 })
+                if (processedData === undefined) {
+                    processedData = {
+                        teamNames: teamNames,
+                        data: createTeamDataFunc()
+                    }
+                    processedRet.push(processedData)
+                }
+
+                let processed = processFunc.bind(DataStore.dataModel)(judgeData.data, teamIndex, preProcess[teamNames], processedData.data)
+                if (processed !== undefined) {
+                    processedData.data.push({
+                        judgeName: judgeData.judgeName,
+                        processed: processed
+                    })
+                }
             }
+        }
+    } else {
+        for (let playerList of pool.teamList) {
+            let teamNames = getTeamPlayersShort(playerList)
+            processedRet.push({
+                teamNames: teamNames,
+                data: createTeamDataFunc()
+            })
         }
     }
 

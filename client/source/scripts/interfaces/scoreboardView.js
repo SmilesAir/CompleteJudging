@@ -102,8 +102,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         )
     }
 
-    getPrettyValue(value) {
-        return (value || 0).toFixed(2)
+    getPrettyDecimalValue(value, negative) {
+        return value !== undefined && value !== 0 ? (negative ? "-" : "") + value.toFixed(2) : ""
     }
 
     getBoard(data) {
@@ -114,8 +114,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         for (let rowData of data) {
             let teamData = rowData.data
             rowList.push(this.incremental ?
-                this.getIncrementalRow(rowData.data.rank, rowData.teamNames, teamData.phrases, teamData.unique, this.getPrettyValue(teamData.diff), this.getPrettyValue(-teamData.ex), this.getPrettyValue(teamData.totalScore)) :
-                this.getRow(rowData.data.rank, rowData.teamNames, teamData.phrases, teamData.unique, this.getPrettyValue(teamData.diff), this.getPrettyValue(teamData.variety), this.getPrettyValue(teamData.ai), this.getPrettyValue(-teamData.ex), this.getPrettyValue(teamData.totalScore)))
+                this.getIncrementalRow(rowData.data.rank, rowData.teamNames, teamData.phrases, teamData.unique, this.getPrettyDecimalValue(teamData.diff), this.getPrettyDecimalValue(teamData.ex, true), this.getPrettyDecimalValue(teamData.totalScore)) :
+                this.getRow(rowData.data.rank, rowData.teamNames, teamData.phrases, teamData.unique, this.getPrettyDecimalValue(teamData.diff), this.getPrettyDecimalValue(teamData.variety), this.getPrettyDecimalValue(teamData.ai), this.getPrettyDecimalValue(teamData.ex, true), this.getPrettyDecimalValue(teamData.totalScore)))
         }
 
         return rowList
