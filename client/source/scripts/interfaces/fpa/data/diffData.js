@@ -72,6 +72,10 @@ module.exports.getSummary = function(resultsData, teamIndex) {
     return undefined
 }
 
+module.exports.getOverlaySummary = function(data) {
+    return ` [Phrases: ${getPhraseCount(data.scores)}, Raw: ${getAverage(data.scores, false).toFixed(2)}]`
+}
+
 function getAverage(scores, adjusted) {
     let avg = 0
     for (let score of scores) {

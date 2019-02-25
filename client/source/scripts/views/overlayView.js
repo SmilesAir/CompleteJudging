@@ -5,6 +5,7 @@ const MobxReact = require("mobx-react")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
+const DataStore = require("scripts/stores/dataStore.js")
 
 require("./overlayView.less")
 
@@ -43,11 +44,31 @@ require("./overlayView.less")
         }
     }
 
+    onTeamSelected(teamIndex) {
+        if (teamIndex === MainStore.interfaceObs.playingTeamIndex) {
+            MainStore.interfaceObs.editTeamIndex = undefined
+        } else {
+            MainStore.interfaceObs.editTeamIndex = teamIndex
+        }
+
+        Interfaces.activeInterface.fillWithResults()
+    }
+
+    getTeamText(playersList, teamIndex) {
+        let scoreString = ""
+        let results = MainStore.interfaceObs.results
+        if (results !== undefined) {
+            scoreString = DataStore.dataModel.getOverlaySummary(results, teamIndex)
+        }
+
+        return DataAction.getTeamPlayers(playersList) + scoreString
+    }
+
     getInfo() {
         let teamViews = []
         if (MainStore.interfaceObs !== undefined && MainStore.interfaceObs.playingPool !== undefined) {
             let key = 0
-            teamViews = MainStore.interfaceObs.playingPool.teamList.map((team) => {
+            teamViews = MainStore.interfaceObs.playingPool.teamList.map((playersList) => {
                 let isEditing = MainStore.interfaceObs.editTeamIndex === key
                 let isPlaying = MainStore.interfaceObs.playingTeamIndex === key
                 let teamIndex = key
@@ -55,16 +76,8 @@ require("./overlayView.less")
                     <div
                         key={key++}
                         className={`teamContainer ${isPlaying ? "playing" : ""}`}
-                        onPointerUp={() => {
-                            if (teamIndex === MainStore.interfaceObs.playingTeamIndex) {
-                                MainStore.interfaceObs.editTeamIndex = undefined
-                            } else {
-                                MainStore.interfaceObs.editTeamIndex = teamIndex
-                            }
-
-                            Interfaces.activeInterface.fillWithResults()
-                        }}>
-                        {DataAction.getTeamPlayers(team)}{isEditing ? " - EDITING" : ""}
+                        onClick={() => this.onTeamSelected(teamIndex)}>
+                        {this.getTeamText(playersList, teamIndex)}{isEditing ? " - EDITING" : ""}
                     </div>
                 )
             })
@@ -79,7 +92,7 @@ require("./overlayView.less")
 
     getInputComponent() {
         return <div className="overlayInputContainer"
-            onMouseDown={(event) => this.onPointerDown(event)}/>
+            onClick={(event) => this.onPointerDown(event)}/>
     }
 
     onPointerDown() {

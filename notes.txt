@@ -11,7 +11,7 @@ Judges. Are you finished popup
 Add time to scoreboard. Real time and routine time
 Polling for scoreboard and judges should get less frequent when not finding differences
     Finalize can stop scoreboard updates, or set to 1 min interval or something
-
+Add raw diff to results
 
 Anouncer interface
 rename data classes for more clarity between DataModel and the data inside it

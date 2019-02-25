@@ -59,10 +59,14 @@ module.exports.verify = function(resultsData) {
 module.exports.getSummary = function(resultsData, teamIndex) {
     if (module.exports.verify(resultsData)) {
         let team = resultsData.teamScoreList[teamIndex]
-        return `V: ${team.quantityScore * team.qualityScore / 100}`
+        return `V: ${team.quantityScore}/${team.qualityScore}`
     }
 
     return undefined
+}
+
+module.exports.getOverlaySummary = function(data) {
+    return ` [Quantity: ${data.quantityScore}, Quality: ${data.qualityScore}]`
 }
 
 function calcScore(data, preProcessedData) {

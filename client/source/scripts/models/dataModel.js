@@ -93,6 +93,17 @@ module.exports = class {
         return undefined
     }
 
+    getOverlaySummary(data, teamIndex) {
+        let model = this.getModel(data)
+        if (model !== undefined) {
+            if (model.getOverlaySummary !== undefined) {
+                return model.getOverlaySummary(data.teamScoreList[teamIndex])
+            }
+        }
+
+        return undefined
+    }
+
     getResultsInspected(resultData, teamIndex) {
         let model = this.getModel(resultData.data)
         if (model !== undefined) {
