@@ -17,8 +17,26 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.queryResults()
 
         setInterval(() => {
-            this.queryResults()
-        }, 1000)
+            this.update()
+        }, 100)
+    }
+
+    update() {
+        if (this.nextQueryHandle === undefined) {
+            let timeoutMs = undefined
+            let secondsSinceStart = this.getSecondsSinceRoutineStart()
+            if (secondsSinceStart < this.routineLengthSeconds + 600) {
+                timeoutMs = 1000
+            } else {
+                timeoutMs = 1000 * 60 * 5
+            }
+
+            this.nextQueryHandle = setTimeout(() => {
+                this.queryResults()
+            }, timeoutMs)
+        }
+
+        this.forceUpdate()
     }
 
     queryResults() {
@@ -35,8 +53,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             this.resultsData = response.data
             this.title = response.title
             this.incremental = response.incremental
-
-            this.forceUpdate()
+            this.startTime = response.startTime
+            this.routineLengthSeconds = response.routineLengthSeconds
         }).catch(() => {
             // Nothing
         })
@@ -121,6 +139,30 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return rowList
     }
 
+    getTimeString() {
+        let str = new Date().toTimeString().slice(0, 8)
+        return str.startsWith("0") ? str.slice(1) : str
+    }
+
+    getSecondsSinceRoutineStart() {
+        if (this.startTime !== undefined) {
+            return (Date.now() - this.startTime) / 1000
+        }
+
+        return undefined
+    }
+
+    getTitleString() {
+        let secondsSinceStart = this.getSecondsSinceRoutineStart()
+        let routineTimeStr = ""
+        if (secondsSinceStart < this.routineLengthSeconds) {
+            let secondsRemaining = Math.round(this.routineLengthSeconds - secondsSinceStart)
+            routineTimeStr = ` [${Math.floor(secondsRemaining / 60)}:${`${secondsRemaining % 60}`.padStart(2, "0")}]`
+        }
+
+        return this.title + routineTimeStr
+    }
+
     render() {
         if (this.resultsData === undefined) {
             return <div>No Scoreboard Data</div>
@@ -128,8 +170,13 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
         return (
             <div className="scoreboardTopContainer">
-                <div>
-                    {this.title}
+                <div className="header">
+                    <div className="title">
+                        {this.getTitleString()}
+                    </div>
+                    <div className="time">
+                        {this.getTimeString()}
+                    </div>
                 </div>
                 {this.getBoard(this.resultsData)}
             </div>

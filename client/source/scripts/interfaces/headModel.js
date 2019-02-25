@@ -151,6 +151,8 @@ module.exports = class extends InterfaceModelBase {
             this.dirtyObs()
             this.sendDataToAWS()
 
+            this.uploadIncrementalScoreboardData()
+
             this.updateHandle = setInterval(() => {
                 this.update()
             }, 100)
@@ -194,7 +196,6 @@ module.exports = class extends InterfaceModelBase {
     uploadIncrementalScoreboardData() {
         DataAction.fillPoolResults(this.obs.playingPool).then(() => {
             let data = DataAction.getScoreboardResultsProcessed(this.obs.playingPool, this.obs.routineLengthSeconds, true)
-            console.log(data)
 
             fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/tournamentName/${MainStore.tournamentName}/setScoreboardData`, {
                 method: "POST",
@@ -202,7 +203,9 @@ module.exports = class extends InterfaceModelBase {
                     scoreboardData: {
                         title: DataAction.getFullPoolDescription(this.obs.playingPool),
                         data: data,
-                        incremental: true
+                        incremental: true,
+                        startTime: this.obs.startTime,
+                        routineLengthSeconds: this.obs.routineLengthSeconds
                     }
                 })
             }).catch((error) => {
@@ -216,14 +219,15 @@ module.exports = class extends InterfaceModelBase {
 
         DataAction.fillPoolResults(this.obs.playingPool).then(() => {
             let data = DataAction.getScoreboardResultsProcessed(this.obs.playingPool, this.obs.routineLengthSeconds)
-            console.log(data)
 
             fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/tournamentName/${MainStore.tournamentName}/setScoreboardData`, {
                 method: "POST",
                 body: JSON.stringify({
                     scoreboardData: {
                         title: DataAction.getFullPoolDescription(this.obs.playingPool),
-                        data: data
+                        data: data,
+                        startTime: this.obs.startTime,
+                        routineLengthSeconds: this.obs.routineLengthSeconds
                     }
                 })
             }).catch((error) => {
