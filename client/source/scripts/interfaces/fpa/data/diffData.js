@@ -157,9 +157,11 @@ module.exports.getDiffDetailedProcessed = function(data, preProcessedData) {
     processed.push({
         Marks: data.scores.join(" ")
     })
-
     processed.push({
         Phrases: getPhraseCount(data.scores)
+    })
+    processed.push({
+        Raw: getAverage(data.scores, false)
     })
     processed.push({
         Score: getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
