@@ -61,7 +61,7 @@ require("./overlayView.less")
             scoreString = DataStore.dataModel.getOverlaySummary(results, teamIndex)
         }
 
-        return DataAction.getTeamPlayers(playersList) + scoreString
+        return DataAction.getTeamPlayersShort(playersList) + scoreString
     }
 
     getInfo() {

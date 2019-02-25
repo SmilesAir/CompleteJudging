@@ -32,12 +32,22 @@
 
 .quantityContainer {
     grid-area: quantity;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
     display: flex;
 
     background-color: yellow;
 
     .quantityButton {
-        flex-grow: 1;
-        -webkit-flex-grow: 1;
+        -webkit-appearance: none;
+        touch-action: manipulation;
+
+        -webkit-box-flex-grow: 1;
+           -moz-box-flex-grow: 1;
+            -webkit-flex-grow: 1;
+                -ms-flex-grow: 1;
+                    flex-grow: 1;
     }
 }
