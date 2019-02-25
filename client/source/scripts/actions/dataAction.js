@@ -273,6 +273,33 @@ function getResultsProcessed(pool, routineLengthSeconds, processFunc, createTeam
 
             teamData.totalScore = totalScore
         }
+    } else {
+        for (let teamData of processedRet) {
+            let totalScore = teamData.data.find((data) => {
+                return data.TotalScore !== undefined
+            }).TotalScore
+
+            let rank = 1
+            if (totalScore !== undefined) {
+                for (let searchData of processedRet) {
+                    if (searchData !== teamData) {
+                        let searchScore = searchData.data.find((data) => {
+                            return data.TotalScore !== undefined
+                        }).TotalScore
+
+                        if (searchScore !== undefined) {
+                            if (searchScore >= totalScore) {
+                                ++rank
+                            }
+                        }
+                    }
+                }
+            }
+
+            teamData.data.push({
+                Rank: rank
+            })
+        }
     }
 
     for (let teamData of processedRet) {

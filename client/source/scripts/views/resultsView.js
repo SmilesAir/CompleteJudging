@@ -36,23 +36,40 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
 
         let judgeOutputList = []
         let totalScoreList = undefined
+        let rankList = undefined
         for (let teamData of results) {
             let teamDataList = teamData.data
             for (let data of teamDataList) {
                 if (data.judgeName === undefined) {
-                    if (totalScoreList === undefined) {
-                        totalScoreList = []
+                    if (data.TotalScore !== undefined) {
+                        if (totalScoreList === undefined) {
+                            totalScoreList = []
 
-                        judgeOutputList.push({
-                            judgeName: "---",
-                            descList: [ {
-                                descName: "Total Score",
-                                valueList: totalScoreList
-                            } ]
-                        })
+                            judgeOutputList.push({
+                                judgeName: "---",
+                                descList: [ {
+                                    descName: "Total Score",
+                                    valueList: totalScoreList
+                                } ]
+                            })
+                        }
+                        
+                        totalScoreList.push(data.TotalScore.toFixed(2))
+                    } else if (data.Rank !== undefined) {
+                        if (rankList === undefined) {
+                            rankList = []
+
+                            judgeOutputList.push({
+                                judgeName: "---",
+                                descList: [ {
+                                    descName: "Rank",
+                                    valueList: rankList
+                                } ]
+                            })
+                        }
+                        
+                        rankList.push(data.Rank)
                     }
-                    
-                    totalScoreList.push(data.TotalScore.toFixed(2))
 
                 } else if (judgeOutputList.findIndex((judgeOutput) => {
                     return judgeOutput.judgeName === data.judgeName
