@@ -5,7 +5,7 @@ something weird with updating routine length without refreshing page
 
 
 Judges. Are you finished popup
-Add time to scoreboard. Real time and routine time
+Make sure scoreboard updates when announer starts routine
 Polling for scoreboard and judges should get less frequent when not finding differences
     Finalize can stop scoreboard updates, or set to 1 min interval or something
 

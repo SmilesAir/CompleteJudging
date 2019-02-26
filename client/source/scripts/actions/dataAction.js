@@ -68,7 +68,8 @@ function loadDataFromDynamo(info) {
                             roundIndex: round.round,
                             poolIndex: pool.pool,
                             teamList: teamList,
-                            routineLengthSeconds: round.routineLength * 60
+                            routineLengthSeconds: round.routineLength * 60,
+                            judgeData: pool.judgesData
                         }
 
                         poolList.push(newPool)
