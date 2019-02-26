@@ -16,5 +16,6 @@ module.exports = Mobx.observable({
     interfaceObs: undefined,
     constants: {},
     serverTimeOffset: undefined,
-    routineTimeMs: undefined
+    routineTimeMs: undefined,
+    url: undefined
 })

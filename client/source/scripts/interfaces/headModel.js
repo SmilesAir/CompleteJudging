@@ -96,7 +96,11 @@ module.exports = class extends InterfaceModelBase {
         this.obs.routineLengthSeconds = awsData.observable.routineLengthSeconds
 
         if (this.obs.passiveMode) {
-            this.obs.startTime = awsData.observable.startTime
+            if (this.obs.startTime !== awsData.observable.startTime) {
+                this.obs.startTime = awsData.observable.startTime
+
+                this.uploadIncrementalScoreboardData()
+            }
         }
 
         this.awsData = awsData

@@ -14,6 +14,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.interface = Interfaces.scoreboard
         this.obs = this.interface.obs
 
+        this.alwaysUpdate = MainStore.url.searchParams.get("alwaysUpdate") === "true"
+
         this.queryResults()
 
         setInterval(() => {
@@ -25,7 +27,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         if (this.nextQueryHandle === undefined) {
             let timeoutMs = undefined
             let secondsSinceStart = this.getSecondsSinceRoutineStart()
-            if (secondsSinceStart < this.routineLengthSeconds + 600) {
+            if (this.alwaysUpdate || secondsSinceStart < this.routineLengthSeconds + 600) {
                 timeoutMs = 1000
             } else {
                 timeoutMs = 1000 * 60 * 5
@@ -33,6 +35,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
             this.nextQueryHandle = setTimeout(() => {
                 this.queryResults()
+
+                this.nextQueryHandle = undefined
             }, timeoutMs)
         }
 

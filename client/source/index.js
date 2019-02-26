@@ -22,7 +22,6 @@ const AnnouncerView = require("scripts/interfaces/announcerView.js")
 const ScoreboardView = require("scripts/interfaces/scoreboardView.js")
 const BlockPromptView = require("scripts/views/blockPromptView.js")
 const CommonAction = require("scripts/actions/commonAction.js")
-const DataStore = require("scripts/stores/dataStore.js")
 
 require("./index.less")
 
@@ -33,6 +32,7 @@ require("./index.less")
         MainStore.activeInterface = Enums.EInterface.default
 
         let url = new URL(window.location.href)
+        MainStore.url = url
         let startupParam = url.searchParams.get("startup")
         for (let interfaceName in Enums.EInterface) {
             if (interfaceName === startupParam) {

@@ -8,6 +8,7 @@ Judges. Are you finished popup
 Make sure scoreboard updates when announer starts routine
 Polling for scoreboard and judges should get less frequent when not finding differences
     Finalize can stop scoreboard updates, or set to 1 min interval or something
+Easy to read results table
 
 
 rename data classes for more clarity between DataModel and the data inside it
