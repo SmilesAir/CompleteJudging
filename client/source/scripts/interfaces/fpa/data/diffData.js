@@ -151,6 +151,12 @@ module.exports.getScoreboardProcessed = function(data, preProcessedData, process
     return undefined
 }
 
+module.exports.getCategoryResultsProcessed = function(data, preProcessedData, processedData) {
+    processedData.diff = (processedData.diff || 0) + getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
+
+    return undefined
+}
+
 module.exports.getDiffDetailedProcessed = function(data, preProcessedData) {
     let processed = []
 

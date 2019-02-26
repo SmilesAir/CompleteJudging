@@ -31,6 +31,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     getFullResultsElements() {
         if (this.state.resultsPool !== undefined && this.state.resultsPool.results !== undefined) {
+            console.log(DataAction.getCategoryResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds))
+
             return (
                 <div>
                     <button id="noPrint" onClick={() => this.printResults()}>Print</button>

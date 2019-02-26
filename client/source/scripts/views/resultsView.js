@@ -46,7 +46,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                             totalScoreList = []
 
                             judgeOutputList.push({
-                                judgeName: "---",
+                                judgeName: "----",
                                 descList: [ {
                                     descName: "Total Score",
                                     valueList: totalScoreList
