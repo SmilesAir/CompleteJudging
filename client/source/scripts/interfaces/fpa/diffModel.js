@@ -66,7 +66,11 @@ module.exports = class extends InterfaceModelBase {
 
     endEdit(score) {
         if (score !== undefined && this.obs.editIndex !== undefined) {
-            this.obs.results.teamScoreList[this.getActiveTeamIndex()].scores[this.obs.editIndex] = score
+            if (score === 0) {
+                this.obs.results.teamScoreList[this.getActiveTeamIndex()].scores.splice(this.obs.editIndex, 1)
+            } else {
+                this.obs.results.teamScoreList[this.getActiveTeamIndex()].scores[this.obs.editIndex] = score
+            }
 
             CommonAction.vibrateSingleMedium()
 

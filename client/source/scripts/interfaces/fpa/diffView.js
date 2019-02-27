@@ -109,8 +109,6 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 this.updateNumberOut(x)
             }
         }
-
-        console.log("touch move")
     }
 
     onParentInputEnd(event) {
@@ -160,9 +158,9 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     <div className="touchArea" ref={this.touchAreaRef}>
                         {this.getNumbers()}
                     </div>
-                    <div className="removeArea">
+                    {/* <div className="removeArea">
                         Drop Here to Remove
-                    </div>
+                    </div> */}
                 </div>
                 {this.getNumberOutView()}
             </div>

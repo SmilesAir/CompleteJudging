@@ -99,7 +99,7 @@ function getTopAverage(inScores, adjusted, routineLengthSeconds) {
     })
 
     let top = MainStore.constants.diff.top * routineLengthSeconds / 180
-    return getAverage(scores.slice(getPhraseCount(scores) - top), adjusted)
+    return getAverage(scores.slice(Math.max(0, getPhraseCount(scores) - top)), adjusted)
 }
 
 function getAdjustedScore(score) {
