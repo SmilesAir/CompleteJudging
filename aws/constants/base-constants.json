@@ -12,6 +12,6 @@
     "exAiCombined": {
         "startCountPerSecond": 0.08,
         "endCountPerSecond": 0.333,
-        "xScaler": 0.5
+        "xScaler": 0.75
     }
 }
