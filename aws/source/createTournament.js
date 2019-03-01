@@ -2,6 +2,8 @@
 const AWS = require('aws-sdk')
 let docClient = new AWS.DynamoDB.DocumentClient()
 
+const Common = require("./common.js")
+
 module.exports.handler = function(event, context, callback) {
 
     event.body = JSON.parse(event.body) || {}
@@ -11,6 +13,7 @@ module.exports.handler = function(event, context, callback) {
     let now = Date.now()
     let tournamentInfoKey = tournamentName + now
     let tournamentVersion = 1
+    let oldPoolKeys = {}
 
     let getParams = {
         TableName: process.env.ACTIVE_TOURNAMENT_KEYS,
@@ -19,6 +22,12 @@ module.exports.handler = function(event, context, callback) {
     docClient.get(getParams).promise().then((response) => {
         if (Object.keys(response).length !== 0 || response.constructor !== Object) {
             tournamentVersion = response.Item.version + 1
+
+            for (let poolKey in response.Item) {
+                if (poolKey.startsWith(Common.getPoolNamePrefix())) {
+                    oldPoolKeys[poolKey] = response.Item[poolKey]
+                }
+            }
         }
 
         tournamentInfoKey += "-" + tournamentVersion
@@ -35,15 +44,16 @@ module.exports.handler = function(event, context, callback) {
         }
         console.log("put info", putParams)
         return docClient.put(putParams).promise()
-    }).then((response) => {
+    }).then(() => {
+        let item = Object.assign({
+            key: tournamentName,
+            tournamentName: tournamentName,
+            tournamentInfoKey: tournamentInfoKey,
+            version: tournamentVersion
+        }, oldPoolKeys)
         let putParams = {
             TableName : process.env.ACTIVE_TOURNAMENT_KEYS,
-            Item: {
-                key: tournamentName,
-                tournamentName: tournamentName,
-                tournamentInfoKey: tournamentInfoKey,
-                version: tournamentVersion
-            }
+            Item: item
         }
         console.log("put key", putParams)
         return docClient.put(putParams).promise()

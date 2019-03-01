@@ -132,7 +132,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     getJudgeUrl(judgeName, interfaceName) {
-        return `https://d27wqtus28jqqk.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${MainStore.tournamentName}&userId=${judgeName}&header=false`
+        return `https://d27wqtus28jqqk.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&userId=${judgeName}&header=false`
     }
 
     setLinksInClipboard(pool) {
