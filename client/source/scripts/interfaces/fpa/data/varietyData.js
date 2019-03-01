@@ -104,6 +104,12 @@ module.exports.getScoreboardProcessed = function(data, preProcessedData, process
     return undefined
 }
 
+module.exports.getCategoryResultsProcessed = function(data, preProcessedData, processedData) {
+    processedData.variety = (processedData.variety || 0) + calcScore(data, preProcessedData)
+
+    return undefined
+}
+
 module.exports.getPreProcessed = function(data, preProcessedData) {
     preProcessedData.totalQuantityCount = (preProcessedData.totalQuantityCount || 0) + data.quantityScore
     preProcessedData.varietyJudgeCount = (preProcessedData.varietyJudgeCount || 0) + 1

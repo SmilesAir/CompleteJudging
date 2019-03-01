@@ -185,6 +185,13 @@ module.exports.getScoreboardProcessed = function(data, preProcessedData, process
     return undefined
 }
 
+module.exports.getCategoryResultsProcessed = function(data, preProcessedData, processedData) {
+    processedData.ai = (processedData.ai || 0) + calcAiScore(data)
+    processedData.ex = (processedData.ex || 0) + calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds)
+
+    return undefined
+}
+
 module.exports.getExAiCombinedDetailedProcessed = function(data, preProcessedData) {
     let processed = []
 

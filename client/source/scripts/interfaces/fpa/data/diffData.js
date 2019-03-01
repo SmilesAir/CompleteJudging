@@ -99,7 +99,7 @@ function getTopAverage(inScores, adjusted, routineLengthSeconds) {
     })
 
     let top = MainStore.constants.diff.top * routineLengthSeconds / 180
-    return getAverage(scores.slice(getPhraseCount(scores) - top), adjusted)
+    return getAverage(scores.slice(Math.max(0, getPhraseCount(scores) - top)), adjusted)
 }
 
 function getAdjustedScore(score) {
@@ -146,6 +146,12 @@ module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedDa
 
 module.exports.getScoreboardProcessed = function(data, preProcessedData, processedData) {
     processedData.phrases = Math.round(preProcessedData.totalPhraseCount / preProcessedData.diffJudgeCount)
+    processedData.diff = (processedData.diff || 0) + getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
+
+    return undefined
+}
+
+module.exports.getCategoryResultsProcessed = function(data, preProcessedData, processedData) {
     processedData.diff = (processedData.diff || 0) + getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
 
     return undefined

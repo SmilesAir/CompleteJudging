@@ -376,6 +376,31 @@ function getScoreboardResultsProcessed(pool, routineLengthSeconds, incremental) 
 }
 module.exports.getScoreboardResultsProcessed = getScoreboardResultsProcessed
 
+function getCategoryResultsProcessed(pool, routineLengthSeconds) {
+    let processed = getResultsProcessed(
+        pool,
+        routineLengthSeconds,
+        DataStore.dataModel.getCategoryResultsProcessed,
+        createTeamDataObject)
+
+    for (let teamData of processed) {
+        let rank = 1
+        let score = teamData.data.totalScore
+        for (let searchData of processed) {
+            if (searchData !== teamData) {
+                if (score <= searchData.data.totalScore) {
+                    ++rank
+                }
+            }
+        }
+
+        teamData.data.rank = rank
+    }
+
+    return processed
+}
+module.exports.getCategoryResultsProcessed = getCategoryResultsProcessed
+
 function getDiffDetailedResultsProcessed(pool, routineLengthSeconds) {
     return getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getDiffDetailedResultsProcessed, createTeamDataArray)
 }

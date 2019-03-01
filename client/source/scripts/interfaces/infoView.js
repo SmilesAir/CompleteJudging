@@ -31,9 +31,14 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     getFullResultsElements() {
         if (this.state.resultsPool !== undefined && this.state.resultsPool.results !== undefined) {
+            console.log(DataAction.getCategoryResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds))
+
             return (
                 <div>
                     <button id="noPrint" onClick={() => this.printResults()}>Print</button>
+                    <CategoryResultsView
+                        resultsData={DataAction.getCategoryResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}
+                        title={"Category Results for " + DataAction.getFullPoolDescription(this.state.resultsPool)}/>
                     <ResultsView
                         resultsData={DataAction.getFullResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}
                         title={"Full Results for " + DataAction.getFullPoolDescription(this.state.resultsPool)}/>
@@ -67,6 +72,83 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 <div id="content4" className="infoTabContent">
                     {this.getFullResultsElements()}
                 </div>
+            </div>
+        )
+    }
+}
+
+@MobxReact.observer class CategoryResultsView extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.data = this.props.resultsData
+        this.title = this.props.title
+    }
+
+    getHeaderRow() {
+        return (
+            <div key={0} className="rowContainer headerRow">
+                <div>{"Team"}</div>
+                <div>{"Diff"}</div>
+                <div>{"Variety"}</div>
+                <div>{"AI"}</div>
+                <div>{"Ex"}</div>
+                <div>{"Score"}</div>
+                <div>{"Rank"}</div>
+            </div>
+        )
+    }
+
+    getRow(teamNames, diff, variety, ai, ex, totalScore, rank) {
+        return (
+            <div key={teamNames} className="rowContainer">
+                <div className="teamNames">{teamNames}</div>
+                <div className="diff">{diff}</div>
+                <div className="variety">{variety}</div>
+                <div className="ai">{ai}</div>
+                <div className="ex">{ex}</div>
+                <div className="score">{totalScore}</div>
+                <div className="rank">{rank}</div>
+            </div>
+        )
+    }
+
+    getPrettyDecimalValue(value, negative) {
+        return value !== undefined && value !== 0 ? (negative ? "-" : "") + value.toFixed(2) : ""
+    }
+
+    getBoard(data) {
+        let rowList = []
+
+        rowList.push(this.getHeaderRow())
+
+        for (let rowData of data) {
+            let teamData = rowData.data
+            rowList.push(this.getRow(rowData.teamNames,
+                this.getPrettyDecimalValue(teamData.diff),
+                this.getPrettyDecimalValue(teamData.variety),
+                this.getPrettyDecimalValue(teamData.ai),
+                this.getPrettyDecimalValue(teamData.ex, true),
+                this.getPrettyDecimalValue(teamData.totalScore),
+                teamData.rank))
+        }
+
+        return rowList
+    }
+
+    render() {
+        if (this.data === undefined) {
+            return <div>No Data</div>
+        }
+
+        return (
+            <div className="categoryResultsContainer">
+                <div className="header">
+                    <div className="title">
+                        {this.title}
+                    </div>
+                </div>
+                {this.getBoard(this.data)}
             </div>
         )
     }

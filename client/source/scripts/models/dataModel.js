@@ -139,6 +139,19 @@ module.exports = class {
         return undefined
     }
 
+    getCategoryResultsProcessed(data, teamIndex, preProcessedData, processedData) {
+        let model = this.getModel(data)
+        if (model !== undefined) {
+            if (model.getCategoryResultsProcessed !== undefined) {
+                return model.getCategoryResultsProcessed(data.teamScoreList[teamIndex], preProcessedData, processedData)
+            } else {
+                console.error(`No getCategoryResultsProcessed for ${model}`)
+            }
+        }
+
+        return undefined
+    }
+
     getScoreboardResultsProcessed(data, teamIndex, preProcessedData, processedData) {
         let model = this.getModel(data)
         if (model !== undefined) {
