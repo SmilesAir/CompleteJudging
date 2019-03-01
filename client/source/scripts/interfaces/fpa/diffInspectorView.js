@@ -18,7 +18,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
         this.state = {
             moveCount: 0,
-            topCount: this.constants.top,
+            topCount: this.constants.topPerSecond * 180,
             topCountValid: true,
             offset: this.constants.offset,
             offsetValid: true,
@@ -51,7 +51,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.state.topCountValid = !isNaN(newNumber)
         this.setState(this.state)
 
-        this.constants.top = !this.state.topCountValid ? this.constants.top : newNumber
+        this.constants.topPerSecond = !this.state.topCountValid ? this.constants.topPerSecond : newNumber
     }
 
     offsetChanged(event) {
@@ -84,7 +84,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     resetEquation() {
         Object.assign(MainStore.constants.diff, DiffData.getDefaultConstants())
 
-        this.state.topCount = this.constants.top
+        this.state.topCount = this.constants.topPerSecond * 180
         this.state.offset = this.constants.offset
         this.state.power = this.constants.power
         this.state.scale = this.constants.scale

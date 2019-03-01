@@ -13,7 +13,7 @@ module.exports.getDefaultConstants = function() {
         offset: -3,
         power: 1.5,
         scale: .539949,
-        top: 6
+        topPerSecond: .066667
     }
 }
 
@@ -73,17 +73,16 @@ module.exports.getSummary = function(resultsData, teamIndex) {
 }
 
 module.exports.getOverlaySummary = function(data) {
-    return ` [Phrases: ${getPhraseCount(data.scores)}, Raw: ${getAverage(data.scores, false).toFixed(2)}]`
+    return ` [Phrases: ${getPhraseCount(data.scores)}, Raw: ${getAverage(data.scores, 12, false).toFixed(2)}]`
 }
 
-function getAverage(scores, adjusted) {
+function getAverage(scores, top, adjusted) {
     let avg = 0
     for (let score of scores) {
         avg += adjusted ? getAdjustedScore(score) : score
     }
 
-    let phraseCount = getPhraseCount(scores)
-    return phraseCount > 0 ? avg / phraseCount : 0
+    return avg / top
 }
 
 function getTopAverage(inScores, adjusted, routineLengthSeconds) {
@@ -98,8 +97,8 @@ function getTopAverage(inScores, adjusted, routineLengthSeconds) {
         return 0
     })
 
-    let top = MainStore.constants.diff.top * routineLengthSeconds / 180
-    return getAverage(scores.slice(Math.max(0, getPhraseCount(scores) - top)), adjusted)
+    let top = Math.round(MainStore.constants.diff.topPerSecond * routineLengthSeconds)
+    return getAverage(scores.slice(Math.max(0, getPhraseCount(scores) - top)), top, adjusted)
 }
 
 function getAdjustedScore(score) {
@@ -114,10 +113,10 @@ module.exports.getInspected = function(resultData, teamIndex) {
         let scores = resultData.data.teamScoreList[teamIndex].scores
         str += scores.join(" ")
 
-        let top = constants.top
-        str += ` Raw: ${getAverage(scores, false).toFixed(2)} Top (${top}): ${getTopAverage(scores, false).toFixed(2)}`
-        str += ` Adj Raw: ${getAverage(scores, true).toFixed(2)} Adj Top (${top}): ${getTopAverage(scores, true).toFixed(2)}`
-        str += ` Adj Sum Raw: ${getAdjustedScore(getAverage(scores, false)).toFixed(2)} Adj Sum Top (${top}): ${getAdjustedScore(getTopAverage(scores, false)).toFixed(2)}`
+        let top = Math.round(constants.topPerSecond * 180)
+        str += ` Raw: ${getAverage(scores, top, false).toFixed(2)} Top (${top}): ${getTopAverage(scores, false).toFixed(2)}`
+        str += ` Adj Raw: ${getAverage(scores, top, true).toFixed(2)} Adj Top (${top}): ${getTopAverage(scores, true).toFixed(2)}`
+        str += ` Adj Sum Raw: ${getAdjustedScore(getAverage(scores, top, false)).toFixed(2)} Adj Sum Top (${top}): ${getAdjustedScore(getTopAverage(scores, false)).toFixed(2)}`
 
         return (
             <div className="inspectedResults" key={teamIndex}>{str}</div>
@@ -167,7 +166,7 @@ module.exports.getDiffDetailedProcessed = function(data, preProcessedData) {
         Phrases: getPhraseCount(data.scores)
     })
     processed.push({
-        Raw: getAverage(data.scores, false)
+        Raw: getAverage(data.scores, data.scores.length, false)
     })
     processed.push({
         Score: getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
