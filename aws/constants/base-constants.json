@@ -1,9 +1,9 @@
 
 {
     "diff": {
-        "offset": -3,
+        "offset": 0,
         "power": 1.5,
-        "scale": 0.539949,
+        "scale": 0.45,
         "topPerSecond": 0.066667
     },
     "variety": {

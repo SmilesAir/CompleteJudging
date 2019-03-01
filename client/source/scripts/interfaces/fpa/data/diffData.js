@@ -7,12 +7,12 @@ const DataStore = require("scripts/stores/dataStore.js")
 const Enums = require("scripts/stores/enumStore.js")
 
 module.exports.getDefaultConstants = function() {
-    //https://www.wolframalpha.com/input/?i=y+%3D+((x+-+3)+%5E+1.5)+*+0.539949,+x+%3D+0+to+10
+    // https://www.wolframalpha.com/input/?i=y+%3D+((x)+%5E+1.5)+*+.45,+x+%3D+0+to+10
     return {
         name: "diff",
-        offset: -3,
+        offset: 0,
         power: 1.5,
-        scale: .539949,
+        scale: .45,
         topPerSecond: .066667
     }
 }
