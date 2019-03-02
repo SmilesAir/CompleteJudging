@@ -134,7 +134,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     render() {
-        if (this.data === undefined) {
+        if (this.props.resultsData === undefined) {
             return <div>No Data</div>
         }
 
@@ -145,7 +145,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                         {this.props.title}
                     </div>
                 </div>
-                {this.getBoard(this.props.data)}
+                {this.getBoard(this.props.resultsData)}
             </div>
         )
     }
