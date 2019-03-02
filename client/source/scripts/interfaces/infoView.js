@@ -31,7 +31,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     getFullResultsElements() {
         if (this.state.resultsPool !== undefined && this.state.resultsPool.results !== undefined) {
-            console.log(DataAction.getCategoryResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds))
+            console.log(DataAction.getFullPoolDescription(this.state.resultsPool))
 
             return (
                 <div>
@@ -80,9 +80,6 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 @MobxReact.observer class CategoryResultsView extends React.Component {
     constructor(props) {
         super(props)
-
-        this.data = this.props.resultsData
-        this.title = this.props.title
     }
 
     getHeaderRow() {
@@ -145,10 +142,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             <div className="categoryResultsContainer">
                 <div className="header">
                     <div className="title">
-                        {this.title}
+                        {this.props.title}
                     </div>
                 </div>
-                {this.getBoard(this.data)}
+                {this.getBoard(this.props.data)}
             </div>
         )
     }
