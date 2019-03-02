@@ -356,6 +356,10 @@ function getScoreboardResultsProcessed(pool, routineLengthSeconds, incremental) 
     processed.sort((a, b) => {
         if (a.data.totalScore === b.data.totalScore) {
             return 0
+        } else if (a.data.totalScore === 0) {
+            return 1
+        } else if (b.data.totalScore === 0) {
+            return -1
         }
 
         return a.data.totalScore > b.data.totalScore ? -1 : 1

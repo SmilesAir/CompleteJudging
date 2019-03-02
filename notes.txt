@@ -5,6 +5,8 @@ something weird with updating routine length without refreshing page
 
 
 Judges. Are you finished popup
+Display judge names in head judger
+Livestream overlay
 
 
 rename data classes for more clarity between DataModel and the data inside it
