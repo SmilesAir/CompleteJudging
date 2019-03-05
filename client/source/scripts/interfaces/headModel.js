@@ -36,6 +36,9 @@ module.exports = class extends InterfaceModelBase {
 
         if (MainStore.startupTournamentName !== undefined) {
             this.queryPoolData(MainStore.startupTournamentName)
+            setInterval(() => {
+                this.update()
+            }, 1000)
         }
     }
 
@@ -91,19 +94,29 @@ module.exports = class extends InterfaceModelBase {
     }
 
     updateFromAws(awsData) {
-        this.obs.playingPool = new DataStore.PoolData(awsData.pool)
-        this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
-        this.obs.routineLengthSeconds = awsData.observable.routineLengthSeconds
-
         if (this.obs.passiveMode) {
+            this.obs.playingPool = new DataStore.PoolData(awsData.pool)
+            this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
+            this.obs.routineLengthSeconds = awsData.observable.routineLengthSeconds
+
             if (this.obs.startTime !== awsData.observable.startTime) {
                 this.obs.startTime = awsData.observable.startTime
 
                 this.uploadIncrementalScoreboardData()
             }
-        }
 
-        this.awsData = awsData
+            this.awsData = awsData
+        } else if (DataAction.isSamePool(this.obs.playingPool, awsData.pool) === false) {
+            location.reload(false)
+        } else if (this.obs.playingPool === undefined) {
+            this.obs.playingPool = new DataStore.PoolData(awsData.pool)
+            this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
+            this.obs.routineLengthSeconds = awsData.observable.routineLengthSeconds
+        }
+    }
+
+    updateResultsFromAws() {
+        // Do Nothing
     }
 
     sendDataToAWS() {
@@ -130,13 +143,9 @@ module.exports = class extends InterfaceModelBase {
     }
 
     update() {
-        this.obs.judgingTimeMs = this.obs.startTime !== undefined ? Date.now() - this.obs.startTime : 0
-    }
-
-    passiveUpdate() {
         this.queryPoolData(MainStore.tournamentName)
 
-        this.update()
+        this.obs.judgingTimeMs = this.obs.startTime !== undefined ? Date.now() - this.obs.startTime : 0
     }
 
     hasRoutineTimeElapsed() {
@@ -183,14 +192,6 @@ module.exports = class extends InterfaceModelBase {
 
     setPassiveMode(enabled) {
         this.obs.passiveMode = enabled
-
-        if (enabled) {
-            this.passiveUpdateHandle = setInterval(() => {
-                this.passiveUpdate()
-            }, 1000)
-        } else {
-            clearInterval(this.passiveUpdateHandle)
-        }
     }
 
     createResultsData() {

@@ -145,7 +145,7 @@ class InterfaceModelBase {
             let pool = awsData.pool
             return DataAction.getPoolResults(pool.divisionIndex, pool.roundIndex, pool.poolIndex)
         }).then((results) => {
-            let userIdDirty = this.updateFromAws(awsData).userIdDirty
+            let userIdDirty = this.updateFromAws(awsData).userIdDirty || false
             this.updateResultsFromAws(results, userIdDirty)
         }).catch((error) => {
             console.log("Error: Set Playing Pool", error)

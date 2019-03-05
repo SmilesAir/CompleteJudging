@@ -450,6 +450,26 @@ function isTeamListEqual(a, b) {
 }
 module.exports.isTeamListEqual = isTeamListEqual
 
+function isSamePool(a, b) {
+    if (a === b) {
+        return true
+    }
+
+    if (a === undefined || b === undefined) {
+        return undefined
+    }
+
+    if (a.divisionIndex === b.divisionIndex &&
+        a.roundIndex === b.roundIndex &&
+        a.poolIndex === b.poolIndex) {
+        
+        return true
+    }
+
+    return false
+}
+module.exports.isSamePool = isSamePool
+
 function verifyDataModel(model) {
     if (model.DataClass === undefined ||
         model.verify === undefined ||
