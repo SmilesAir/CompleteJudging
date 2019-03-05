@@ -43,6 +43,8 @@ module.exports.PoolData = class {
                 this.teamList.push(new module.exports.TeamData(team))
             })
         }
+
+        this.judgeData = poolJson.judgeData
     }
 }
 

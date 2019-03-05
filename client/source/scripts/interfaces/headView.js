@@ -53,7 +53,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         })
 
         return (
-            <div>
+            <div className="teamListContainer">
                 Teams:
                 {teamList}
             </div>
@@ -86,6 +86,44 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.interface.setPassiveMode(!this.obs.passiveMode)
     }
 
+    getJudgesElement() {
+        let judgeData = this.obs.playingPool.judgeData
+        if (judgeData !== undefined) {
+            let diffElements = judgeData.judgesDiff.map((judge) => {
+                return (
+                    <div key={judge.FullName}>
+                        Diff: {judge.FullName}
+                    </div>
+                )
+            })
+            let varietyElements = judgeData.judgesAi.map((judge) => {
+                return (
+                    <div key={judge.FullName}>
+                        Variety: {judge.FullName}
+                    </div>
+                )
+            })
+            let exAiElements = judgeData.judgesEx.map((judge) => {
+                return (
+                    <div key={judge.FullName}>
+                        Ex/Ai: {judge.FullName}
+                    </div>
+                )
+            })
+    
+            return (
+                <div>
+                    Judges:
+                    {diffElements}
+                    {varietyElements}
+                    {exAiElements}
+                </div>
+            )
+        }
+
+        return null
+    }
+
     render() {
         if (this.obs.playingPool === undefined) {
             return <div className="headTopContainer">Set playing pool for Head Judge to function</div>
@@ -113,7 +151,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 <button disabled={!this.obs.isJudging} className="startButton" onClick={() => this.onStopButtonClick()}>
                     Stop
                 </button>
-                {this.getTeamsElement()}
+                <div className="poolInfoContainer">
+                    {this.getTeamsElement()}
+                    {this.getJudgesElement()}
+                </div>
             </div>
         )
     }
