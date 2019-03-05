@@ -210,23 +210,24 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         )
     }
 
-    getJudgeUrl(judgeName, interfaceName) {
-        return `https://d27wqtus28jqqk.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&userId=${judgeName}&header=false`
+    getJudgeUrl(judgeIndex, interfaceName) {
+        return `https://d27wqtus28jqqk.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&judgeIndex=${judgeIndex}&header=false`
     }
 
     setLinksInClipboard(pool) {
         let linkList = []
         let judgeData = pool.judgeData
         if (judgeData !== undefined) {
-            for (let judge of judgeData.judgesDiff) {
-                linkList.push(`${judge.FullName}: ${this.getJudgeUrl(encodeURIComponent(judge.FullName), "diff")}`)
-            }
-            for (let judge of judgeData.judgesAi) {
-                linkList.push(`${judge.FullName}: ${this.getJudgeUrl(encodeURIComponent(judge.FullName), "variety")}`)
-            }
-            for (let judge of judgeData.judgesEx) {
-                linkList.push(`${judge.FullName}: ${this.getJudgeUrl(encodeURIComponent(judge.FullName), "exAiCombined")}`)
-            }
+            let judgeIndex = 0
+            judgeData.judgesDiff.forEach(() => {
+                linkList.push(`${judgeIndex}: ${this.getJudgeUrl(judgeIndex++, "diff")}`)
+            })
+            judgeData.judgesAi.forEach(() => {
+                linkList.push(`${judgeIndex}: ${this.getJudgeUrl(judgeIndex++, "variety")}`)
+            })
+            judgeData.judgesEx.forEach(() => {
+                linkList.push(`${judgeIndex}: ${this.getJudgeUrl(judgeIndex++, "exAiCombined")}`)
+            })
         }
 
         this.copyArea.value = linkList.join("\n")

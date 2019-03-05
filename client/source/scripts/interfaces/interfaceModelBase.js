@@ -63,14 +63,51 @@ class InterfaceModelBase {
             MainStore.serverTimeOffset = awsData.serverTime - Date.now()
         }
 
+        let userIdDirty = false
+        if (MainStore.judgeIndex !== undefined) {
+            let judgeIndex = 0
+            let judgeData = awsData.pool.judgeData
+            if (judgeData !== undefined) {
+                let newJudgeName = undefined
+                for (let judge of judgeData.judgesDiff) {
+                    if (judgeIndex === MainStore.judgeIndex) {
+                        newJudgeName = judge.FullName
+                    }
+
+                    ++judgeIndex
+                }
+                for (let judge of judgeData.judgesAi) {
+                    if (judgeIndex === MainStore.judgeIndex) {
+                        newJudgeName = judge.FullName
+                    }
+
+                    ++judgeIndex
+                }
+                for (let judge of judgeData.judgesEx) {
+                    if (judgeIndex === MainStore.judgeIndex) {
+                        newJudgeName = judge.FullName
+                    }
+
+                    ++judgeIndex
+                }
+
+                if (newJudgeName !== MainStore.userId) {
+                    MainStore.userId = newJudgeName
+
+                    userIdDirty = true
+                }
+            }
+        }
+
         return {
             poolDirty: poolDirty,
-            obsDirty: obsDirty
+            obsDirty: obsDirty,
+            userIdDirty: userIdDirty
         }
     }
 
-    updateResultsFromAws(results) {
-        if (this.obs.results === undefined) {
+    updateResultsFromAws(results, forceFill) {
+        if (this.obs.results === undefined || forceFill) {
             let foundResults = false
             for (let result of results) {
                 if (result.judgeName === MainStore.userId) {
@@ -108,8 +145,8 @@ class InterfaceModelBase {
             let pool = awsData.pool
             return DataAction.getPoolResults(pool.divisionIndex, pool.roundIndex, pool.poolIndex)
         }).then((results) => {
-            this.updateFromAws(awsData)
-            this.updateResultsFromAws(results)
+            let userIdDirty = this.updateFromAws(awsData).userIdDirty
+            this.updateResultsFromAws(results, userIdDirty)
         }).catch((error) => {
             console.log("Error: Set Playing Pool", error)
         })

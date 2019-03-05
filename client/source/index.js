@@ -44,6 +44,8 @@ require("./index.less")
         MainStore.startupTournamentName = url.searchParams.get("tournamentName")
         MainStore.tournamentName = MainStore.startupTournamentName
         MainStore.userId = url.searchParams.get("userId")
+        MainStore.judgeIndex = url.searchParams.get("judgeIndex")
+        MainStore.judgeIndex = MainStore.judgeIndex !== undefined && parseInt(MainStore.judgeIndex, 10)
         let headerParam = url.searchParams.get("header")
         MainStore.showControlsHeader = headerParam === null || headerParam === true
 
