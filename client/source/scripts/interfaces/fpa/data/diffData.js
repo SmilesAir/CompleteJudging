@@ -73,16 +73,16 @@ module.exports.getSummary = function(resultsData, teamIndex) {
 }
 
 module.exports.getOverlaySummary = function(data) {
-    return ` [Phrases: ${getPhraseCount(data.scores)}, Raw: ${getAverage(data.scores, 12, false).toFixed(2)}]`
+    return ` [Phrases: ${getPhraseCount(data.scores)}, Raw: ${getAverage(data.scores, data.scores.length, false).toFixed(2)}]`
 }
 
-function getAverage(scores, top, adjusted) {
+function getAverage(scores, count, adjusted) {
     let avg = 0
     for (let score of scores) {
         avg += adjusted ? getAdjustedScore(score) : score
     }
 
-    return avg / top
+    return avg / Math.max(1, count)
 }
 
 function getTopAverage(inScores, adjusted, routineLengthSeconds) {
