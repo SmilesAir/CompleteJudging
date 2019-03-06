@@ -219,14 +219,14 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         let judgeData = pool.judgeData
         if (judgeData !== undefined) {
             let judgeIndex = 0
-            judgeData.judgesDiff.forEach(() => {
-                linkList.push(`${judgeIndex}: ${this.getJudgeUrl(judgeIndex++, "diff")}`)
+            judgeData.judgesEx.forEach(() => {
+                linkList.push(`${judgeIndex}: ${this.getJudgeUrl(judgeIndex++, "exAiCombined")}`)
             })
             judgeData.judgesAi.forEach(() => {
                 linkList.push(`${judgeIndex}: ${this.getJudgeUrl(judgeIndex++, "variety")}`)
             })
-            judgeData.judgesEx.forEach(() => {
-                linkList.push(`${judgeIndex}: ${this.getJudgeUrl(judgeIndex++, "exAiCombined")}`)
+            judgeData.judgesDiff.forEach(() => {
+                linkList.push(`${judgeIndex}: ${this.getJudgeUrl(judgeIndex++, "diff")}`)
             })
         }
 

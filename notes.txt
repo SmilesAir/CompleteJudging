@@ -3,11 +3,10 @@ Don't ping backend when not an active interfaces
 Sometimes the scores don't report. Repo: variety quantity increment quickly
 something weird with updating routine length without refreshing page
 Time is wrong in announcer
-score on diff is annoying when editing
+scroll on diff is annoying when editing
 
 
 Judges. Are you finished popup
-Display judge names in head judger
 Livestream overlay
 .5 scores in ai
 Add a scratch for teams to get eta correct

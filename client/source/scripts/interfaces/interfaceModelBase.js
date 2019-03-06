@@ -69,7 +69,7 @@ class InterfaceModelBase {
             let judgeData = awsData.pool.judgeData
             if (judgeData !== undefined) {
                 let newJudgeName = undefined
-                for (let judge of judgeData.judgesDiff) {
+                for (let judge of judgeData.judgesEx) {
                     if (judgeIndex === MainStore.judgeIndex) {
                         newJudgeName = judge.FullName
                     }
@@ -83,7 +83,7 @@ class InterfaceModelBase {
 
                     ++judgeIndex
                 }
-                for (let judge of judgeData.judgesEx) {
+                for (let judge of judgeData.judgesDiff) {
                     if (judgeIndex === MainStore.judgeIndex) {
                         newJudgeName = judge.FullName
                     }

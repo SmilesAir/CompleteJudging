@@ -89,10 +89,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     getJudgesElement() {
         let judgeData = this.obs.playingPool.judgeData
         if (judgeData !== undefined) {
-            let diffElements = judgeData.judgesDiff.map((judge) => {
+            let exAiElements = judgeData.judgesEx.map((judge) => {
                 return (
                     <div key={judge.FullName}>
-                        Diff: {judge.FullName}
+                        Ex/Ai: {judge.FullName}
                     </div>
                 )
             })
@@ -103,10 +103,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     </div>
                 )
             })
-            let exAiElements = judgeData.judgesEx.map((judge) => {
+            let diffElements = judgeData.judgesDiff.map((judge) => {
                 return (
                     <div key={judge.FullName}>
-                        Ex/Ai: {judge.FullName}
+                        Diff: {judge.FullName}
                     </div>
                 )
             })
@@ -114,9 +114,9 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             return (
                 <div>
                     Judges:
-                    {diffElements}
-                    {varietyElements}
                     {exAiElements}
+                    {varietyElements}
+                    {diffElements}
                 </div>
             )
         }
