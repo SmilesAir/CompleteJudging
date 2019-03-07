@@ -10,7 +10,8 @@ module.exports.getDefaultConstants = function() {
         name: "exAiCombined",
         startCountPerSecond: 0.08,
         endCountPerSecond: 0.333,
-        xScaler: 0.5
+        xScaler: 0.5,
+        baseScaler: 2
     }
 }
 
@@ -130,6 +131,8 @@ function getExScaler(phraseCount, routineLengthSeconds) {
 
 function calcDeductions(data, phraseCount, routineLengthSeconds) {
     let raw = data.point1Count * .1 + data.point2Count * .2 + data.point3Count * .3 + data.point5Count * .5
+
+    raw *= MainStore.constants.exAiCombined.baseScaler
     
     return raw * getExScaler(phraseCount, routineLengthSeconds)
 }

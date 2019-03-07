@@ -13,7 +13,33 @@ module.exports.getDefaultConstants = function() {
         offset: 0,
         power: 1.5,
         scale: .45,
-        topPerSecond: .066667
+        topPerSecond: .066667,
+        gradientLines: [
+            {
+                sCountPerSecond: 0,
+                eCountPerSecond: 4 / 60,
+                sY: 1,
+                eY: .8
+            },
+            {
+                sCountPerSecond: 4 / 60,
+                eCountPerSecond: 8 / 60,
+                sY: .3,
+                eY: .1
+            },
+            {
+                sCountPerSecond: 8 / 60,
+                eCountPerSecond: 16 / 60,
+                sY: .1,
+                eY: 0
+            },
+            {
+                sCountPerSecond: 0,
+                eCountPerSecond: Infinity,
+                sY: 0,
+                eY: 0
+            }
+        ]
     }
 }
 
@@ -85,7 +111,7 @@ function getAverage(scores, count, adjusted) {
     return avg / Math.max(1, count)
 }
 
-function getTopAverage(inScores, adjusted, routineLengthSeconds) {
+function sortScores(inScores) {
     let scores = inScores.slice(0)
     scores.sort((a, b) => {
         if (a > b) {
@@ -97,6 +123,12 @@ function getTopAverage(inScores, adjusted, routineLengthSeconds) {
         return 0
     })
 
+    return scores
+}
+
+function getTopAverage(inScores, adjusted, routineLengthSeconds) {
+    let scores = sortScores(inScores)
+
     let top = Math.round(MainStore.constants.diff.topPerSecond * routineLengthSeconds)
     return getAverage(scores.slice(Math.max(0, getPhraseCount(scores) - top)), top, adjusted)
 }
@@ -104,6 +136,45 @@ function getTopAverage(inScores, adjusted, routineLengthSeconds) {
 function getAdjustedScore(score) {
     let constants = MainStore.constants.diff
     return Math.pow(Math.max(0, score + constants.offset), constants.power) * constants.scale
+}
+
+function generateGradientArray(count, routineLengthSeconds) {
+    let gradientArray = []
+    for (let i = 0; i < count; ++i) {
+        for (let line of MainStore.constants.diff.gradientLines) {
+            let sX = line.sCountPerSecond * routineLengthSeconds
+            let eX = line.eCountPerSecond * routineLengthSeconds
+            if (i >= sX && i <= eX) {
+                let dx = i - sX
+                let slope = (line.eY - line.sY) / (eX - sX)
+                gradientArray.push(line.sY + slope * dx)
+                break
+            }
+        }
+    }
+
+    return gradientArray
+}
+
+function getGradientScore(scores, adjusted, routineLengthSeconds) {
+    let sortedScores = sortScores(scores)
+
+    
+    let asdf = 0
+    let gradientArray = generateGradientArray(scores.length, routineLengthSeconds)
+    let totalScore = 0
+    for (let i = 0; i < sortedScores.length; ++i) {
+        let score = sortedScores[i]
+        totalScore += (adjusted ? getAdjustedScore(score) : score) * gradientArray[i]
+
+        if (i > 12) {
+            asdf += (adjusted ? getAdjustedScore(score) : score) * gradientArray[i]
+        }
+    }
+
+    console.log(totalScore / (4 / 60 * routineLengthSeconds), asdf / (4 / 60 * routineLengthSeconds))
+
+    return totalScore / (4 / 60 * routineLengthSeconds)
 }
 
 module.exports.getInspected = function(resultData, teamIndex) {
@@ -133,7 +204,7 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
         Phrases: getPhraseCount(data.scores)
     })
     processed.push({
-        Score: getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
+        Score: getGradientScore(data.scores, true, preProcessedData.routineLengthSeconds)
     })
 
     return processed
@@ -145,13 +216,13 @@ module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedDa
 
 module.exports.getScoreboardProcessed = function(data, preProcessedData, processedData) {
     processedData.phrases = Math.round(preProcessedData.totalPhraseCount / preProcessedData.diffJudgeCount)
-    processedData.diff = (processedData.diff || 0) + getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
+    processedData.diff = (processedData.diff || 0) + getGradientScore(data.scores, true, preProcessedData.routineLengthSeconds)
 
     return undefined
 }
 
 module.exports.getCategoryResultsProcessed = function(data, preProcessedData, processedData) {
-    processedData.diff = (processedData.diff || 0) + getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
+    processedData.diff = (processedData.diff || 0) + getGradientScore(data.scores, true, preProcessedData.routineLengthSeconds)
 
     return undefined
 }
@@ -169,7 +240,7 @@ module.exports.getDiffDetailedProcessed = function(data, preProcessedData) {
         Raw: getAverage(data.scores, data.scores.length, false)
     })
     processed.push({
-        Score: getTopAverage(data.scores, true, preProcessedData.routineLengthSeconds)
+        Score: getGradientScore(data.scores, true, preProcessedData.routineLengthSeconds)
     })
 
     return processed
