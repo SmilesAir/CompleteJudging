@@ -112,6 +112,8 @@ module.exports = class extends InterfaceModelBase {
             this.obs.playingPool = new DataStore.PoolData(awsData.pool)
             this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
             this.obs.routineLengthSeconds = awsData.observable.routineLengthSeconds
+
+            this.awsData = awsData
         }
     }
 
