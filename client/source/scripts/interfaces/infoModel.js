@@ -3,6 +3,7 @@ const Enums = require("scripts/stores/enumStore.js")
 const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
+const FetchAction = require("scripts/actions/fetchAction.js")
 
 module.exports = class extends InterfaceModelBase {
     constructor() {
@@ -13,7 +14,6 @@ module.exports = class extends InterfaceModelBase {
     }
 
     init() {
-
         this.refreshTournamentInfoList().then(() => {
             if (MainStore.startupTournamentName) {
                 for (let info of MainStore.tournamentInfoList) {
@@ -38,7 +38,7 @@ module.exports = class extends InterfaceModelBase {
     }
 
     refreshTournamentInfoList() {
-        return fetch("https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/getActiveTournaments",
+        return FetchAction.fetch("getActiveTournaments",
             {
                 method: "GET",
                 headers: {
