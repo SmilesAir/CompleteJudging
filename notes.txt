@@ -10,6 +10,7 @@ Judges. Are you finished popup
 Livestream overlay
 .5 scores in ai
 Add a scratch for teams to get eta correct
+Exporting results should have full names
 
 
 rename data classes for more clarity between DataModel and the data inside it
