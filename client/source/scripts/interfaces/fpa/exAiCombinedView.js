@@ -26,8 +26,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     majorCount: 0,
                     score: 0
                 },
-                general: {
-                    name: "General",
+                form: {
+                    name: "Form",
                     minorCount: 0,
                     majorCount: 0,
                     score: 0
@@ -50,7 +50,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         if (teamResults !== undefined) {
             this.state.aiCounters.music.score = teamResults.getAiData("music").score
             this.state.aiCounters.teamwork.score = teamResults.getAiData("teamwork").score
-            this.state.aiCounters.general.score = teamResults.getAiData("general").score
+            this.state.aiCounters.form.score = teamResults.getAiData("form").score
 
             this.state.pointDeductions["1"] = teamResults.getPointCount(1)
             this.state.pointDeductions["2"] = teamResults.getPointCount(2)

@@ -23,7 +23,7 @@ class TeamExAiCombinedScores {
         this.teamwork = {
             score: 0
         }
-        this.general = {
+        this.form = {
             score: 0
         }
         this.point1Count = 0
@@ -83,16 +83,16 @@ module.exports.DataClass = class extends DataStore.ResultsDataBase {
         if (results !== undefined) {
             for (let i = 0; i < results.teamScoreList.length; ++i) {
                 let data = results.teamScoreList[i]
-                this.setScores(i, data.music, data.teamwork, data.general, data.point1Count, data.point2Count, data.point3Count, data.point5Count)
+                this.setScores(i, data.music, data.teamwork, data.form, data.point1Count, data.point2Count, data.point3Count, data.point5Count)
             }
         }
     }
 
-    setScores(teamIndex, music, teamwork, general, p1, p2, p3, p5) {
+    setScores(teamIndex, music, teamwork, form, p1, p2, p3, p5) {
         let team = this.teamScoreList[teamIndex]
         team.music = music
         team.teamwork = teamwork
-        team.general = general
+        team.form = form
         team.point1Count = p1
         team.point2Count = p2
         team.point3Count = p3
@@ -110,7 +110,7 @@ module.exports.getTotalDeductions = function(resultsData, teamIndex) {
 }
 
 function calcAiScore(data) {
-    return (data.music.score + data.teamwork.score + data.general.score) / 3
+    return (data.music.score + data.teamwork.score + data.form.score) / 3
 }
 
 // https://www.wolframalpha.com/input/?i=y+%3D+(((50+-+x+%2F+2)+%2F+50)+%5E+2),+x+from+0+to+50
@@ -149,7 +149,7 @@ module.exports.getSummary = function(resultsData, teamIndex) {
 }
 
 module.exports.getOverlaySummary = function(data) {
-    return ` [M: ${data.music.score}, T: ${data.teamwork.score}, G: ${data.general.score}, Ex: ${calcDeductions(data).toFixed(2)}]`
+    return ` [M: ${data.music.score}, T: ${data.teamwork.score}, F: ${data.form.score}, Ex: ${calcDeductions(data).toFixed(2)}]`
 }
 
 module.exports.getFullProcessed = function(data, preProcessedData) {
@@ -205,7 +205,7 @@ module.exports.getExAiCombinedDetailedProcessed = function(data, preProcessedDat
         Team: data.teamwork.score
     })
     processed.push({
-        Gen: data.general.score
+        Form: data.form.score
     })
     processed.push({
         Score: calcAiScore(data)
