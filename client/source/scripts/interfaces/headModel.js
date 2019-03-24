@@ -6,6 +6,7 @@ const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
+const EndpointStore = require("scripts/stores/endpointStore.js")
 
 module.exports = class extends InterfaceModelBase {
     constructor() {
@@ -122,7 +123,7 @@ module.exports = class extends InterfaceModelBase {
     }
 
     sendDataToAWS() {
-        fetch("https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/setPlayingPool",
+        fetch(EndpointStore.buildUrl("SET_PLAYING_POOL"),
             {
                 method: "POST",
                 headers: {
@@ -204,7 +205,9 @@ module.exports = class extends InterfaceModelBase {
         DataAction.fillPoolResults(this.obs.playingPool).then(() => {
             let data = DataAction.getScoreboardResultsProcessed(this.obs.playingPool, this.obs.routineLengthSeconds, true)
 
-            fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/tournamentName/${MainStore.tournamentName}/setScoreboardData`, {
+            fetch(EndpointStore.buildUrl("SET_SCOREBOARD_DATA", {
+                tournamentName: MainStore.tournamentName
+            }), {
                 method: "POST",
                 body: JSON.stringify({
                     scoreboardData: {
@@ -227,7 +230,9 @@ module.exports = class extends InterfaceModelBase {
         DataAction.fillPoolResults(this.obs.playingPool).then(() => {
             let data = DataAction.getScoreboardResultsProcessed(this.obs.playingPool, this.obs.routineLengthSeconds)
 
-            fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/tournamentName/${MainStore.tournamentName}/setScoreboardData`, {
+            fetch(EndpointStore.buildUrl("SET_SCOREBOARD_DATA", {
+                tournamentName: MainStore.tournamentName
+            }), {
                 method: "POST",
                 body: JSON.stringify({
                     scoreboardData: {

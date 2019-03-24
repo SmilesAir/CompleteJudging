@@ -15,8 +15,11 @@
     "main": "index.js",
     "scripts": {
         "start": "npm i && codeglue --mode=server --stage=development",
+        "start:production": "npm i && codeglue --mode=server --stage=production",
         "start:only": "codeglue --mode=server --stage=development",
-        "deploy": "aws s3 sync ./builds/web s3://completejudging-development"
+        "build:production": "codeglue --stage=production",
+        "deploy": "aws s3 sync ./builds/web s3://completejudging-development",
+        "deploy:production": "npm i && npm run build:production && aws s3 sync ./builds/web s3://completejudging-production"
     },
     "dependencies": {
         "aws-sdk": "^2.316.0",

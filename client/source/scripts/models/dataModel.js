@@ -1,6 +1,7 @@
 
 const MainStore = require("scripts/stores/mainStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
+const EndpointStore = require("scripts/stores/endpointStore.js")
 
 module.exports = class {
     constructor() {
@@ -31,7 +32,7 @@ module.exports = class {
     }
 
     async getConstantsFromCloud() {
-        await fetch("https://s3-us-west-2.amazonaws.com/completejudging-constants/base-constants.json", {
+        await fetch(EndpointStore.buildUrl("GET_CONSTANTS"), {
             method: "GET",
             headers: {
                 "Pragma": "no-cache",

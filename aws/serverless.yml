@@ -12,8 +12,8 @@ provider:
     TOURNAMENT_INFO: ${self:provider.stage}-tournamentInfo
     ACTIVE_POOLS: ${self:provider.stage}-activePools
     ACTIVE_RESULTS: ${self:provider.stage}-activeResults
-    RESULTS_BUCKET: completejudging-results
-    CONSTANTS_BUCKET: completejudging-constants
+    RESULTS_BUCKET: ${self:provider.stage}-completejudging-results
+    CONSTANTS_BUCKET: ${self:provider.stage}-completejudging-constants
 
   iamRoleStatements:
     - Effect: Allow
@@ -190,7 +190,25 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:provider.environment.RESULTS_BUCKET}
+        CorsConfiguration:
+          CorsRules:
+            -
+              AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
     constantsBucket:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:provider.environment.CONSTANTS_BUCKET}
+        CorsConfiguration:
+          CorsRules:
+            -
+              AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET

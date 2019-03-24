@@ -6,6 +6,7 @@ const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
 const ResultsView = require("scripts/views/resultsView.js")
+const EndpointStore = require("scripts/stores/endpointStore.js")
 
 require("./infoView.less")
 
@@ -312,7 +313,7 @@ class PlayerAndTeams extends React.Component {
     onSubmit(event) {
         event.preventDefault()
 
-        fetch("https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/createTournament", {
+        fetch(EndpointStore.buildUrl("CREATE_TOURNAMENT"), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

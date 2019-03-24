@@ -3,6 +3,7 @@ const Enums = require("scripts/stores/enumStore.js")
 const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const VarietyData = require("scripts/interfaces/fpa/data/varietyData.js")
+const EndpointStore = require("scripts/stores/endpointStore.js")
 
 module.exports = class extends InterfaceModelBase {
     constructor() {
@@ -35,7 +36,7 @@ module.exports = class extends InterfaceModelBase {
     }
 
     reportScores() {
-        fetch("https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/reportJudgeScore",
+        fetch(EndpointStore.buildUrl("REPORT_JUDGE_SCORE"),
             {
                 method: "POST",
                 headers: {

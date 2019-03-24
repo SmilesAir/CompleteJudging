@@ -5,6 +5,7 @@ const Enums = require("scripts/stores/enumStore.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
+const EndpointStore = require("scripts/stores/endpointStore.js")
 
 class InterfaceModelBase {
     constructor() {
@@ -127,14 +128,14 @@ class InterfaceModelBase {
 
     queryPoolData(tournamentName) {
         let awsData = undefined
-        fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/getPlayingPool?tournamentName=${tournamentName}`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
+        fetch(EndpointStore.buildUrl("GET_PLAYING_POOL", undefined, {
+            tournamentName: tournamentName
+        }), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
             }
-        ).then((response) => {
+        }).then((response) => {
             if (response.status < 400) {
                 return response.json()
             } else {
@@ -220,14 +221,15 @@ class InterfaceModelBase {
 
     queryBackupResults() {
         let startTime = this.backupResultsList.length > 0 ? this.backupResultsList[this.backupResultsList.length - 1].time : 0
-        fetch(`https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/judge/${MainStore.userId}/time/${startTime}/getBackupResults`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
+        fetch(EndpointStore.buildUrl("GET_BACKUP_RESULTS", {
+            judge: MainStore.userId,
+            time: startTime
+        }), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
             }
-        ).then((response) => {
+        }).then((response) => {
             if (response.status < 400) {
                 return response.json()
             } else {

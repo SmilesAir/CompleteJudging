@@ -102,7 +102,7 @@ module.exports = class extends InterfaceModelBase {
     }
 
     reportScores() {
-        fetch("https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com/development/reportJudgeScore",
+        fetch(EndpointStore.buildUrl("REPORT_JUDGE_SCORE"),
             {
                 method: "POST",
                 headers: {

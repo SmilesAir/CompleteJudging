@@ -1,0 +1,10 @@
+{
+    "name": "complete-judging",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+      "deploy": "sls deploy",
+      "deploy:production": "sls deploy --stage production"
+    }
+  }
+  
