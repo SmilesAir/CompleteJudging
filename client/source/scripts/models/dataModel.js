@@ -105,6 +105,24 @@ module.exports = class {
         return undefined
     }
 
+    getGeneralImpressionSummary(data, teamIndex) {
+        let model = this.getModel(data)
+        if (model !== undefined) {
+            if (model.getOverlaySummary !== undefined) {
+                return ` [General Impression: ${data.teamScoreList[teamIndex].general}]`
+            }
+        }
+
+        return undefined
+    }
+
+    setCurrentTeamGeneral(score) {
+        let model = this.getModel(MainStore.interfaceObs.results)
+        if (model !== undefined && MainStore.interfaceObs.playingTeamIndex !== undefined) {
+            MainStore.interfaceObs.results.teamScoreList[MainStore.interfaceObs.playingTeamIndex].general = score
+        }
+    }
+
     getResultsInspected(resultData, teamIndex) {
         let model = this.getModel(resultData.data)
         if (model !== undefined) {

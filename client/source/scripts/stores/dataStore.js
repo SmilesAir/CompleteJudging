@@ -56,4 +56,8 @@ module.exports.ResultsDataBase = class {
         this.poolIndex = poolIndex
         this.teamList = teamList
     }
+
+    setGeneral(teamIndex, score) {
+        this.teamScoreList[teamIndex].general = score || 0
+    }
 }

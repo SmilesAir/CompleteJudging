@@ -4,6 +4,7 @@ const Mobx = require("mobx")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
 const Enums = require("scripts/stores/enumStore.js")
+const DataBase = require("scripts/stores/dataBase.js")
 
 module.exports.getDefaultConstants = function() {
     return {
@@ -15,8 +16,10 @@ module.exports.getDefaultConstants = function() {
     }
 }
 
-class TeamExAiCombinedScores {
+class TeamExAiCombinedScores extends DataBase {
     constructor() {
+        super()
+
         this.music = {
             score: 0
         }
@@ -83,6 +86,8 @@ module.exports.DataClass = class extends DataStore.ResultsDataBase {
         if (results !== undefined) {
             for (let i = 0; i < results.teamScoreList.length; ++i) {
                 let data = results.teamScoreList[i]
+
+                this.setGeneral(i, data.general)
                 this.setScores(i, data.music, data.teamwork, data.form, data.point1Count, data.point2Count, data.point3Count, data.point5Count)
             }
         }

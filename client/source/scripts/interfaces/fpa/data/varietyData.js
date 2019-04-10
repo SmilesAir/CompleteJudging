@@ -4,6 +4,7 @@ const Mobx = require("mobx")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
 const Enums = require("scripts/stores/enumStore.js")
+const DataBase = require("scripts/stores/dataBase.js")
 
 module.exports.getDefaultConstants = function() {
     return {
@@ -12,8 +13,10 @@ module.exports.getDefaultConstants = function() {
     }
 }
 
-class TeamVarietyScores {
+class TeamVarietyScores extends DataBase {
     constructor() {
+        super()
+        
         this.quantityScore = 0
         this.qualityScore = 0
     }
@@ -33,6 +36,8 @@ module.exports.DataClass = class extends DataStore.ResultsDataBase {
         if (results !== undefined) {
             for (let resultIndex = 0; resultIndex < results.teamScoreList.length; ++resultIndex) {
                 let data = results.teamScoreList[resultIndex]
+
+                this.setGeneral(resultIndex, data.general)
                 this.setScores(resultIndex, data.quantityScore, data.qualityScore)
             }
         }

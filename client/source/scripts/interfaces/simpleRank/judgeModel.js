@@ -100,23 +100,6 @@ module.exports = class extends InterfaceModelBase {
 
         this.obs.playingTeamIndex = teamList.indexOf(playingTeam)
     }
-
-    reportScores() {
-        fetch(EndpointStore.buildUrl("REPORT_JUDGE_SCORE"),
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    tournamentName: MainStore.tournamentName,
-                    judgeId: MainStore.userId,
-                    results: this.obs.results
-                })
-            }).catch((error) => {
-            console.log("Report Scores Error:", error)
-        })
-    }
 }
 
 class ResultsDataRank extends DataStore.ResultsDataBase {

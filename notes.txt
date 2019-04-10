@@ -4,6 +4,7 @@ Sometimes the scores don't report. Repo: variety quantity increment quickly
 something weird with updating routine length without refreshing page
 Time is wrong in announcer
 scroll on diff is annoying when editing
+Fix fucking codeglue. Remove the mode prop so production stage works
 
 
 Judges. Are you finished popup

@@ -16,6 +16,7 @@ const DiffView = require("scripts/interfaces/fpa/diffView.js")
 const VarietyView = require("scripts/interfaces/fpa/varietyView.js")
 const DataAction = require("scripts/actions/dataAction.js")
 const OverlayView = require("scripts/views/overlayView.js")
+const FinishView = require("scripts/views/finishView.js")
 const DiffInspectorView = require("scripts/interfaces/fpa/diffInspectorView.js")
 const ExAiCombinedView = require("scripts/interfaces/fpa/exAiCombinedView.js")
 const AnnouncerView = require("scripts/interfaces/announcerView.js")
@@ -69,6 +70,7 @@ require("./index.less")
                 <HeaderView />
                 <InterfaceView />
                 <OverlayView />
+                <FinishView />
                 {
                     this.state.showFullscreenPrompt ? <BlockPromptView promptText="Go Fullscreen" onClick={() => {
                         document.body.requestFullscreen()

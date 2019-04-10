@@ -5,6 +5,7 @@ const Mobx = require("mobx")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
 const Enums = require("scripts/stores/enumStore.js")
+const DataBase = require("scripts/stores/dataBase.js")
 
 module.exports.getDefaultConstants = function() {
     // https://www.wolframalpha.com/input/?i=y+%3D+((x)+%5E+1.5)+*+.45,+x+%3D+0+to+10
@@ -43,8 +44,10 @@ module.exports.getDefaultConstants = function() {
     }
 }
 
-class TeamDiffScores {
+class TeamDiffScores extends DataBase {
     constructor() {
+        super()
+
         this.scores = Mobx.observable([])
     }
 
@@ -67,6 +70,9 @@ module.exports.DataClass = class extends DataStore.ResultsDataBase {
         if (results !== undefined) {
             for (let resultIndex = 0; resultIndex < results.teamScoreList.length; ++resultIndex) {
                 let data = results.teamScoreList[resultIndex]
+
+                this.setGeneral(resultIndex, data.general)
+
                 for (let score of data.scores) {
                     this.addScore(resultIndex, score)
                 }

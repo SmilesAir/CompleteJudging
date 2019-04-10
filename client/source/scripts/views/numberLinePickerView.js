@@ -29,8 +29,8 @@ require("./numberLinePickerView.less")
     }
 
     updateNumberOut(posX) {
-        let parent = this.touchAreaRef.current
-        let inputX = Math.max(0, Math.min(1, (posX - parent.offsetLeft * 1.15) / (parent.offsetWidth * .92)))
+        let rect = this.touchAreaRef.current.getBoundingClientRect()
+        let inputX = Math.max(0, Math.min(1, (posX - rect.left) / (rect.width * .92)))
 
         this.state.numberOut = inputX * 10
         this.setState(this.state)

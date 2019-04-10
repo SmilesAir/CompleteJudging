@@ -9,8 +9,10 @@ const EndpointStore = require("scripts/stores/endpointStore.js")
 
 class InterfaceModelBase {
     constructor() {
+        this.name = "No Model Name"
         this.type = Enums.EInterface.invalid
         this.updateIntervalMs = 3000
+        this.needShowFinishView = true
 
         this.obs = Mobx.observable({
             routineLengthSeconds: 60,
@@ -30,6 +32,23 @@ class InterfaceModelBase {
 
     setObs(obs) {
         MainStore.interfaceObs = obs
+    }
+
+    reportScores() {
+        fetch(EndpointStore.buildUrl("REPORT_JUDGE_SCORE"),
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    tournamentName: MainStore.tournamentName,
+                    judgeId: MainStore.userId,
+                    results: this.obs.results
+                })
+            }).catch((error) => {
+            console.log("Report Scores Error:", error)
+        })
     }
 
     updateFromAws(awsData) {
@@ -162,6 +181,9 @@ class InterfaceModelBase {
             clearInterval(this.routineUpdateHandle)
         }
 
+        this.needShowFinishView = true
+        MainStore.isRoutineTimeElapsed = false
+
         this.routineUpdateHandle = setInterval(() => {
             this.onRoutineUpdate()
         }, 200)
@@ -169,10 +191,20 @@ class InterfaceModelBase {
 
     onRoutineUpdate() {
         MainStore.routineTimeMs = this.obs.startTime !== undefined ? Date.now() - this.obs.startTime + MainStore.serverTimeOffset : undefined
+
+        MainStore.isRoutineTimeElapsed = this.hasRoutineTimeElapsed()
     }
 
     onRoutineStop() {
         clearInterval(this.routineUpdateHandle)
+
+        this.onRoutineUpdate()
+
+        MainStore.isRoutineTimeElapsed = false
+    }
+
+    hasRoutineTimeElapsed() {
+        return MainStore.routineTimeMs / 1000 > this.obs.routineLengthSeconds
     }
 
     isEditing() {

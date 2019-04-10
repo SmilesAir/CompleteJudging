@@ -4,12 +4,14 @@ const MobxReact = require("mobx-react")
 
 const MainStore = require("scripts/stores/mainStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
-const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataStore = require("scripts/stores/dataStore.js")
+const NumberLinePickerView = require("scripts/views/numberLinePickerView.js")
+const CommonAction = require("scripts/actions/commonAction.js")
+const Interfaces = require("scripts/interfaces/interfaces.js")
 
-require("./overlayView.less")
+require("./finishView.less")
 
-@MobxReact.observer class OverlayView extends React.Component {
+@MobxReact.observer class FinishView extends React.Component {
     constructor() {
         super()
 
@@ -27,38 +29,15 @@ require("./overlayView.less")
                 <div>
                     {MainStore.userId}
                 </div>
-                <div className="backupControlsContainer">
-                    <button onClick={() => this.onBackupModeEnableClick()}>{MainStore.interfaceObs.backupModeEnabled ? "Disable Backup Mode" : "Enabled Backup Mode"}</button>
-                    <button disabled={!MainStore.interfaceObs.backupModeEnabled} onClick={() => Interfaces.activeInterface.moveToNewerBackup()}>Newer</button>
-                    <button disabled={!MainStore.interfaceObs.backupModeEnabled} onClick={() => Interfaces.activeInterface.moveToOlderBackup()}>Older</button>
-                </div>
             </div>
         )
-    }
-
-    onBackupModeEnableClick() {
-        MainStore.interfaceObs.backupModeEnabled = !MainStore.interfaceObs.backupModeEnabled
-
-        if (MainStore.interfaceObs.backupModeEnabled) {
-            Interfaces.activeInterface.initBackupMode()
-        }
-    }
-
-    onTeamSelected(teamIndex) {
-        if (teamIndex === MainStore.interfaceObs.playingTeamIndex) {
-            MainStore.interfaceObs.editTeamIndex = undefined
-        } else {
-            MainStore.interfaceObs.editTeamIndex = teamIndex
-        }
-
-        Interfaces.activeInterface.fillWithResults()
     }
 
     getTeamText(playersList, teamIndex) {
         let scoreString = ""
         let results = MainStore.interfaceObs.results
         if (results !== undefined) {
-            scoreString = DataStore.dataModel.getOverlaySummary(results, teamIndex)
+            scoreString = DataStore.dataModel.getGeneralImpressionSummary(results, teamIndex)
         }
 
         return DataAction.getTeamPlayersShort(playersList) + scoreString
@@ -69,7 +48,6 @@ require("./overlayView.less")
         if (MainStore.interfaceObs !== undefined && MainStore.interfaceObs.playingPool !== undefined) {
             let key = 0
             teamViews = MainStore.interfaceObs.playingPool.teamList.map((playersList) => {
-                let isEditing = MainStore.interfaceObs.editTeamIndex === key
                 let isPlaying = MainStore.interfaceObs.playingTeamIndex === key
                 let teamIndex = key
                 return (
@@ -77,7 +55,7 @@ require("./overlayView.less")
                         key={key++}
                         className={`teamContainer ${isPlaying ? "playing" : ""}`}
                         onClick={() => this.onTeamSelected(teamIndex)}>
-                        {this.getTeamText(playersList, teamIndex)}{isEditing ? " - EDITING" : ""}
+                        {this.getTeamText(playersList, teamIndex)}
                     </div>
                 )
             })
@@ -91,31 +69,52 @@ require("./overlayView.less")
     }
 
     getInputComponent() {
-        return <div className="overlayInputContainer"
-            onClick={(event) => this.onPointerDown(event)}/>
+        return (
+            <div className="finishInputContainer" onClick={(event) => this.onPointerDown(event)}>
+                Click To Finish
+            </div>
+        )
     }
 
-    onPointerDown() {
-        if (!this.state.enabled && MainStore.isRoutineTimeElapsed) {
-            return
-        }
+    onPointerDown(event) {
+        event.preventDefault()
 
         this.state.enabled = !this.state.enabled
+        this.setState(this.state)
+    }
+
+    onInputEnd(number) {
+        CommonAction.vibrateSingleMedium()
+
+        DataStore.dataModel.setCurrentTeamGeneral(number)
+
+        Interfaces.activeInterface.reportScores()
+
+        this.forceUpdate()
+    }
+
+    onFinishClick() {
+        Interfaces.activeInterface.needShowFinishView = false
+        
+        this.state.enabled = false
         this.setState(this.state)
     }
     
     render() {
         if (this.state.enabled) {
             return (
-                <div className="overlayContainer">
-                    {this.getInputComponent()}
+                <div className="finishContainer">
                     {this.getHeader()}
                     {this.getInfo()}
+                    <NumberLinePickerView className="input" onInputEnd={(event) => this.onInputEnd(event)}/>
+                    <button className="finish" onClick={() => this.onFinishClick()}>Finished</button>
                 </div>
             )
-        } else {
+        } else if (MainStore.isRoutineTimeElapsed && Interfaces.activeInterface.needShowFinishView) {
             return this.getInputComponent()
+        } else {
+            return null
         }
     }
 }
-module.exports = OverlayView
+module.exports = FinishView
