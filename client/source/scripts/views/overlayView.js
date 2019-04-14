@@ -96,7 +96,7 @@ require("./overlayView.less")
     }
 
     onPointerDown() {
-        if (!this.state.enabled && MainStore.isRoutineTimeElapsed) {
+        if (!this.state.enabled && !MainStore.isRoutineTimeElapsed) {
             return
         }
 

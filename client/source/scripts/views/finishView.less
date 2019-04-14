@@ -13,9 +13,10 @@
     grid-template-areas:
         "header"
         "scores"
+        "instruction"
         "input"
         "finish";
-    grid-template-rows: auto 5fr 1fr 1fr;
+    grid-template-rows: auto 5fr auto 1fr 1fr;
 
     background-color: lightgoldenrodyellow;
 
@@ -35,6 +36,18 @@
 
     .playing {
         font-weight: bold;
+    }
+
+    .instruction {
+        grid-area: instruction;
+
+        display: flex;
+
+        font-size: 5vw;
+
+        align-content: center;
+        align-items: center;
+        justify-content: center;
     }
 
     .input {

@@ -106,6 +106,7 @@ require("./finishView.less")
                 <div className="finishContainer">
                     {this.getHeader()}
                     {this.getInfo()}
+                    <div className="instruction">Enter General Impression Score</div>
                     <NumberLinePickerView className="input" onInputEnd={(event) => this.onInputEnd(event)}/>
                     <button className="finish" onClick={() => this.onFinishClick()}>Finished</button>
                 </div>
