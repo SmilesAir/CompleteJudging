@@ -120,6 +120,10 @@ module.exports = class extends InterfaceModelBase {
         }
 
         this.obs.poolState = awsData.state
+
+        return {
+            userIdDirty: false
+        }
     }
 
     updateResultsFromAws() {

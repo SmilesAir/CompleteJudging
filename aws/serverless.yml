@@ -148,8 +148,8 @@ resources:
           - AttributeName: key
             KeyType: HASH
         ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
     tournamentInfo:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -174,8 +174,8 @@ resources:
           - AttributeName: key
             KeyType: HASH
         ProvisionedThroughput:
-          ReadCapacityUnits: 3
-          WriteCapacityUnits: 3
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
     activeResults:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -191,8 +191,8 @@ resources:
           - AttributeName: time
             KeyType: RANGE
         ProvisionedThroughput:
-          ReadCapacityUnits: 3
-          WriteCapacityUnits: 3
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
     resultsBucket:
       Type: AWS::S3::Bucket
       Properties:
