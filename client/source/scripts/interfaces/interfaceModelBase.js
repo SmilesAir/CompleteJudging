@@ -65,6 +65,8 @@ class InterfaceModelBase {
             if (this.obs.playingTeamIndex !== awsData.observable.playingTeamIndex) {
                 this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
 
+                this.sendState(Enums.EStatus.ready)
+
                 this.fillWithResults()
             }
 
@@ -113,6 +115,8 @@ class InterfaceModelBase {
 
                 if (newJudgeName !== MainStore.userId) {
                     MainStore.userId = newJudgeName
+
+                    this.sendState(Enums.EStatus.opened)
 
                     userIdDirty = true
                 }
@@ -183,6 +187,8 @@ class InterfaceModelBase {
 
         this.needShowFinishView = true
         MainStore.isRoutineTimeElapsed = false
+
+        this.sendState(Enums.EStatus.ready)
 
         this.routineUpdateHandle = setInterval(() => {
             this.onRoutineUpdate()
@@ -296,6 +302,23 @@ class InterfaceModelBase {
             
             this.fillWithResults()
         }
+    }
+
+    sendState(status) {
+        fetch(EndpointStore.buildUrl("SET_JUDGE_STATE", {
+            tournamentName: MainStore.tournamentName
+        }), {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                judgeId: MainStore.userId,
+                status: status
+            })
+        }).catch((error) => {
+            console.log("Send state Error:", error)
+        })
     }
 }
 module.exports = InterfaceModelBase

@@ -127,6 +127,13 @@ functions:
           path: tournamentName/{tournamentName}/setScoreboardData
           method: post
           cors: true
+  setJudgeState:
+    handler: source/setJudgeState.handler
+    events:
+      - http:
+          path: tournamentName/{tournamentName}/setJudgeState
+          method: post
+          cors: true
 
 resources:
   Resources:

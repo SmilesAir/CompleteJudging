@@ -10,6 +10,7 @@ const urls = {
     GET_POOL_RESULTS: "<path>/<stage>/getPoolResults",
     GET_S3_RESULTS: "https://s3-us-west-2.amazonaws.com/<stage>-completejudging-results/<tournamentName>-results.json",
     REPORT_JUDGE_SCORE: "<path>/<stage>/reportJudgeScore",
+    SET_JUDGE_STATE: "<path>/<stage>/tournamentName/<tournamentName>/setJudgeState",
     SET_PLAYING_POOL: "<path>/<stage>/setPlayingPool",
     SET_SCOREBOARD_DATA: "<path>/<stage>/tournamentName/<tournamentName>/setScoreboardData"
 }

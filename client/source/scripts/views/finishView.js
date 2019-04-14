@@ -8,6 +8,7 @@ const DataStore = require("scripts/stores/dataStore.js")
 const NumberLinePickerView = require("scripts/views/numberLinePickerView.js")
 const CommonAction = require("scripts/actions/commonAction.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
+const Enums = require("scripts/stores/enumStore.js")
 
 require("./finishView.less")
 
@@ -95,6 +96,8 @@ require("./finishView.less")
 
     onFinishClick() {
         Interfaces.activeInterface.needShowFinishView = false
+
+        Interfaces.activeInterface.sendState(Enums.EStatus.finished)
         
         this.state.enabled = false
         this.setState(this.state)

@@ -15,3 +15,10 @@ module.exports.EInterface = {
     announcer: 10,
     scoreboard: 11
 }
+
+module.exports.EStatus = {
+    none: 0,
+    ready: 1,
+    finished: 2,
+    opened: 3,
+}

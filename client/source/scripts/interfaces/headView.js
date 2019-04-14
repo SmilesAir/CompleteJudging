@@ -4,6 +4,7 @@ const MobxReact = require("mobx-react")
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
+const Enums = require("scripts/stores/enumStore.js")
 
 require("./headView.less")
 
@@ -86,27 +87,48 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.interface.setPassiveMode(!this.obs.passiveMode)
     }
 
+    getJudgeStatusString(status) {
+        switch (status) {
+        case Enums.EStatus.none:
+            return "Unknown"
+        case Enums.EStatus.ready:
+            return "Ready"
+        case Enums.EStatus.finished:
+            return "Finished"
+        case Enums.EStatus.opened:
+            return "Opened"
+        }
+
+        return "Unknown"
+    }
+
     getJudgesElement() {
         let judgeData = this.obs.playingPool.judgeData
         if (judgeData !== undefined) {
             let exAiElements = judgeData.judgesEx.map((judge) => {
+                let judgeState = this.obs.poolState[judge.FullName]
+                let statusString = this.getJudgeStatusString((judgeState && judgeState.status) || Enums.EStatus.none)
                 return (
                     <div key={judge.FullName}>
-                        Ex/Ai: {judge.FullName}
+                        Ex/Ai: {judge.FullName} {statusString}
                     </div>
                 )
             })
             let varietyElements = judgeData.judgesAi.map((judge) => {
+                let judgeState = this.obs.poolState[judge.FullName]
+                let statusString = this.getJudgeStatusString((judgeState && judgeState.status) || Enums.EStatus.none)
                 return (
                     <div key={judge.FullName}>
-                        Variety: {judge.FullName}
+                        Variety: {judge.FullName} {statusString}
                     </div>
                 )
             })
             let diffElements = judgeData.judgesDiff.map((judge) => {
+                let judgeState = this.obs.poolState[judge.FullName]
+                let statusString = this.getJudgeStatusString((judgeState && judgeState.status) || Enums.EStatus.none)
                 return (
                     <div key={judge.FullName}>
-                        Diff: {judge.FullName}
+                        Diff: {judge.FullName} {statusString}
                     </div>
                 )
             })

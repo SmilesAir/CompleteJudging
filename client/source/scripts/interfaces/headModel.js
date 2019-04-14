@@ -1,5 +1,6 @@
 
 const uuid4 = require("uuid/v4")
+const Mobx = require("mobx")
 
 const Enums = require("scripts/stores/enumStore.js")
 const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
@@ -30,6 +31,7 @@ module.exports = class extends InterfaceModelBase {
         this.autoUpdateTimeRemainingHandle = undefined
 
         this.awsData = undefined
+        this.obs.poolState = {}
     }
 
     init() {
@@ -116,6 +118,8 @@ module.exports = class extends InterfaceModelBase {
 
             this.awsData = awsData
         }
+
+        this.obs.poolState = awsData.state
     }
 
     updateResultsFromAws() {
