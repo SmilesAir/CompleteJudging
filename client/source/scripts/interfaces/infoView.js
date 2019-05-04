@@ -212,7 +212,11 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     getJudgeUrl(judgeIndex, interfaceName) {
-        return `https://d27wqtus28jqqk.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&judgeIndex=${judgeIndex}&header=false`
+        if (__STAGE__ === "PRODUCTION") {
+            return `https://d5rsjgoyn07f8.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&judgeIndex=${judgeIndex}&header=false`
+        } else {
+            return `https://d27wqtus28jqqk.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&judgeIndex=${judgeIndex}&header=false`
+        }
     }
 
     setLinksInClipboard(pool) {

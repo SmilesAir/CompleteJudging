@@ -5,6 +5,8 @@ something weird with updating routine length without refreshing page
 Time is wrong in announcer
 scroll on diff is annoying when editing
 Fix fucking codeglue. Remove the mode prop so production stage works
+Remove need to click Set Pool after every upload from PoolCreator
+Prod links for Copy Links to Clipboard
 
 
 Judges. Are you finished popup
