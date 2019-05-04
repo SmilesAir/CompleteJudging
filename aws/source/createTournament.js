@@ -32,6 +32,8 @@ module.exports.handler = function(event, context, callback) {
 
         tournamentInfoKey += "-" + tournamentVersion
 
+        cleanData(event.body)
+
         let putParams = {
             TableName : process.env.TOURNAMENT_INFO,
             Item: {
@@ -42,7 +44,7 @@ module.exports.handler = function(event, context, callback) {
                 data: isPoolCreatorUpload ? event.body : undefined
             }
         }
-        console.log("put info", putParams)
+        console.log("put info", JSON.stringify(putParams))
         return docClient.put(putParams).promise()
     }).then(() => {
         let item = Object.assign({
@@ -81,4 +83,14 @@ module.exports.handler = function(event, context, callback) {
 
         callback(failResponse)
     })
+}
+
+function cleanData(data) {
+    for (let a in data) {
+        if (typeof data[a] === "object") {
+            cleanData(data[a])
+        } else if (data[a] === "") {
+            data[a] = null
+        }
+    }
 }
