@@ -5,20 +5,22 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require("cors")
 
-var indexRouter = require('./routes/index');
-var awsRouter = require('./routes/aws');
+const awsRouter = require('./routes/aws');
+
+let stage = "DEVELOPMENT"
+for (let arg of process.argv) {
+  if (arg.startsWith("--stage=")) {
+    stage = arg.slice(8).toUpperCase()
+  }
+}
+
+__STAGE__ = stage
 
 var app = express();
 app.use(cors({
   credentials: true,
   origin: true
 }))
-
-app.get('/test', function (req, res) {
-  res.json({
-    hey: "test stuff"
-  })
-})
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -30,8 +32,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/aws', awsRouter);
+app.use('/', awsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

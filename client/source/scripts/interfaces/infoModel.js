@@ -3,7 +3,7 @@ const Enums = require("scripts/stores/enumStore.js")
 const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
-const EndpointStore = require("scripts/stores/endpointStore.js")
+const CommonAction = require("scripts/actions/commonAction.js")
 
 module.exports = class extends InterfaceModelBase {
     constructor() {
@@ -38,7 +38,7 @@ module.exports = class extends InterfaceModelBase {
     }
 
     refreshTournamentInfoList() {
-        return fetch(EndpointStore.buildUrl("GET_ACTIVE_TOURNAMENTS"), {
+        return CommonAction.fetchEx("GET_ACTIVE_TOURNAMENTS", undefined, undefined, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -57,11 +57,9 @@ module.exports = class extends InterfaceModelBase {
     }
 
     importTournamentDataFromAWS(info) {
-        console.log(info.tournamentName)
-
-        return fetch(EndpointStore.buildUrl("IMPORT_TOURNAMENT_DATA", {
-            tournamentName: MainStore.tournamentName
-        }), {
+        return CommonAction.fetchEx("IMPORT_TOURNAMENT_DATA", {
+            tournamentName: info.tournamentName
+        }, undefined, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -71,7 +69,7 @@ module.exports = class extends InterfaceModelBase {
         }).then((response) => {
             console.log(response)
         }).catch((error) => {
-            console.log("Refresh Tournament Info Error", error)
+            console.log("Import Tournament Info Error", error)
         })
     }
 }

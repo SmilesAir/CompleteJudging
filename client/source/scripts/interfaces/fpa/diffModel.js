@@ -5,7 +5,6 @@ const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DiffData = require("scripts/interfaces/fpa/data/diffData.js")
 const CommonAction = require("scripts/actions/commonAction.js")
-const EndpointStore = require("scripts/stores/endpointStore.js")
 
 module.exports = class extends InterfaceModelBase {
     constructor() {

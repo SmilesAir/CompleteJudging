@@ -5,7 +5,7 @@ const Enums = require("scripts/stores/enumStore.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
-const EndpointStore = require("scripts/stores/endpointStore.js")
+const CommonAction = require("scripts/actions/commonAction.js")
 
 class InterfaceModelBase {
     constructor() {
@@ -35,18 +35,17 @@ class InterfaceModelBase {
     }
 
     reportScores() {
-        fetch(EndpointStore.buildUrl("REPORT_JUDGE_SCORE"),
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    tournamentName: MainStore.tournamentName,
-                    judgeId: MainStore.userId,
-                    results: this.obs.results
-                })
-            }).catch((error) => {
+        CommonAction.fetchEx("REPORT_JUDGE_SCORE", undefined, undefined, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                tournamentName: MainStore.tournamentName,
+                judgeId: MainStore.userId,
+                results: this.obs.results
+            })
+        }).catch((error) => {
             console.log("Report Scores Error:", error)
         })
     }
@@ -151,9 +150,9 @@ class InterfaceModelBase {
 
     queryPoolData(tournamentName) {
         let awsData = undefined
-        fetch(EndpointStore.buildUrl("GET_PLAYING_POOL", undefined, {
+        CommonAction.fetchEx("GET_PLAYING_POOL", {
             tournamentName: tournamentName
-        }), {
+        }, undefined, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -259,10 +258,10 @@ class InterfaceModelBase {
 
     queryBackupResults() {
         let startTime = this.backupResultsList.length > 0 ? this.backupResultsList[this.backupResultsList.length - 1].time : 0
-        fetch(EndpointStore.buildUrl("GET_BACKUP_RESULTS", {
+        CommonAction.fetchEx("GET_BACKUP_RESULTS", {
             judge: MainStore.userId,
             time: startTime
-        }), {
+        }, undefined, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -305,9 +304,9 @@ class InterfaceModelBase {
     }
 
     sendState(status) {
-        fetch(EndpointStore.buildUrl("SET_JUDGE_STATE", {
+        CommonAction.fetchEx("SET_JUDGE_STATE", {
             tournamentName: MainStore.tournamentName
-        }), {
+        }, undefined, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

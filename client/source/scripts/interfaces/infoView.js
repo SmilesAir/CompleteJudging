@@ -6,7 +6,8 @@ const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
 const ResultsView = require("scripts/views/resultsView.js")
-const EndpointStore = require("scripts/stores/endpointStore.js")
+const CommonAction = require("scripts/actions/commonAction.js")
+
 
 require("./infoView.less")
 
@@ -306,7 +307,7 @@ class PlayerAndTeams extends React.Component {
 
             return (
                 <label className="infoSummary" key={info.tournamentName} onClick={() => {
-                    this.selectTournament(info)
+                    Interfaces.info.importTournamentDataFromAWS(info)
                 }}>
                     Name: {info.tournamentName} Created: {dateString}
                 </label>
@@ -317,7 +318,7 @@ class PlayerAndTeams extends React.Component {
     onSubmit(event) {
         event.preventDefault()
 
-        fetch(EndpointStore.buildUrl("CREATE_TOURNAMENT"), {
+        CommonAction.fetchEx("CREATE_TOURNAMENT", undefined, undefined, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

@@ -1,13 +1,12 @@
 
 const uuid4 = require("uuid/v4")
-const Mobx = require("mobx")
 
 const Enums = require("scripts/stores/enumStore.js")
 const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
-const EndpointStore = require("scripts/stores/endpointStore.js")
+const CommonAction = require("scripts/actions/commonAction.js")
 
 module.exports = class extends InterfaceModelBase {
     constructor() {
@@ -131,18 +130,16 @@ module.exports = class extends InterfaceModelBase {
     }
 
     sendDataToAWS() {
-        fetch(EndpointStore.buildUrl("SET_PLAYING_POOL"),
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    tournamentName: MainStore.tournamentName,
-                    data: this.awsData
-                })
-            }
-        ).then((response) => {
+        CommonAction.fetchEx("SET_PLAYING_POOL", undefined, undefined, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                tournamentName: MainStore.tournamentName,
+                data: this.awsData
+            })
+        }).then((response) => {
             return response.json()
         }).then((response) => {
             if (response.status < 400) {
@@ -213,9 +210,9 @@ module.exports = class extends InterfaceModelBase {
         DataAction.fillPoolResults(this.obs.playingPool).then(() => {
             let data = DataAction.getScoreboardResultsProcessed(this.obs.playingPool, this.obs.routineLengthSeconds, true)
 
-            fetch(EndpointStore.buildUrl("SET_SCOREBOARD_DATA", {
+            CommonAction.fetchEx("SET_SCOREBOARD_DATA", {
                 tournamentName: MainStore.tournamentName
-            }), {
+            }, undefined, {
                 method: "POST",
                 body: JSON.stringify({
                     scoreboardData: {
@@ -238,9 +235,9 @@ module.exports = class extends InterfaceModelBase {
         DataAction.fillPoolResults(this.obs.playingPool).then(() => {
             let data = DataAction.getScoreboardResultsProcessed(this.obs.playingPool, this.obs.routineLengthSeconds)
 
-            fetch(EndpointStore.buildUrl("SET_SCOREBOARD_DATA", {
+            CommonAction.fetchEx("SET_SCOREBOARD_DATA", {
                 tournamentName: MainStore.tournamentName
-            }), {
+            }, undefined, {
                 method: "POST",
                 body: JSON.stringify({
                     scoreboardData: {

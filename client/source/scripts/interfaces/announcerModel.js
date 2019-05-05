@@ -5,7 +5,7 @@ const Enums = require("scripts/stores/enumStore.js")
 const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
-const EndpointStore = require("scripts/stores/endpointStore.js")
+const CommonAction = require("scripts/actions/commonAction.js")
 
 module.exports = class extends InterfaceModelBase {
     constructor() {
@@ -98,18 +98,16 @@ module.exports = class extends InterfaceModelBase {
     }
 
     sendDataToAWS() {
-        fetch(EndpointStore.buildUrl("SET_PLAYING_POOL"),
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    tournamentName: MainStore.tournamentName,
-                    data: this.awsData
-                })
-            }
-        ).then((response) => {
+        CommonAction.fetchEx("SET_PLAYING_POOL", undefined, undefined, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                tournamentName: MainStore.tournamentName,
+                data: this.awsData
+            })
+        }).then((response) => {
             return response.json()
         }).then((response) => {
             if (response.status < 400) {

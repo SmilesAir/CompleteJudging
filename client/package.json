@@ -1,7 +1,7 @@
 {
     "name": "completejudging",
     "version": "v0.0.1",
-    "description": "The new FPA Judging System",
+    "description": "2020 FPA Judging System",
     "homepage": "https://github.com/SmilesAir/CompleteJudging",
     "license": "MIT",
     "repository": {
@@ -23,6 +23,7 @@
     },
     "dependencies": {
         "aws-sdk": "^2.316.0",
+        "complete-judging-common": "../common",
         "mobx": "^5.1.2",
         "mobx-react": "^5.2.8",
         "react": "^16.5.2",

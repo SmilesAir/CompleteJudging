@@ -4,7 +4,7 @@ const MobxReact = require("mobx-react")
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const MainStore = require("scripts/stores/mainStore.js")
-const EndpointStore = require("scripts/stores/endpointStore.js")
+const CommonAction = require("scripts/actions/commonAction.js")
 
 require("./scoreboardView.less")
 
@@ -45,9 +45,9 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     queryResults() {
-        fetch(EndpointStore.buildUrl("GET_S3_RESULTS", {
+        CommonAction.fetchEx("GET_S3_RESULTS", {
             tournamentName: MainStore.tournamentName.replace(" ", "+")
-        }), {
+        }, undefined, {
             method: "GET",
             headers: {
                 "Pragma": "no-cache",

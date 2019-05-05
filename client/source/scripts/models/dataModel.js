@@ -1,7 +1,7 @@
 
 const MainStore = require("scripts/stores/mainStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
-const EndpointStore = require("scripts/stores/endpointStore.js")
+const CommonAction = require("scripts/actions/commonAction.js")
 
 module.exports = class {
     constructor() {
@@ -32,7 +32,7 @@ module.exports = class {
     }
 
     async getConstantsFromCloud() {
-        await fetch(EndpointStore.buildUrl("GET_CONSTANTS"), {
+        await CommonAction.fetchEx("GET_CONSTANTS", undefined, undefined, {
             method: "GET",
             headers: {
                 "Pragma": "no-cache",

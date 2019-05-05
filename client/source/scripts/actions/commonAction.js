@@ -1,4 +1,7 @@
 
+const MainStore = require("scripts/stores/mainStore.js")
+const EndpointStore = require("complete-judging-common/source/endpoints.js")
+
 function vibrate(param) {
     if (!module.exports.isiOS()) {
         navigator.vibrate(param)
@@ -36,4 +39,8 @@ module.exports.isMobile = function() {
 
 module.exports.isiOS = function() {
     return (/(iPad|iPhone|iPod)/g).test(navigator.userAgent)
+}
+
+module.exports.fetchEx = function(key, pathParams, queryParams, options) {
+    return fetch(EndpointStore.buildUrl(MainStore.lanMode, key, pathParams, queryParams), options)
 }

@@ -2,7 +2,7 @@
 const DataStore = require("scripts/stores/dataStore.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataModel = require("scripts/models/dataModel.js")
-const EndpointStore = require("scripts/stores/endpointStore.js")
+const CommonAction = require("scripts/actions/commonAction.js")
 
 function init() {
     DataStore.dataModel = new DataModel()
@@ -495,12 +495,12 @@ function verifyDataConstants(constants) {
 module.exports.verifyDataConstants = verifyDataConstants
 
 function fillPoolResults(poolData) {
-    return fetch(EndpointStore.buildUrl("GET_POOL_RESULTS", undefined, {
+    return CommonAction.fetchEx("GET_POOL_RESULTS", undefined, {
         tournamentName: MainStore.tournamentName,
         divisionIndex: poolData.divisionIndex,
         roundIndex: poolData.roundIndex,
         poolIndex: poolData.poolIndex
-    }), {
+    }, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -516,19 +516,17 @@ function fillPoolResults(poolData) {
 module.exports.fillPoolResults = fillPoolResults
 
 function getPoolResults(divisionIndex, roundIndex, poolIndex) {
-    return fetch(EndpointStore.buildUrl("GET_POOL_RESULTS", undefined, {
+    return CommonAction.fetchEx("GET_POOL_RESULTS", undefined, {
         tournamentName: MainStore.tournamentName,
         divisionIndex: divisionIndex,
         roundIndex: roundIndex,
         poolIndex: poolIndex
-    }),
-    {
+    }, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
         }
-    }
-    ).then((response) => {
+    }).then((response) => {
         return response.json()
     }).then((response) => {
         return response

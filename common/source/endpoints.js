@@ -1,6 +1,4 @@
 
-const MainStore = require("scripts/stores/mainStore.js")
-
 const urls = {
     CREATE_TOURNAMENT: "<path>/<stage>/createTournament",
     GET_ACTIVE_TOURNAMENTS: "<path>/<stage>/getActiveTournaments",
@@ -16,11 +14,10 @@ const urls = {
     SET_SCOREBOARD_DATA: "<path>/<stage>/tournamentName/<tournamentName>/setScoreboardData"
 }
 
-module.exports.buildUrl = function(key, pathParams, queryParams) {
-
+module.exports.buildUrl = function(lanMode, key, pathParams, queryParams) {
     let path = undefined
-    if (MainStore.lanMode) {
-        path = "http://localhost:3000/aws"
+    if (lanMode) {
+        path = "http://localhost:3000"
     } else {
         path = __STAGE__ === "DEVELOPMENT" ? "https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com" : "https://w0wkbj0dd9.execute-api.us-west-2.amazonaws.com"
     }
