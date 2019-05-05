@@ -38,13 +38,12 @@ module.exports = class extends InterfaceModelBase {
     }
 
     refreshTournamentInfoList() {
-        return fetch(EndpointStore.buildUrl("GET_ACTIVE_TOURNAMENTS"),
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then((response) => {
+        return fetch(EndpointStore.buildUrl("GET_ACTIVE_TOURNAMENTS"), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((response) => {
             return response.json()
         }).then((response) => {
             this.setTournamentInfoList(response.tournamentInfos)
@@ -55,5 +54,24 @@ module.exports = class extends InterfaceModelBase {
 
     setTournamentInfoList(infos) {
         MainStore.tournamentInfoList = infos
+    }
+
+    importTournamentDataFromAWS(info) {
+        console.log(info.tournamentName)
+
+        return fetch(EndpointStore.buildUrl("IMPORT_TOURNAMENT_DATA", {
+            tournamentName: MainStore.tournamentName
+        }), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((response) => {
+            return response.json()
+        }).then((response) => {
+            console.log(response)
+        }).catch((error) => {
+            console.log("Refresh Tournament Info Error", error)
+        })
     }
 }

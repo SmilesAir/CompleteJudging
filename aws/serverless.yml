@@ -134,6 +134,13 @@ functions:
           path: tournamentName/{tournamentName}/setJudgeState
           method: post
           cors: true
+  exportTournamentData:
+    handler: source/exportTournamentData.handler
+    events:
+      - http:
+          path: tournamentName/{tournamentName}/exportTournamentData
+          method: get
+          cors: true
 
 resources:
   Resources:

@@ -124,6 +124,20 @@ module.exports.getResultData = function(resultsKey) {
     })
 }
 
+module.exports.getResultItem = function(resultsKey) {
+    let getParams = {
+        TableName : process.env.ACTIVE_RESULTS,
+        Key: resultsKey
+    }
+    console.log(getParams)
+    return docClient.get(getParams).promise().then((response) => {
+        console.log(response.Item)
+        return response.Item
+    }).catch((error) => {
+        throw new Error(`Get from active results. ${error}`)
+    })
+}
+
 module.exports.getPoolResults = async function(tournamentName, divisionIndex, roundIndex, poolIndex) {
     let tournamentKey = await module.exports.getTournamentKey(tournamentName)
     let poolName = module.exports.getPoolName(divisionIndex, roundIndex, poolIndex)
