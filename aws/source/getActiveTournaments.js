@@ -2,8 +2,9 @@
 const AWS = require('aws-sdk')
 let docClient = new AWS.DynamoDB.DocumentClient()
 
-module.exports.handler = async (event, context, callback) => {
+const Common = require("./common.js")
 
+module.exports.handler = (e, c, cb) => { Common.handler(e, c, cb, async (event, context) => {
     let ret = {
         tournamentInfos: []
     }
@@ -27,37 +28,12 @@ module.exports.handler = async (event, context, callback) => {
     })
 
     for (let i = 0; i < infoKeys.length; ++i) {
-        let info = await getTournamentInfo(infoKeys[i])
+        let info = await Common.getTournamentInfo(infoKeys[i])
         if (info !== undefined) {
             ret.tournamentInfos.push(info)
         }
     }
 
-    let response = {
-        statusCode: 200,
-        headers: {
-          "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
-          "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS 
-        },
-        body: JSON.stringify(ret)
-    }
-
-    callback(null, response)
-}
-
-function getTournamentInfo(key) {
-    let getParams = {
-        TableName: process.env.TOURNAMENT_INFO,
-        Key: {
-            key: key
-        }
-    }
-    return docClient.get(getParams).promise().then((response) => {
-        return response.Item
-    }).catch((error) => {
-        console.log("Get Error", error)
-
-        return undefined
-    })
-}
+    return ret
+})}
 

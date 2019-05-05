@@ -29,6 +29,7 @@ module.exports.handler = (e, c, cb) => { Common.handler(e, c, cb, async (event, 
 
     return {
         tournamentKey: tournamentKey,
+        tournamentInfo: await Common.getTournamentInfo(tournamentKey.tournamentInfoKey),
         poolMap: poolMap,
         resultsMap: resultsMap
     }

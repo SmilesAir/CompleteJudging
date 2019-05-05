@@ -1,33 +1,16 @@
 const express = require("express")
 const router = express.Router()
-const fetch = require("node-fetch")
 
-const EndpointStore = require("complete-judging-common/source/endpoints.js")
+const DataManager = require("../managers/dataManager.js")
 
-function importTournamentDataFromAWS(tournamentName) {
-  return fetch(EndpointStore.buildUrl(false, "IMPORT_TOURNAMENT_DATA", {
-      tournamentName: tournamentName
-  }), {
-      method: "GET",
-      headers: {
-          "Content-Type": "application/json"
-      }
-  }).then((response) => {
-      return response.json()
-  }).then((response) => {
-      return response
-  }).catch((error) => {
-      console.log("Import Tournament Info Error", error)
-  })
-}
+router.post("/development/tournamentName/:tournamentName/importTournamentDataFromAWS", async (req, res) => {
+    res.json(await DataManager.importTournamentDataFromAWS(req.params.tournamentName))
+})
 
-/* GET users listing. */
-router.get("/importTournamentDataFromAWS", async (req, res, next) => {
-  console.log(await importTournamentDataFromAWS("IFO2019Ryan"))
-  
-  res.json({
-    success: true
-  })
+router.get("/development/tournamentName/:tournamentName/requestTournamentInfoFromServer", async (req, res) => {
+    let data = await DataManager.getTournamentInfo(req.params.tournamentName)
+
+    res.json(data)
 })
 
 module.exports = router

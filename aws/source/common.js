@@ -53,6 +53,22 @@ module.exports.getTournamentKey = function(tournamentName) {
     })
 }
 
+module.exports.getTournamentInfo = function(key) {
+    let getParams = {
+        TableName: process.env.TOURNAMENT_INFO,
+        Key: {
+            key: key
+        }
+    }
+    return docClient.get(getParams).promise().then((response) => {
+        return response.Item
+    }).catch((error) => {
+        console.log("Get Tournament Info Error", error)
+
+        return undefined
+    })
+}
+
 module.exports.getActivePool = async function(tournamentName) {
     let tournamentKey = await module.exports.getTournamentKey(tournamentName)
     if (tournamentKey.playingPoolKey !== undefined) {

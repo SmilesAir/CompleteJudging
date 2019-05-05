@@ -13,24 +13,31 @@ module.exports = class extends InterfaceModelBase {
         this.type = Enums.EInterface.info
     }
 
-    init() {
-        this.refreshTournamentInfoList().then(() => {
-            if (MainStore.startupTournamentName) {
-                for (let info of MainStore.tournamentInfoList) {
-                    let tournamentName = info.tournamentName || info.TournamentName
-                    if (tournamentName === MainStore.startupTournamentName) {
-                        this.setInfo(info)
-                        break
+    async init() {
+        if (!MainStore.lanMode) {
+            this.refreshTournamentInfoList().then(() => {
+                if (MainStore.startupTournamentName !== undefined) {
+                    for (let info of MainStore.tournamentInfoList) {
+                        let tournamentName = info.tournamentName || info.TournamentName
+                        if (tournamentName === MainStore.startupTournamentName) {
+                            this.setInfo(info)
+                            break
+                        }
                     }
-                }
 
-                MainStore.startupTournamentName = undefined
-            }
-        })
+                    MainStore.startupTournamentName = undefined
+                }
+            })
+        } else if (MainStore.startupTournamentName !== undefined) {
+            let info = await this.getTournamentInfoFromServer(MainStore.startupTournamentName)
+            this.setInfo(info)
+
+            MainStore.startupTournamentName = undefined
+        }
     }
 
     setInfo(info) {
-        let saveData = DataAction.loadDataFromDynamo(info)
+        let saveData = DataAction.loadDataFromPoolCreator(info)
         if (saveData !== undefined) {
             MainStore.tournamentName = info.tournamentName
             MainStore.saveData = saveData
@@ -57,8 +64,25 @@ module.exports = class extends InterfaceModelBase {
     }
 
     importTournamentDataFromAWS(info) {
-        return CommonAction.fetchEx("IMPORT_TOURNAMENT_DATA", {
+        return CommonAction.fetchEx("REQUEST_IMPORT_TOURNAMENT_DATA", {
             tournamentName: info.tournamentName
+        }, undefined, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((response) => {
+            return response.json()
+        }).then((response) => {
+            console.log(response)
+        }).catch((error) => {
+            console.log("Import Tournament Info Error", error)
+        })
+    }
+
+    getTournamentInfoFromServer(tournamentName) {
+        return CommonAction.fetchEx("REQUEST_TOURNAMENT_INFO", {
+            tournamentName: tournamentName
         }, undefined, {
             method: "GET",
             headers: {
@@ -68,6 +92,7 @@ module.exports = class extends InterfaceModelBase {
             return response.json()
         }).then((response) => {
             console.log(response)
+            return response
         }).catch((error) => {
             console.log("Import Tournament Info Error", error)
         })

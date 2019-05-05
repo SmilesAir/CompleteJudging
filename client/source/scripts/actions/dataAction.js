@@ -26,7 +26,7 @@ function getPlayerId(playerList, player) {
 }
 module.exports.getPlayerId = getPlayerId
 
-function loadDataFromDynamo(info) {
+function loadDataFromPoolCreator(info) {
     if (info === undefined) {
         return undefined
     }
@@ -87,7 +87,7 @@ function loadDataFromDynamo(info) {
 
     return info.data
 }
-module.exports.loadDataFromDynamo = loadDataFromDynamo
+module.exports.loadDataFromPoolCreator = loadDataFromPoolCreator
 
 function getFullPlayerName(id) {
     let player = getPlayerData(id)

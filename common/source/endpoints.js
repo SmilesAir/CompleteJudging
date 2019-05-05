@@ -1,4 +1,6 @@
 
+const serverPath = "http://localhost:3000"
+
 const urls = {
     CREATE_TOURNAMENT: "<path>/<stage>/createTournament",
     GET_ACTIVE_TOURNAMENTS: "<path>/<stage>/getActiveTournaments",
@@ -8,6 +10,8 @@ const urls = {
     GET_POOL_RESULTS: "<path>/<stage>/getPoolResults",
     GET_S3_RESULTS: "https://s3-us-west-2.amazonaws.com/<stage>-completejudging-results/<tournamentName>-results.json",
     IMPORT_TOURNAMENT_DATA: "<path>/<stage>/tournamentName/<tournamentName>/exportTournamentData",
+    REQUEST_IMPORT_TOURNAMENT_DATA: serverPath + "/<stage>/tournamentName/<tournamentName>/importTournamentDataFromAWS",
+    REQUEST_TOURNAMENT_INFO: serverPath + "/<stage>/tournamentName/<tournamentName>/requestTournamentInfoFromServer",
     REPORT_JUDGE_SCORE: "<path>/<stage>/reportJudgeScore",
     SET_JUDGE_STATE: "<path>/<stage>/tournamentName/<tournamentName>/setJudgeState",
     SET_PLAYING_POOL: "<path>/<stage>/setPlayingPool",
@@ -17,7 +21,7 @@ const urls = {
 module.exports.buildUrl = function(lanMode, key, pathParams, queryParams) {
     let path = undefined
     if (lanMode) {
-        path = "http://localhost:3000"
+        path = serverPath
     } else {
         path = __STAGE__ === "DEVELOPMENT" ? "https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com" : "https://w0wkbj0dd9.execute-api.us-west-2.amazonaws.com"
     }
