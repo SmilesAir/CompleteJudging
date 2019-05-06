@@ -55,6 +55,12 @@ class DataManager {
             return this.tournamentData.poolMap[poolKey]
         }
     }
+
+    getResultItem(resultsKey) {
+        if (this.tournamentData !== undefined) {
+            return this.tournamentData.resultsMap[resultsKey.judgeName][resultsKey.time]
+        }
+    }
 }
 
 module.exports = new DataManager()

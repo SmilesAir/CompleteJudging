@@ -9,9 +9,7 @@ router.post("/tournamentName/:tournamentName/importTournamentDataFromAWS", async
 })
 
 router.get("/tournamentName/:tournamentName/requestTournamentInfoFromServer", async (req, res) => {
-    let data = await DataManager.getTournamentInfo(req.params.tournamentName)
-
-    res.json(data)
+    res.json(await DataManager.getTournamentInfo(req.params.tournamentName))
 })
 
 router.get("/tournamentName/:tournamentName/getPlayingPool", async (req, res) => {
@@ -19,7 +17,10 @@ router.get("/tournamentName/:tournamentName/getPlayingPool", async (req, res) =>
 })
 
 router.get("/tournamentName/:tournamentName/divisionIndex/:divisionIndex/roundIndex/:roundIndex/poolIndex/:poolIndex/getPoolResults", async (req, res) => {
-    res.json({})
+    res.json(Common.getPoolResults(req.params.tournamentName,
+        req.params.divisionIndex,
+        req.params.roundIndex,
+        req.params.poolIndex))
 })
 
 module.exports = router
