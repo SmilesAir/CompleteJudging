@@ -6,7 +6,7 @@ const urls = {
     GET_ACTIVE_TOURNAMENTS: "<path>/<stage>/getActiveTournaments",
     GET_BACKUP_RESULTS: "<path>/<stage>/judge/<judge>/time/<time>/getBackupResults",
     GET_CONSTANTS: "https://s3-us-west-2.amazonaws.com/<stage>-completejudging-constants/base-constants.json",
-    GET_PLAYING_POOL: "<path>/<stage>/getPlayingPool",
+    GET_PLAYING_POOL: "<path>/<stage>/tournamentName/<tournamentName>/getPlayingPool",
     GET_POOL_RESULTS: "<path>/<stage>/getPoolResults",
     GET_S3_RESULTS: "https://s3-us-west-2.amazonaws.com/<stage>-completejudging-results/<tournamentName>-results.json",
     IMPORT_TOURNAMENT_DATA: "<path>/<stage>/tournamentName/<tournamentName>/exportTournamentData",

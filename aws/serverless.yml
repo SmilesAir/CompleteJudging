@@ -96,7 +96,7 @@ functions:
     handler: source/getPlayingPool.handler
     events:
       - http:
-          path: getPlayingPool
+          path: tournamentName/{tournamentName}/getPlayingPool
           method: get
           cors: true
   reportJudgeScore:
