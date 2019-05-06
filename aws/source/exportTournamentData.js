@@ -22,7 +22,7 @@ module.exports.handler = (e, c, cb) => { Common.handler(e, c, cb, async (event, 
                 let resultsItem = await Common.getResultItem(poolData[resultsKey])
 
                 resultsMap[resultsItem.judgeName] = resultsMap[resultsItem.judgeName] || {}
-                resultsMap[resultsItem.judgeName][resultsItem.time] = resultsItem.data
+                resultsMap[resultsItem.judgeName][resultsItem.time] = resultsItem
             }
         }
     }

@@ -58,6 +58,7 @@ class DataManager {
 
     getResultItem(resultsKey) {
         if (this.tournamentData !== undefined) {
+            console.log("data", this.tournamentData.resultsMap[resultsKey.judgeName], resultsKey.time)
             return this.tournamentData.resultsMap[resultsKey.judgeName][resultsKey.time]
         }
     }

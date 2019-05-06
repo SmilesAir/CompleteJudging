@@ -508,6 +508,7 @@ function fillPoolResults(poolData) {
     }).then((response) => {
         return response.json()
     }).then((response) => {
+        console.log("get results", response)
         poolData.results = response
     }).catch((error) => {
         console.log("Fill Pool Results Error", error)

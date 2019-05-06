@@ -17,10 +17,12 @@ router.get("/tournamentName/:tournamentName/getPlayingPool", async (req, res) =>
 })
 
 router.get("/tournamentName/:tournamentName/divisionIndex/:divisionIndex/roundIndex/:roundIndex/poolIndex/:poolIndex/getPoolResults", async (req, res) => {
-    res.json(Common.getPoolResults(req.params.tournamentName,
+    let data = await Common.getPoolResults(req.params.tournamentName,
         req.params.divisionIndex,
         req.params.roundIndex,
-        req.params.poolIndex))
+        req.params.poolIndex)
+    console.log(data)
+    res.json(data)
 })
 
 module.exports = router

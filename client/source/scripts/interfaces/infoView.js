@@ -195,8 +195,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onFullResultsClick(pool) {
-        DataAction.fillPoolResults(pool)
-        this.props.gotoResultsTabActive(pool)
+        DataAction.fillPoolResults(pool).then(() => {
+            //console.log("hey", pool.results)
+            this.props.gotoResultsTabActive(pool)
+        })
     }
 
     getResults(pool) {
