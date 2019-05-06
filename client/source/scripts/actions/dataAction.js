@@ -495,12 +495,12 @@ function verifyDataConstants(constants) {
 module.exports.verifyDataConstants = verifyDataConstants
 
 function fillPoolResults(poolData) {
-    return CommonAction.fetchEx("GET_POOL_RESULTS", undefined, {
+    return CommonAction.fetchEx("GET_POOL_RESULTS", {
         tournamentName: MainStore.tournamentName,
         divisionIndex: poolData.divisionIndex,
         roundIndex: poolData.roundIndex,
         poolIndex: poolData.poolIndex
-    }, {
+    }, undefined, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -516,12 +516,12 @@ function fillPoolResults(poolData) {
 module.exports.fillPoolResults = fillPoolResults
 
 function getPoolResults(divisionIndex, roundIndex, poolIndex) {
-    return CommonAction.fetchEx("GET_POOL_RESULTS", undefined, {
+    return CommonAction.fetchEx("GET_POOL_RESULTS", {
         tournamentName: MainStore.tournamentName,
         divisionIndex: divisionIndex,
         roundIndex: roundIndex,
         poolIndex: poolIndex
-    }, {
+    }, undefined, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"

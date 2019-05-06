@@ -1,4 +1,5 @@
 
+// Load specific platforms data harness
 let DataHarness = undefined
 try {
     DataHarness = require("source/dataHarnessAws.js")
@@ -7,7 +8,7 @@ try {
 
 if (DataHarness === undefined) {
     try {
-        DataHarness = require("./dataHarnessServer.js")
+        DataHarness = require("../../server/source/dataHarnessServer.js")
         console.log("Found Server data harness")
     } catch (e) { }
 }
@@ -56,8 +57,6 @@ module.exports.getActivePool = async function(tournamentName) {
     if (tournamentKey.playingPoolKey !== undefined) {
         let pool = await module.exports.getPoolData(tournamentKey.playingPoolKey)
         pool.serverTime = Date.now()
-
-        console.log("get active pool", pool)
         return pool
     } else {
         throw new Error(`${tournamentName} doesn't have a playing pool`)

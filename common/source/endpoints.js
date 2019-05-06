@@ -2,20 +2,20 @@
 const serverPath = "http://localhost:3000"
 
 const urls = {
-    CREATE_TOURNAMENT: "<path>/<stage>/createTournament",
-    GET_ACTIVE_TOURNAMENTS: "<path>/<stage>/getActiveTournaments",
-    GET_BACKUP_RESULTS: "<path>/<stage>/judge/<judge>/time/<time>/getBackupResults",
+    CREATE_TOURNAMENT: "<path>/createTournament",
+    GET_ACTIVE_TOURNAMENTS: "<path>/getActiveTournaments",
+    GET_BACKUP_RESULTS: "<path>/judge/<judge>/time/<time>/getBackupResults",
     GET_CONSTANTS: "https://s3-us-west-2.amazonaws.com/<stage>-completejudging-constants/base-constants.json",
-    GET_PLAYING_POOL: "<path>/<stage>/tournamentName/<tournamentName>/getPlayingPool",
-    GET_POOL_RESULTS: "<path>/<stage>/getPoolResults",
+    GET_PLAYING_POOL: "<path>/tournamentName/<tournamentName>/getPlayingPool",
+    GET_POOL_RESULTS: "<path>/tournamentName/<tournamentName>/divisionIndex/<divisionIndex>/roundIndex/<roundIndex>/poolIndex/<poolIndex>/getPoolResults",
     GET_S3_RESULTS: "https://s3-us-west-2.amazonaws.com/<stage>-completejudging-results/<tournamentName>-results.json",
-    IMPORT_TOURNAMENT_DATA: "<path>/<stage>/tournamentName/<tournamentName>/exportTournamentData",
-    REQUEST_IMPORT_TOURNAMENT_DATA: serverPath + "/<stage>/tournamentName/<tournamentName>/importTournamentDataFromAWS",
-    REQUEST_TOURNAMENT_INFO: serverPath + "/<stage>/tournamentName/<tournamentName>/requestTournamentInfoFromServer",
-    REPORT_JUDGE_SCORE: "<path>/<stage>/reportJudgeScore",
-    SET_JUDGE_STATE: "<path>/<stage>/tournamentName/<tournamentName>/setJudgeState",
-    SET_PLAYING_POOL: "<path>/<stage>/setPlayingPool",
-    SET_SCOREBOARD_DATA: "<path>/<stage>/tournamentName/<tournamentName>/setScoreboardData"
+    IMPORT_TOURNAMENT_DATA: "<path>/tournamentName/<tournamentName>/exportTournamentData",
+    REQUEST_IMPORT_TOURNAMENT_DATA: serverPath + "/tournamentName/<tournamentName>/importTournamentDataFromAWS",
+    REQUEST_TOURNAMENT_INFO: serverPath + "/tournamentName/<tournamentName>/requestTournamentInfoFromServer",
+    REPORT_JUDGE_SCORE: "<path>/reportJudgeScore",
+    SET_JUDGE_STATE: "<path>/tournamentName/<tournamentName>/setJudgeState",
+    SET_PLAYING_POOL: "<path>/setPlayingPool",
+    SET_SCOREBOARD_DATA: "<path>/tournamentName/<tournamentName>/setScoreboardData"
 }
 
 module.exports.buildUrl = function(lanMode, key, pathParams, queryParams) {
@@ -24,6 +24,7 @@ module.exports.buildUrl = function(lanMode, key, pathParams, queryParams) {
         path = serverPath
     } else {
         path = __STAGE__ === "DEVELOPMENT" ? "https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com" : "https://w0wkbj0dd9.execute-api.us-west-2.amazonaws.com"
+        path += `/${__STAGE__.toLowerCase()}`
     }
 
     let pathReplaceData = {

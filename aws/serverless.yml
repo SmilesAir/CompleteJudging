@@ -110,7 +110,7 @@ functions:
     handler: source/getPoolResults.handler
     events:
       - http:
-          path: getPoolResults
+          path: tournamentName/{tournamentName}/divisionIndex/{divisionIndex}/roundIndex/{roundIndex}/poolIndex/{poolIndex}/getPoolResults
           method: get
           cors: true
   getBackupResults:

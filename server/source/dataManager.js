@@ -43,6 +43,18 @@ class DataManager {
 
         return this.tournamentData && this.tournamentData.tournamentInfo
     }
+
+    async getTournamentKey(tournamentName) {
+        await this.init(tournamentName)
+
+        return this.tournamentData && this.tournamentData.tournamentKey
+    }
+
+    getPoolItem(poolKey) {
+        if (this.tournamentData !== undefined) {
+            return this.tournamentData.poolMap[poolKey]
+        }
+    }
 }
 
 module.exports = new DataManager()
