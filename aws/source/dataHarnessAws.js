@@ -140,3 +140,17 @@ module.exports.getResultsHistory = function(judgeName, startTime) {
         throw new Error(`${tournamentName}. Can't query backup results. ${error}`)
     })
 }
+
+module.exports.setResults = function(judgeName, time, results) {
+    let putParams = {
+        TableName : process.env.ACTIVE_RESULTS,
+        Item: {
+            judgeName: judgeName,
+            time: time,
+            data: results
+        }
+    }
+    return docClient.put(putParams).promise().catch((error) => {
+        throw new Error(`Put into active results. ${error}`)
+    })
+}

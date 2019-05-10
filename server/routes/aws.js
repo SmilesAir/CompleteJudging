@@ -21,8 +21,26 @@ router.get("/tournamentName/:tournamentName/divisionIndex/:divisionIndex/roundIn
         req.params.divisionIndex,
         req.params.roundIndex,
         req.params.poolIndex)
-    console.log(data)
     res.json(data)
+})
+
+router.post("/reportJudgeScore", async (req, res) => {
+    console.log(req)
+
+    if (req.body.tournamentName !== undefined &&
+        req.body.judgeId !== undefined &&
+        req.body.results !== undefined) {
+
+        Common.reportJudgeScore(req.body.tournamentName, req.body.judgeId, req.body.results)
+
+        res.json({
+            success: true
+        })
+    } else {
+        res.json({
+            success: false
+        })
+    }
 })
 
 module.exports = router

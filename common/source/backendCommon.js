@@ -135,6 +135,17 @@ module.exports.getResultData = async function(resultsKey) {
     }
 }
 
+module.exports.reportJudgeScore = async function(tournamentName, judgeId, results) {
+    let resultsKey = {
+        judgeName: judgeId,
+        time: Date.now()
+    }
+
+    await module.exports.updateActivePoolAttribute(tournamentName, `${module.exports.getResultsKeyPrefix()}${judgeId}`, resultsKey)
+
+    return DataHarness.setResults(judgeId, resultsKey.time, results)
+}
+
 ///////////////////////// Harness Passthrough /////////////////////////
 module.exports.getTournamentInfo = function(key) {
     return DataHarness.getTournamentInfo(key)
