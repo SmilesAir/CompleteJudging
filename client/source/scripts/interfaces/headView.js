@@ -102,35 +102,31 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return "Unknown"
     }
 
+    getJudgeStatus(judge) {
+        let judgeState = this.obs.poolState && this.obs.poolState[judge.FullName]
+        return this.getJudgeStatusString(judgeState && judgeState.status || Enums.EStatus.none)
+    }
+
+    getJudgeStatusElement(categoryName, judge) {
+        let statusString = this.getJudgeStatus(judge)
+        return (
+            <div key={judge.FullName}>
+                {categoryName}: {judge.FullName} {statusString}
+            </div>
+        )
+    }
+
     getJudgesElement() {
         let judgeData = this.obs.playingPool.judgeData
         if (judgeData !== undefined) {
             let exAiElements = judgeData.judgesEx.map((judge) => {
-                let judgeState = this.obs.poolState[judge.FullName]
-                let statusString = this.getJudgeStatusString((judgeState && judgeState.status) || Enums.EStatus.none)
-                return (
-                    <div key={judge.FullName}>
-                        Ex/Ai: {judge.FullName} {statusString}
-                    </div>
-                )
+                return this.getJudgeStatusElement("Ex/Ai", judge)
             })
             let varietyElements = judgeData.judgesAi.map((judge) => {
-                let judgeState = this.obs.poolState[judge.FullName]
-                let statusString = this.getJudgeStatusString((judgeState && judgeState.status) || Enums.EStatus.none)
-                return (
-                    <div key={judge.FullName}>
-                        Variety: {judge.FullName} {statusString}
-                    </div>
-                )
+                return this.getJudgeStatusElement("Variety", judge)
             })
             let diffElements = judgeData.judgesDiff.map((judge) => {
-                let judgeState = this.obs.poolState[judge.FullName]
-                let statusString = this.getJudgeStatusString((judgeState && judgeState.status) || Enums.EStatus.none)
-                return (
-                    <div key={judge.FullName}>
-                        Diff: {judge.FullName} {statusString}
-                    </div>
-                )
+                return this.getJudgeStatusElement("Diff", judge)
             })
     
             return (
