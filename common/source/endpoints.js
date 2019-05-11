@@ -14,7 +14,7 @@ const urls = {
     REQUEST_TOURNAMENT_INFO: serverPath + "/tournamentName/<tournamentName>/requestTournamentInfoFromServer",
     REPORT_JUDGE_SCORE: "<path>/reportJudgeScore",
     SET_JUDGE_STATE: "<path>/tournamentName/<tournamentName>/setJudgeState",
-    SET_PLAYING_POOL: "<path>/setPlayingPool",
+    SET_PLAYING_POOL: "<path>/tournamentName/<tournamentName>/setPlayingPool",
     SET_SCOREBOARD_DATA: "<path>/tournamentName/<tournamentName>/setScoreboardData"
 }
 

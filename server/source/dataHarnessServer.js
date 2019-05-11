@@ -12,3 +12,27 @@ module.exports.getPoolItem = function(poolKey) {
 module.exports.getResultItem = function(resultsKey) {
     return DataManager.getResultItem(resultsKey)
 }
+
+module.exports.setPoolItem = function(pool) {
+    DataManager.setPoolItem(pool)
+}
+
+module.exports.updateActivePoolAttribute = async function(tournamentName, attributeName, attributeValue) {
+    await DataManager.updateActivePoolAttribute(tournamentName, attributeName, attributeValue)
+}
+
+module.exports.updateTournamentKeyWithObject = async function(tournamentName, newObject) {
+    await DataManager.updateTournamentKeyWithObject(tournamentName, newObject)
+}
+
+module.exports.updateTournamentKeyPlayingPool = async function(tournamentName, playingPoolKey) {
+    await DataManager.updateTournamentKeyPlayingPool(tournamentName, playingPoolKey)
+}
+
+module.exports.getResultsHistory = function(judgeName, startTime) {
+    // Todo
+}
+
+module.exports.setResults = function(judgeName, time, results) {
+    DataManager.setResults(judgeName, time, results)
+}

@@ -130,13 +130,14 @@ module.exports = class extends InterfaceModelBase {
     }
 
     sendDataToAWS() {
-        CommonAction.fetchEx("SET_PLAYING_POOL", undefined, undefined, {
+        CommonAction.fetchEx("SET_PLAYING_POOL", {
+            tournamentName: MainStore.tournamentName
+        }, undefined, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                tournamentName: MainStore.tournamentName,
                 data: this.awsData
             })
         }).then((response) => {

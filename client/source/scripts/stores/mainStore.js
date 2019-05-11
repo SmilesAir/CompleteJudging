@@ -19,5 +19,5 @@ module.exports = Mobx.observable({
     serverTimeOffset: undefined,
     routineTimeMs: undefined,
     url: undefined,
-    lanMode: false
+    lanMode: true
 })

@@ -55,10 +55,11 @@ module.exports.isItemEmpty = function(item) {
 module.exports.getActivePool = async function(tournamentName) {
     let tournamentKey = await DataHarness.getTournamentKey(tournamentName)
     if (tournamentKey.playingPoolKey !== undefined) {
-        let pool = await module.exports.getPoolData(tournamentKey.playingPoolKey)
+        let pool = await Common.getPoolData(tournamentKey.playingPoolKey)
         pool.serverTime = Date.now()
         return pool
     } else {
+        console.log("getactivepool error")
         throw new Error(`${tournamentName} doesn't have a playing pool`)
     }
 }
@@ -77,11 +78,11 @@ module.exports.getResultsKeyPrefix = function() {
 }
 
 module.exports.getPoolNameFromData = function(poolData) {
-    return module.exports.getPoolName(poolData.pool.divisionIndex, poolData.pool.roundIndex, poolData.pool.poolIndex)
+    return Common.getPoolName(poolData.pool.divisionIndex, poolData.pool.roundIndex, poolData.pool.poolIndex)
 }
 
 module.exports.getPoolName = function(divisionIndex, roundIndex, poolIndex) {
-    return `${module.exports.getPoolNamePrefix()}${divisionIndex}-${roundIndex}-${poolIndex}`
+    return `${Common.getPoolNamePrefix()}${divisionIndex}-${roundIndex}-${poolIndex}`
 }
 
 module.exports.getExisitingPoolItem = function(tournamentKey, poolName) {
@@ -95,13 +96,13 @@ module.exports.getExisitingPoolItem = function(tournamentKey, poolName) {
 
 module.exports.getPoolResults = async function(tournamentName, divisionIndex, roundIndex, poolIndex) {
     let tournamentKey = await DataHarness.getTournamentKey(tournamentName)
-    let poolName = module.exports.getPoolName(divisionIndex, roundIndex, poolIndex)
-    let poolItem = await module.exports.getExisitingPoolItem(tournamentKey, poolName)
+    let poolName = Common.getPoolName(divisionIndex, roundIndex, poolIndex)
+    let poolItem = await Common.getExisitingPoolItem(tournamentKey, poolName)
 
     let getPromises = []
     for (let resultsAttributeName in poolItem) {
-        if (resultsAttributeName.startsWith(module.exports.getResultsKeyPrefix())) {
-            getPromises.push(module.exports.getResultData(poolItem[resultsAttributeName]))
+        if (resultsAttributeName.startsWith(Common.getResultsKeyPrefix())) {
+            getPromises.push(Common.getResultData(poolItem[resultsAttributeName]))
         }
     }
 
@@ -141,9 +142,53 @@ module.exports.reportJudgeScore = async function(tournamentName, judgeId, result
         time: Date.now()
     }
 
-    await module.exports.updateActivePoolAttribute(tournamentName, `${module.exports.getResultsKeyPrefix()}${judgeId}`, resultsKey)
+    await Common.updateActivePoolAttribute(tournamentName, `${Common.getResultsKeyPrefix()}${judgeId}`, resultsKey)
 
     return DataHarness.setResults(judgeId, resultsKey.time, results)
+}
+
+module.exports.setPlayingPool = async function(tournamentName, data) {
+    let activePool = undefined
+    try {
+        activePool = await Common.getActivePool(tournamentName)
+    } catch(error) {
+        console.log(`No active pool currenty set. ${tournamentName}`)
+    }
+
+    let tournamentKey = await Common.getTournamentKey(tournamentName)
+
+    if (activePool !== undefined && activePool.poolHash === data.poolHash) {
+        if (activePool.observableHash !== data.observableHash) {
+            return DataHarness.updateActivePoolAttribute(tournamentName, "data", data)
+        }
+    } else {
+        let now = Date.now()
+        let playingPoolKey = now.toString()
+        let newPoolItem = {
+            key: playingPoolKey,
+            data: data
+        }
+        let poolName = Common.getPoolNameFromData(data)
+
+        // Carry over results from previous pool data
+        let existingPoolItem = await Common.getExisitingPoolItem(tournamentKey, poolName)
+        if (existingPoolItem !== undefined) {
+            for (let resultName in existingPoolItem) {
+                if (resultName.startsWith(Common.getResultsKeyPrefix())) {
+                    newPoolItem[resultName] = existingPoolItem[resultName]
+                }
+            }
+        }
+
+        let attributeValues = {
+            playingPoolKey: playingPoolKey,
+            [poolName]: playingPoolKey
+        }
+
+        await Common.updateTournamentKeyWithObject(tournamentName, attributeValues)
+
+        return DataHarness.setPoolItem(newPoolItem)
+    }
 }
 
 ///////////////////////// Harness Passthrough /////////////////////////
@@ -174,3 +219,5 @@ module.exports.updateTournamentKeyWithObject = async function(tournamentName, ne
 module.exports.updateTournamentKeyPlayingPool = async function(tournamentName, playingPoolKey) {
     return DataHarness.updateTournamentKeyPlayingPool(tournamentName, playingPoolKey)
 }
+
+const Common = module.exports

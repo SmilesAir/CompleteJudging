@@ -89,7 +89,7 @@ functions:
     handler: source/setPlayingPool.handler
     events:
       - http:
-          path: setPlayingPool
+          path: tournamentName/{tournamentName}/setPlayingPool
           method: post
           cors: true
   getPlayingPool:

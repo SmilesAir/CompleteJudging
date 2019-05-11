@@ -46,8 +46,19 @@ module.exports.getPoolItem = async function(poolKey) {
     if (!Common.isItemEmpty(getResp)) {
         return getResp.Item
     } else {
-        throw new Error(`No active pool data for ${tournamentName}`)
+        console.log("No active pool data found")
     }
+}
+
+module.exports.setPoolItem = function(pool) {
+    let putPlayingPoolParams = {
+        TableName : process.env.ACTIVE_POOLS,
+        Item: pool
+    }
+
+    return docClient.put(putPlayingPoolParams).promise().catch((error) => {
+        throw new Error(`Put new playing pool for ${tournamentName}. ${error}`)
+    })
 }
 
 module.exports.getResultItem = function(resultsKey) {
