@@ -195,6 +195,7 @@ class DataManager {
         if (this.tournamentData !== undefined) {
             let pool = this.getPlayingPool()
             if (pool !== undefined) {
+                pool.data.state = pool.data.state || {}
                 pool.data.state[judgeId] = {
                     status: status
                 }
