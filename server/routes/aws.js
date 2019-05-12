@@ -12,6 +12,14 @@ router.get("/tournamentName/:tournamentName/requestTournamentInfoFromServer", as
     res.json(await DataManager.getTournamentInfo(req.params.tournamentName))
 })
 
+router.post("/tournamentName/:tournamentName/exportTournamentDataToAWS", async (req, res) => {
+    await DataManager.exportTournamentDataToAWS(req.params.tournamentName)
+
+    res.json({
+        success: true
+    })
+})
+
 router.get("/tournamentName/:tournamentName/getPlayingPool", async (req, res) => {
     res.json(await Common.getActivePool(req.params.tournamentName))
 })

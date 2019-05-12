@@ -76,7 +76,7 @@ module.exports = class extends InterfaceModelBase {
         }).then((response) => {
             console.log(response)
         }).catch((error) => {
-            console.log("Import Tournament Info Error", error)
+            console.log("Import Tournament Data Error", error)
         })
     }
 
@@ -94,7 +94,20 @@ module.exports = class extends InterfaceModelBase {
             console.log(response)
             return response
         }).catch((error) => {
-            console.log("Import Tournament Info Error", error)
+            console.log("Import Tournament Data Error", error)
+        })
+    }
+
+    exportTournamentData() {
+        return CommonAction.fetchEx("REQUEST_EXPORT_TOURNAMENT_DATA", {
+            tournamentName: MainStore.tournamentName
+        }, undefined, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).catch((error) => {
+            console.log("Export Tournament Data Error", error)
         })
     }
 }

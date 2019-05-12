@@ -30,18 +30,21 @@ provider:
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:UpdateItem
+        - dynamodb:BatchWriteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TOURNAMENT_INFO}"
     - Effect: Allow
       Action:
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:UpdateItem
+        - dynamodb:BatchWriteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ACTIVE_POOLS}"
     - Effect: Allow
       Action:
         - dynamodb:Query
         - dynamodb:GetItem
         - dynamodb:PutItem
+        - dynamodb:BatchWriteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ACTIVE_RESULTS}"
     - Effect: Allow
       Action:
@@ -140,6 +143,13 @@ functions:
       - http:
           path: tournamentName/{tournamentName}/exportTournamentData
           method: get
+          cors: true
+  importTournamentData:
+    handler: source/importTournamentData.handler
+    events:
+      - http:
+          path: tournamentName/{tournamentName}/importTournamentData
+          method: post
           cors: true
 
 resources:

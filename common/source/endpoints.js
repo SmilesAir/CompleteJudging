@@ -3,6 +3,7 @@ const serverPath = "http://localhost:3000"
 
 const urls = {
     CREATE_TOURNAMENT: "<path>/createTournament",
+    EXPORT_TOURNAMENT_DATA: "<path>/tournamentName/<tournamentName>/importTournamentData",
     GET_ACTIVE_TOURNAMENTS: "<path>/getActiveTournaments",
     GET_BACKUP_RESULTS: "<path>/judge/<judge>/time/<time>/getBackupResults",
     GET_CONSTANTS: "https://s3-us-west-2.amazonaws.com/<stage>-completejudging-constants/base-constants.json",
@@ -10,6 +11,7 @@ const urls = {
     GET_POOL_RESULTS: "<path>/tournamentName/<tournamentName>/divisionIndex/<divisionIndex>/roundIndex/<roundIndex>/poolIndex/<poolIndex>/getPoolResults",
     GET_S3_RESULTS: "https://s3-us-west-2.amazonaws.com/<stage>-completejudging-results/<tournamentName>-results.json",
     IMPORT_TOURNAMENT_DATA: "<path>/tournamentName/<tournamentName>/exportTournamentData",
+    REQUEST_EXPORT_TOURNAMENT_DATA: serverPath + "/tournamentName/<tournamentName>/exportTournamentDataToAWS",
     REQUEST_IMPORT_TOURNAMENT_DATA: serverPath + "/tournamentName/<tournamentName>/importTournamentDataFromAWS",
     REQUEST_TOURNAMENT_INFO: serverPath + "/tournamentName/<tournamentName>/requestTournamentInfoFromServer",
     REPORT_JUDGE_SCORE: "<path>/reportJudgeScore",

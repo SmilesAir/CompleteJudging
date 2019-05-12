@@ -7,6 +7,7 @@ scroll on diff is annoying when editing
 Fix fucking codeglue. Remove the mode prop so production stage works
 Remove need to click Set Pool after every upload from PoolCreator
 Figure out how scoreboard works in lan mode
+Will tournament data exceed what fetch can send in a single call
 
 
 Judges. Are you finished popup

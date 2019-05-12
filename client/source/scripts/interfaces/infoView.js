@@ -342,6 +342,7 @@ class PlayerAndTeams extends React.Component {
     render() {
         return (
             <div id="content1" className="infoTabContent">
+                <button onClick={() => Interfaces.info.exportTournamentData()}>Export Tournament Data to AWS</button>
                 <form onSubmit={(event) => this.onSubmit(event)}>
                     <label>
                         New Tournament Name:

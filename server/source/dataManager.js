@@ -34,7 +34,21 @@ class DataManager {
 
             return response
         }).catch((error) => {
-            console.log("Import Tournament Info Error", error)
+            console.log("Import Tournament Data Error", error)
+        })
+    }
+
+    exportTournamentDataToAWS(tournamentName) {
+        return fetch(EndpointStore.buildUrl(false, "EXPORT_TOURNAMENT_DATA", {
+            tournamentName: tournamentName
+        }), {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(this.tournamentData)
+        }).catch((error) => {
+            console.log("Export Tournament Data Error", error)
         })
     }
 
