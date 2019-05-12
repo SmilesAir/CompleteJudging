@@ -1,5 +1,6 @@
 
 const fetch = require("node-fetch")
+const fs = require("file-system")
 
 const EndpointStore = require("complete-judging-common/source/endpoints.js")
 
@@ -7,6 +8,10 @@ const EndpointStore = require("complete-judging-common/source/endpoints.js")
 class DataManager {
     constructor() {
         this.tournamentData = undefined
+
+        this.dataDirty = false
+
+        this.loadLatestTournamentDataFromDisk()
     }
 
     isInited() {
@@ -16,10 +21,49 @@ class DataManager {
     async init(tournamentName) {
         if (!this.isInited()) {
             await this.importTournamentDataFromAWS(tournamentName)
+
+            this.saveTournamentDataToDisk()
+
+            setInterval(() => {
+                if (this.dataDirty) {
+                    this.saveTournamentDataToDisk()
+                }
+            }, 60 * 1000)
+        }
+    }
+
+    onDataChanged() {
+        this.dataDirty = true
+    }
+
+    saveTournamentDataToDisk() {
+        let now = new Date()
+        let filename = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}.json`
+        let folderName = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}_${now.getHours()}`
+        fs.writeFile(`serverData/${folderName}/${filename}`, JSON.stringify(this.tournamentData))
+
+        fs.writeFile("serverData/data.json", JSON.stringify({
+            latest: `${folderName}/${filename}`
+        }))
+
+        this.dataDirty = false
+    }
+
+    loadLatestTournamentDataFromDisk() {
+        try {
+            let data = JSON.parse(fs.readFileSync("serverData/data.json"))
+            this.tournamentData = JSON.parse(fs.readFileSync(`serverData/${data.latest}`))
+
+            console.log(`Loaded ${data.latest} for ${this.tournamentData.tournamentKey.tournamentName}`)
+        }
+        catch(error) {
+            console.error("Error loading tournament data:", error)
         }
     }
 
     importTournamentDataFromAWS(tournamentName) {
+        console.log(`-------- Importing ${tournamentName} -----------`)
+
         return fetch(EndpointStore.buildUrl(false, "IMPORT_TOURNAMENT_DATA", {
             tournamentName: tournamentName
         }), {
@@ -31,6 +75,8 @@ class DataManager {
             return response.json()
         }).then((response) => {
             this.tournamentData = response
+
+            this.onDataChanged()
 
             return response
         }).catch((error) => {
@@ -77,6 +123,8 @@ class DataManager {
     setPoolItem(pool) {
         if (this.tournamentData !== undefined) {
             this.tournamentData.poolMap[pool.key] = pool
+
+            this.onDataChanged()
         }
     }
 
@@ -93,6 +141,8 @@ class DataManager {
             let pool = this.getPlayingPool()
             if (pool !== undefined) {
                 pool[attributeName] = attributeValue
+
+                this.onDataChanged()
             }
         }
     }
@@ -105,6 +155,8 @@ class DataManager {
                 judgeName: judgeName,
                 time: time
             }
+
+            this.onDataChanged()
         }
     }
 
@@ -117,6 +169,8 @@ class DataManager {
                 for (let key in newObject) {
                     let safeKey = key.replace(/-/g, '_')
                     tournamentKey[safeKey] = newObject[safeKey]
+
+                    this.onDataChanged()
                 }
             }
         }
@@ -129,6 +183,8 @@ class DataManager {
             let tournamentKey = await this.getTournamentKey(tournamentName)
             if (tournamentKey !== undefined) {
                 tournamentKey.playingPoolKey = playingPoolKey
+
+                this.onDataChanged()
             }
         }
     }
@@ -142,6 +198,8 @@ class DataManager {
                 pool.data.state[judgeId] = {
                     status: status
                 }
+
+                this.onDataChanged()
             }
         }
     }
