@@ -48,7 +48,9 @@ require("./index.less")
         MainStore.judgeIndex = url.searchParams.get("judgeIndex")
         MainStore.judgeIndex = MainStore.judgeIndex !== undefined && parseInt(MainStore.judgeIndex, 10)
         let headerParam = url.searchParams.get("header")
-        MainStore.showControlsHeader = headerParam === null || headerParam === true
+        MainStore.showControlsHeader = headerParam !== null && headerParam === "true"
+        let lanModeParam = url.searchParams.get("lanMode")
+        MainStore.lanMode = MainStore.forceLanMode || lanModeParam !== null && lanModeParam === "true"
 
         DataAction.init()
         Interfaces.init()
