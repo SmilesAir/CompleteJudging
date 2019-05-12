@@ -23,9 +23,9 @@ module.exports = class extends InterfaceModelBase {
             this.queryPoolData(MainStore.startupTournamentName)
         }
 
-        // setInterval(() => {
-        //     this.queryPoolData(MainStore.tournamentName)
-        // }, this.updateIntervalMs)
+        setInterval(() => {
+            this.queryPoolData(MainStore.tournamentName)
+        }, this.updateIntervalMs)
     }
 
     createResultsData(results) {

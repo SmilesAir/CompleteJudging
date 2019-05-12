@@ -38,6 +38,10 @@ class DataManager {
         })
     }
 
+    getPlayingPool() {
+        return this.tournamentData && this.tournamentData.poolMap[this.tournamentData.tournamentKey.playingPoolKey]
+    }
+
     async getTournamentInfo(tournamentName) {
         await this.init(tournamentName)
 
@@ -72,7 +76,7 @@ class DataManager {
         await this.init(tournamentName)
 
         if (this.tournamentData !== undefined) {
-            let pool = this.tournamentData.poolMap[this.tournamentData.tournamentKey.playingPoolKey]
+            let pool = this.getPlayingPool()
             if (pool !== undefined) {
                 pool[attributeName] = attributeValue
             }
@@ -111,6 +115,19 @@ class DataManager {
             let tournamentKey = await this.getTournamentKey(tournamentName)
             if (tournamentKey !== undefined) {
                 tournamentKey.playingPoolKey = playingPoolKey
+            }
+        }
+    }
+
+    async setJudgeState(tournamentName, judgeId, status) {
+        await this.init(tournamentName)
+
+        if (this.tournamentData !== undefined) {
+            let pool = this.getPlayingPool()
+            if (pool !== undefined) {
+                pool.data.state[judgeId] = {
+                    status: status
+                }
             }
         }
     }

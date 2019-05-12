@@ -36,3 +36,7 @@ module.exports.getResultsHistory = function(judgeName, startTime) {
 module.exports.setResults = function(judgeName, time, results) {
     DataManager.setResults(judgeName, time, results)
 }
+
+module.exports.setJudgeState = async function(tournamentName, judgeId, status) {
+    await DataManager.setJudgeState(tournamentName, judgeId, status)
+}

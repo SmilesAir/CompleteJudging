@@ -6,7 +6,7 @@ Time is wrong in announcer
 scroll on diff is annoying when editing
 Fix fucking codeglue. Remove the mode prop so production stage works
 Remove need to click Set Pool after every upload from PoolCreator
-Something wrong when switching pool with poolState and judge name lookup
+Figure out how scoreboard works in lan mode
 
 
 Judges. Are you finished popup

@@ -191,6 +191,10 @@ module.exports.setPlayingPool = async function(tournamentName, data) {
     }
 }
 
+module.exports.setJudgeState = function(tournamentName, judgeId, status) {
+    DataHarness.setJudgeState(tournamentName, judgeId, status)
+}
+
 ///////////////////////// Harness Passthrough /////////////////////////
 module.exports.getTournamentInfo = function(key) {
     return DataHarness.getTournamentInfo(key)
