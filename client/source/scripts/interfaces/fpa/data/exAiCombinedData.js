@@ -16,7 +16,7 @@ module.exports.getDefaultConstants = function() {
     }
 }
 
-class TeamExAiCombinedScores extends DataBase {
+class TeamExAiCombinedScores extends DataBase.class {
     constructor() {
         super()
 
@@ -115,7 +115,7 @@ module.exports.getTotalDeductions = function(resultsData, teamIndex) {
 }
 
 function calcAiScore(data) {
-    return (data.music.score + data.teamwork.score + data.form.score) / 3
+    return (data.music.score + data.teamwork.score + data.form.score) / 4 + DataBase.calcCommonScore(data)
 }
 
 // https://www.wolframalpha.com/input/?i=y+%3D+(((50+-+x+%2F+2)+%2F+50)+%5E+2),+x+from+0+to+50
@@ -173,6 +173,10 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
     })
 
     processed.push({
+        G: data.general
+    })
+
+    processed.push({
         Score: calcAiScore(data)
     })
 
@@ -211,6 +215,9 @@ module.exports.getExAiCombinedDetailedProcessed = function(data, preProcessedDat
     })
     processed.push({
         Form: data.form.score
+    })
+    processed.push({
+        General: data.general
     })
     processed.push({
         Score: calcAiScore(data)
