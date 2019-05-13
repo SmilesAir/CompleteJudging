@@ -102,12 +102,16 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                             }).valueList
 
                             let value = processedData[descName] || 0
-                            value = Number.parseFloat(value)
                             let outValue = undefined
-                            if (isNaN(value) || Number.isInteger(value)) {
+                            if (typeof value === "string") {
                                 outValue = value
                             } else {
-                                outValue = value.toFixed(2)
+                                value = Number.parseFloat(value)
+                                if (isNaN(value) || Number.isInteger(value)) {
+                                    outValue = value
+                                } else {
+                                    outValue = value.toFixed(2)
+                                }
                             }
                             valueList.push(outValue)
                         }
