@@ -36,6 +36,10 @@ class TeamExAiCombinedScores extends DataBase.class {
     }
 
     getAiData(key) {
+        this[key] = this[key] || {
+            score: 0
+        }
+
         return this[key]
     }
 
@@ -114,8 +118,20 @@ module.exports.getTotalDeductions = function(resultsData, teamIndex) {
     return calcDeductions(team)
 }
 
+function getMusic(data) {
+    return data.music !== undefined ? data.music.score : 0
+}
+
+function getTeamwork(data) {
+    return data.teamwork !== undefined ? data.teamwork.score : 0
+}
+
+function getForm(data) {
+    return data.form !== undefined ? data.form.score : 0
+}
+
 function calcAiScore(data) {
-    return (data.music.score + data.teamwork.score + data.form.score) / 4 + DataBase.calcCommonScore(data)
+    return (getMusic(data) + getTeamwork(data) + getForm(data)) / 4 + DataBase.calcCommonScore(data)
 }
 
 // https://www.wolframalpha.com/input/?i=y+%3D+(((50+-+x+%2F+2)+%2F+50)+%5E+2),+x+from+0+to+50
@@ -154,7 +170,7 @@ module.exports.getSummary = function(resultsData, teamIndex) {
 }
 
 module.exports.getOverlaySummary = function(data) {
-    return ` [M: ${data.music.score}, T: ${data.teamwork.score}, F: ${data.form.score}, Ex: ${calcDeductions(data).toFixed(2)}]`
+    return ` [M: ${getMusic(data)}, T: ${getTeamwork(data)}, F: ${getForm(data)}, Ex: ${calcDeductions(data).toFixed(2)}]`
 }
 
 module.exports.getFullProcessed = function(data, preProcessedData) {
@@ -208,13 +224,13 @@ module.exports.getExAiCombinedDetailedProcessed = function(data, preProcessedDat
     let processed = []
 
     processed.push({
-        Music: data.music.score
+        Music: getMusic(data)
     })
     processed.push({
-        Team: data.teamwork.score
+        Team: getTeamwork(data)
     })
     processed.push({
-        Form: data.form.score
+        Form: getForm(data)
     })
     processed.push({
         General: data.general
