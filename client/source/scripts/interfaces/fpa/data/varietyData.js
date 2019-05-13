@@ -13,7 +13,7 @@ module.exports.getDefaultConstants = function() {
     }
 }
 
-class TeamVarietyScores extends DataBase {
+class TeamVarietyScores extends DataBase.class {
     constructor() {
         super()
         
@@ -77,7 +77,7 @@ module.exports.getOverlaySummary = function(data) {
 function calcScore(data, preProcessedData) {
     let constants = MainStore.constants.variety
     let base = preProcessedData.routineLengthSeconds * constants.basePerSecond
-    return data.qualityScore * data.quantityScore / base
+    return data.qualityScore * data.quantityScore / base + DataBase.calcCommonScore(data)
 }
 
 module.exports.getFullProcessed = function(data, preProcessedData) {
@@ -89,8 +89,10 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
     processed.push({
         Quality: data.qualityScore
     })
+    processed.push({
+        G: data.general
+    })
 
-    
     processed.push({
         Score: calcScore(data, preProcessedData)
     })

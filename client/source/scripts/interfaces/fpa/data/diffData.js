@@ -44,7 +44,7 @@ module.exports.getDefaultConstants = function() {
     }
 }
 
-class TeamDiffScores extends DataBase {
+class TeamDiffScores extends DataBase.class {
     constructor() {
         super()
 
@@ -162,12 +162,11 @@ function generateGradientArray(count, routineLengthSeconds) {
     return gradientArray
 }
 
-function getGradientScore(scores, adjusted, routineLengthSeconds) {
-    let sortedScores = sortScores(scores)
-
+function getGradientScore(data, adjusted, routineLengthSeconds) {
+    let sortedScores = sortScores(data.scores)
     
     let asdf = 0
-    let gradientArray = generateGradientArray(scores.length, routineLengthSeconds)
+    let gradientArray = generateGradientArray(sortedScores.length, routineLengthSeconds)
     let totalScore = 0
     for (let i = 0; i < sortedScores.length; ++i) {
         let score = sortedScores[i]
@@ -180,7 +179,7 @@ function getGradientScore(scores, adjusted, routineLengthSeconds) {
 
     console.log(totalScore / (4 / 60 * routineLengthSeconds), asdf / (4 / 60 * routineLengthSeconds))
 
-    return totalScore / (4 / 60 * routineLengthSeconds)
+    return totalScore / (4 / 60 * routineLengthSeconds) + DataBase.calcCommonScore(data)
 }
 
 module.exports.getInspected = function(resultData, teamIndex) {
@@ -210,7 +209,10 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
         Phrases: getPhraseCount(data.scores)
     })
     processed.push({
-        Score: getGradientScore(data.scores, true, preProcessedData.routineLengthSeconds)
+        G: data.general
+    })
+    processed.push({
+        Score: getGradientScore(data, true, preProcessedData.routineLengthSeconds)
     })
 
     return processed
@@ -222,13 +224,13 @@ module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedDa
 
 module.exports.getScoreboardProcessed = function(data, preProcessedData, processedData) {
     processedData.phrases = Math.round(preProcessedData.totalPhraseCount / preProcessedData.diffJudgeCount)
-    processedData.diff = (processedData.diff || 0) + getGradientScore(data.scores, true, preProcessedData.routineLengthSeconds)
+    processedData.diff = (processedData.diff || 0) + getGradientScore(data, true, preProcessedData.routineLengthSeconds)
 
     return undefined
 }
 
 module.exports.getCategoryResultsProcessed = function(data, preProcessedData, processedData) {
-    processedData.diff = (processedData.diff || 0) + getGradientScore(data.scores, true, preProcessedData.routineLengthSeconds)
+    processedData.diff = (processedData.diff || 0) + getGradientScore(data, true, preProcessedData.routineLengthSeconds)
 
     return undefined
 }
@@ -243,10 +245,13 @@ module.exports.getDiffDetailedProcessed = function(data, preProcessedData) {
         Phrases: getPhraseCount(data.scores)
     })
     processed.push({
+        G: data.general
+    })
+    processed.push({
         Raw: getAverage(data.scores, data.scores.length, false)
     })
     processed.push({
-        Score: getGradientScore(data.scores, true, preProcessedData.routineLengthSeconds)
+        Score: getGradientScore(data, true, preProcessedData.routineLengthSeconds)
     })
 
     return processed
