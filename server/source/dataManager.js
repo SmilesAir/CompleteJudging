@@ -164,15 +164,17 @@ class DataManager {
         await this.init(tournamentName)
 
         if (this.tournamentData !== undefined) {
+            console.log("before", newObject)
             let tournamentKey = await this.getTournamentKey(tournamentName)
             if (tournamentKey !== undefined) {
                 for (let key in newObject) {
-                    let safeKey = key.replace(/-/g, '_')
-                    tournamentKey[safeKey] = newObject[safeKey]
+                    tournamentKey[key] = newObject[key]
 
                     this.onDataChanged()
                 }
             }
+
+            console.log("afer", this.tournamentData.tournamentKey)
         }
     }
 

@@ -8,6 +8,7 @@ Fix fucking codeglue. Remove the mode prop so production stage works
 Remove need to click Set Pool after every upload from PoolCreator
 Figure out how scoreboard works in lan mode
 Will tournament data exceed what fetch can send in a single call
+Express needs to import data if requests are for a different tournament
 
 
 Judges. Are you finished popup
