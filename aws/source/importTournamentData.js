@@ -21,6 +21,14 @@ module.exports.handler = (e, c, cb) => { Common.handler(e, c, cb, async (event, 
         throw new Error(`Put tournament key. ${error}`)
     })
 
+    let putTournamentInfoParams = {
+        TableName : process.env.TOURNAMENT_INFO,
+        Item: data.tournamentInfo
+    }
+    await docClient.put(putTournamentInfoParams).promise().catch((error) => {
+        throw new Error(`Put tournament info. ${error}`)
+    })
+
 
     let writePoolList = []
     for (let pool in data.poolMap) {
@@ -43,22 +51,21 @@ module.exports.handler = (e, c, cb) => { Common.handler(e, c, cb, async (event, 
         }
     }
 
-    let batchWriteParams = {
-        RequestItems: {
-            [process.env.TOURNAMENT_INFO]: [
-                {
-                    PutRequest: {
-                        Item: data.tournamentInfo
-                    }
-                }
-            ],
-            [process.env.ACTIVE_POOLS]: writePoolList.length > 0 ? writePoolList : undefined,
-            [process.env.ACTIVE_RESULTS]: writeResultsList.length > 0 ? writeResultsList : undefined
-        }
-    }
-
-    docClient.batchWrite(batchWriteParams).promise().catch((error) => {
-        throw new Error(`Write tournament data. ${error}`)
-    })
+    batchWriteList(process.env.ACTIVE_POOLS, writePoolList)
+    batchWriteList(process.env.ACTIVE_RESULTS, writeResultsList)
 })}
 
+async function batchWriteList(tableName, writeList) {
+    const maxWriteCount = 25
+    for (let i = 0; i < writeList.length; i += maxWriteCount) {
+        let batchWriteParams = {
+            RequestItems: {
+                [tableName]: writeList.slice(i, i + maxWriteCount)
+            }
+        }
+
+        await docClient.batchWrite(batchWriteParams).promise().catch((error) => {
+            throw new Error(`Write tournament data. ${tableName} ${error}`)
+        })
+    }
+}
