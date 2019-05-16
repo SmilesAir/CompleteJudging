@@ -60,7 +60,6 @@ module.exports.getActivePool = async function(tournamentName) {
         return pool
     } else {
         console.log("getactivepool error")
-        throw new Error(`${tournamentName} doesn't have a playing pool`)
     }
 }
 
@@ -132,7 +131,7 @@ module.exports.getResultData = async function(resultsKey) {
     let item = await DataHarness.getResultItem(resultsKey)
     return {
         judgeName: resultsKey.judgeName,
-        data: item.data
+        data: item && item.data
     }
 }
 

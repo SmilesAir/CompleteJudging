@@ -9,7 +9,9 @@ class DataManager {
     constructor() {
         this.tournamentData = undefined
 
-        this.dataDirty = false
+        this.delayedSaveHandle = undefined
+        this.lastSaveTime = undefined
+        this.saveFrequencyMs = 60 * 1000
 
         this.loadLatestTournamentDataFromDisk()
     }
@@ -23,17 +25,19 @@ class DataManager {
             await this.importTournamentDataFromAWS(tournamentName)
 
             this.saveTournamentDataToDisk()
-
-            setInterval(() => {
-                if (this.dataDirty) {
-                    this.saveTournamentDataToDisk()
-                }
-            }, 60 * 1000)
         }
     }
 
     onDataChanged() {
-        this.dataDirty = true
+        let timeSinceLastSaveMs = Date.now() - this.lastSaveTime
+        if (this.lastSaveTime === undefined || timeSinceLastSaveMs > this.saveFrequencyMs) {
+            this.saveTournamentDataToDisk()
+        } else if (this.delayedSaveHandle === undefined) {
+            this.delayedSaveHandle = setTimeout(() => {
+                this.delayedSaveHandle = undefined
+                this.saveTournamentDataToDisk()
+            }, this.saveFrequencyMs - timeSinceLastSaveMs)
+        }
     }
 
     saveTournamentDataToDisk() {
@@ -46,7 +50,9 @@ class DataManager {
             latest: `${folderName}/${filename}`
         }))
 
-        this.dataDirty = false
+        this.lastSaveTime = Date.now()
+
+        console.log("Saved to Disk")
     }
 
     loadLatestTournamentDataFromDisk() {
