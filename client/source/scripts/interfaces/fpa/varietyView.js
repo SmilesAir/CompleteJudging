@@ -1,6 +1,7 @@
 const React = require("react")
 const MobxReact = require("mobx-react")
 
+const MainStore = require("scripts/stores/mainStore.js")
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const NumberLinePickerView = require("scripts/views/numberLinePickerView.js")
@@ -30,12 +31,14 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onInputEnd(number) {
-        CommonAction.vibrateSingleMedium()
+        if (!MainStore.isFinishViewShowing) {
+            CommonAction.vibrateSingleMedium()
 
-        this.interface.setQualityScore(number)
+            this.interface.setQualityScore(number)
 
-        this.state.qualityScore = number
-        this.setState(this.state)
+            this.state.qualityScore = number
+            this.setState(this.state)
+        }
     }
 
     onKeyDown(event) {

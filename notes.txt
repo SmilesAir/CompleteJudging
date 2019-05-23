@@ -11,9 +11,11 @@ Will tournament data exceed what fetch can send in a single call
 Express needs to import data if requests are for a different tournament
 
 
-Judges. Are you finished popup
+Remove results button
+QR codes for judges to get the url
+
 Livestream overlay
-.5 scores in ai
+.5/half scores in ai
 Add a scratch for teams to get eta correct
 Exporting results should have full names
 

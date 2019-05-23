@@ -20,5 +20,6 @@ module.exports = Mobx.observable({
     routineTimeMs: undefined,
     url: undefined,
     lanMode: false,
-    forceLanMode: false
+    forceLanMode: false,
+    isFinishViewShowing: false
 })

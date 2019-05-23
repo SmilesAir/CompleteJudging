@@ -81,6 +81,7 @@ require("./finishView.less")
         event.preventDefault()
 
         this.state.enabled = !this.state.enabled
+        MainStore.isFinishViewShowing = this.state.enabled
         this.setState(this.state)
     }
 
@@ -100,6 +101,7 @@ require("./finishView.less")
         Interfaces.activeInterface.sendState(Enums.EStatus.finished)
         
         this.state.enabled = false
+        MainStore.isFinishViewShowing = this.state.enabled
         this.setState(this.state)
     }
     
