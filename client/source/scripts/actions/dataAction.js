@@ -97,7 +97,7 @@ module.exports.getFullPlayerName = getFullPlayerName
 
 function getFullPlayerNameShort(id) {
     let player = getPlayerData(id)
-    return player !== undefined ? `${player.firstName} ${player.lastName.slice(0, 1)}.` : undefined
+    return player !== undefined ? `${player.firstName} ${player.lastNameShort}.` : undefined
 }
 module.exports.getFullPlayerNameShort = getFullPlayerNameShort
 

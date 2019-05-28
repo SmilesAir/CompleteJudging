@@ -5,11 +5,23 @@ module.exports.INVALID_PLAYER_ID = 0
 
 module.exports.PlayerData = class {
     constructor(poolCreatorPlayer) {
-        this.firstName = poolCreatorPlayer.firstName
-        this.lastName = poolCreatorPlayer.lastName
+        this.firstNameRaw = poolCreatorPlayer.firstName
+        this.lastNameRaw = poolCreatorPlayer.lastName
         this.points = poolCreatorPlayer.points
         this.womenPoints = poolCreatorPlayer.womenPoints
         this.rank = poolCreatorPlayer.rank
+    }
+
+    get firstName() {
+        return this.firstNameRaw || "<No Name>"
+    }
+
+    get lastName() {
+        return this.lastNameRaw || "<No Name>"
+    }
+
+    get lastNameShort() {
+        return this.lastNameRaw !== undefined ? this.lastNameRaw.slice(0, 1) : "?"
     }
 }
 
