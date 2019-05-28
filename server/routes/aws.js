@@ -65,4 +65,13 @@ router.post("/tournamentName/:tournamentName/setJudgeState", async (req, res) =>
     })
 })
 
+router.post("/tournamentName/:tournamentName/divisionIndex/:divisionIndex/roundIndex/:roundIndex/poolIndex/:poolIndex/clearPoolResults", async (req, res) => {
+    console.log("found clear resutsl")
+    let data = await Common.clearPoolResults(req.params.tournamentName,
+        req.params.divisionIndex,
+        req.params.roundIndex,
+        req.params.poolIndex)
+    res.json(data)
+})
+
 module.exports = router

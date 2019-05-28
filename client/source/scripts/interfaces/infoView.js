@@ -196,9 +196,14 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     onFullResultsClick(pool) {
         DataAction.fillPoolResults(pool).then(() => {
-            //console.log("hey", pool.results)
             this.props.gotoResultsTabActive(pool)
         })
+    }
+
+    onClearResultsClick(pool) {
+        if (window.confirm(`Attention!\nDo you really want to delete results for ${DataAction.getFullPoolDescription(pool)}?`)) {
+            DataAction.clearPoolResults(pool)
+        }
     }
 
     getResults(pool) {
@@ -206,8 +211,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             <div className="results">
                 <div>
                     {"Results Summary   "}
-                    <button onClick={() => DataAction.fillPoolResults(pool)}>Get Results Summary</button>
                     <button onClick={() => this.onFullResultsClick(pool)}>See Full Results</button>
+                    <button onClick={() => this.onClearResultsClick(pool)}>Clear Results [DANGER]</button>
                 </div>
                 {DataAction.getResultsSummary(pool.results)}
             </div>

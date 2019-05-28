@@ -151,6 +151,13 @@ functions:
           path: tournamentName/{tournamentName}/importTournamentData
           method: post
           cors: true
+  clearPoolResults:
+    handler: source/clearPoolResults.handler
+    events:
+      - http:
+          path: tournamentName/{tournamentName}/divisionIndex/{divisionIndex}/roundIndex/{roundIndex}/poolIndex/{poolIndex}/clearPoolResults
+          method: post
+          cors: true
 
 resources:
   Resources:

@@ -516,6 +516,23 @@ function fillPoolResults(poolData) {
 }
 module.exports.fillPoolResults = fillPoolResults
 
+function clearPoolResults(poolData) {
+    return CommonAction.fetchEx("CLEAR_POOL_RESULTS", {
+        tournamentName: MainStore.tournamentName,
+        divisionIndex: poolData.divisionIndex,
+        roundIndex: poolData.roundIndex,
+        poolIndex: poolData.poolIndex
+    }, undefined, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }).catch((error) => {
+        console.log("Clear Pool Results Error", error)
+    })
+}
+module.exports.clearPoolResults = clearPoolResults
+
 function getPoolResults(divisionIndex, roundIndex, poolIndex) {
     return CommonAction.fetchEx("GET_POOL_RESULTS", {
         tournamentName: MainStore.tournamentName,

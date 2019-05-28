@@ -2,6 +2,7 @@
 const serverPath = "http://localhost:3000"
 
 const urls = {
+    CLEAR_POOL_RESULTS: "<path>/tournamentName/<tournamentName>/divisionIndex/<divisionIndex>/roundIndex/<roundIndex>/poolIndex/<poolIndex>/clearPoolResults",
     CREATE_TOURNAMENT: "<path>/createTournament",
     EXPORT_TOURNAMENT_DATA: "<path>/tournamentName/<tournamentName>/importTournamentData",
     GET_ACTIVE_TOURNAMENTS: "<path>/getActiveTournaments",

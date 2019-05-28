@@ -7,8 +7,8 @@ scroll on diff is annoying when editing
 Fix fucking codeglue. Remove the mode prop so production stage works
 Remove need to click Set Pool after every upload from PoolCreator
 Figure out how scoreboard works in lan mode
-Will tournament data exceed what fetch can send in a single call
 Express needs to import data if requests are for a different tournament
+Express handle spaces in tournament name
 
 
 Remove results button

@@ -194,6 +194,20 @@ module.exports.setJudgeState = function(tournamentName, judgeId, status) {
     DataHarness.setJudgeState(tournamentName, judgeId, status)
 }
 
+module.exports.clearPoolResults = async function(tournamentName, divisionIndex, roundIndex, poolIndex) {
+    let tournamentKey = await DataHarness.getTournamentKey(tournamentName)
+    let poolName = Common.getPoolName(divisionIndex, roundIndex, poolIndex)
+    let poolItem = await Common.getExisitingPoolItem(tournamentKey, poolName)
+
+    for (let propName in poolItem) {
+        if (propName.startsWith(Common.getResultsKeyPrefix())) {
+            delete poolItem[propName]
+        }
+    }
+
+    DataHarness.setPoolItem(poolItem)
+}
+
 ///////////////////////// Harness Passthrough /////////////////////////
 module.exports.getTournamentInfo = function(key) {
     return DataHarness.getTournamentInfo(key)
