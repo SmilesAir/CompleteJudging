@@ -1,5 +1,6 @@
 const React = require("react")
 const MobxReact = require("mobx-react")
+const qrCode = require("qrcode")
 
 const MainStore = require("scripts/stores/mainStore.js")
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
@@ -11,6 +12,15 @@ const CommonAction = require("scripts/actions/commonAction.js")
 
 require("./infoView.less")
 
+
+function getJudgeUrl(judgeIndex, interfaceName) {
+    if (__STAGE__ === "PRODUCTION") {
+        return `https://d5rsjgoyn07f8.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&judgeIndex=${judgeIndex}&header=false`
+    } else {
+        return `https://d27wqtus28jqqk.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&judgeIndex=${judgeIndex}&header=false`
+    }
+}
+
 module.exports = @MobxReact.observer class extends InterfaceViewBase {
     constructor() {
         super()
@@ -18,12 +28,28 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.state = {
             resultsPool: undefined
         }
+
+        this.canvasRefs = []
     }
 
     gotoResultsTabActive(pool) {
         this.resultsTabRef.checked = true
 
         this.state.resultsPool = pool
+        this.setState(this.state)
+    }
+
+    gotoQRCodesTabActive(pool) {
+        // Because QrCode is latent, generate the QR Codes next frame
+        setTimeout(() => {
+            for (let ref of this.canvasRefs) {
+                qrCode.toCanvas(ref.ref, ref.url)
+            }
+        }, 1)
+
+        this.qrCodesTabRef.checked = true
+
+        this.state.qrCodesPool = pool
         this.setState(this.state)
     }
 
@@ -57,6 +83,60 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return null
     }
 
+    addQRCodeCanvas(rows, judgeIndex, url) {
+        let rowIndex = Math.floor(judgeIndex / 3)
+
+        rows[rowIndex] = rows[rowIndex] || []
+        this.canvasRefs[judgeIndex] = {
+            url: url,
+            ref: undefined
+        }
+        rows[rowIndex].push(
+            <div key={judgeIndex} className="codeContainer">
+                <div className="judgeLabel">
+                    Judge: {judgeIndex + 1}
+                </div>
+                <canvas className="code" ref={(ref) => this.canvasRefs[judgeIndex].ref = ref}/>
+            </div>
+        )
+    }
+
+    getQRCodesView() {
+        let rows = []
+        if (this.state.qrCodesPool !== undefined) {
+            let judgeData = this.state.qrCodesPool.judgeData
+            if (judgeData !== undefined) {
+                let judgeIndex = 0
+                judgeData.judgesEx.forEach(() => {
+                    this.addQRCodeCanvas(rows, judgeIndex, getJudgeUrl(judgeIndex++, "exAiCombined"))
+                })
+                judgeData.judgesAi.forEach(() => {
+                    this.addQRCodeCanvas(rows, judgeIndex, getJudgeUrl(judgeIndex++, "variety"))
+                })
+                judgeData.judgesDiff.forEach(() => {
+                    this.addQRCodeCanvas(rows, judgeIndex, getJudgeUrl(judgeIndex++, "diff"))
+                })
+            }
+        }
+
+        let key = 0
+        let rowElements = rows.map((rowList) => {
+            ++key
+            return (
+                <div key={key} className="qrCodeRowContainer">
+                    {rowList}
+                </div>
+            )
+        })
+        
+        return (
+            <div>
+                <button id="noPrint" onClick={() => this.printResults()}>Print</button>
+                {rowElements}
+            </div>
+        )
+    }
+
     render() {
         return (
             <div className="infoContainer">
@@ -68,11 +148,16 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 <label className="infoLabel" htmlFor="tab3">Pools</label>
                 <input ref={ (ref) => this.resultsTabRef = ref } className="infoTab" id="tab4" type="radio" name="tabs" />
                 <label className="infoLabel" htmlFor="tab4">Results</label>
+                <input ref={ (ref) => this.qrCodesTabRef = ref } className="infoTab" id="tab5" type="radio" name="tabs" />
+                <label className="infoLabel" htmlFor="tab5">QR Codes</label>
                 <TournamentSelection/>
                 <PlayerAndTeams/>
-                <PoolsView gotoResultsTabActive={(pool) => this.gotoResultsTabActive(pool)} />
+                <PoolsView gotoResultsTabActive={(pool) => this.gotoResultsTabActive(pool)} gotoQRCodesTabActive={(pool) => this.gotoQRCodesTabActive(pool)} />
                 <div id="content4" className="infoTabContent">
                     {this.getFullResultsElements()}
+                </div>
+                <div id="content5" className="infoTabContent">
+                    {this.getQRCodesView()}
                 </div>
             </div>
         )
@@ -219,33 +304,29 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         )
     }
 
-    getJudgeUrl(judgeIndex, interfaceName) {
-        if (__STAGE__ === "PRODUCTION") {
-            return `https://d5rsjgoyn07f8.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&judgeIndex=${judgeIndex}&header=false`
-        } else {
-            return `https://d27wqtus28jqqk.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&judgeIndex=${judgeIndex}&header=false`
-        }
-    }
-
     setLinksInClipboard(pool) {
         let linkList = []
         let judgeData = pool.judgeData
         if (judgeData !== undefined) {
             let judgeIndex = 0
             judgeData.judgesEx.forEach(() => {
-                linkList.push(`${judgeIndex}: ${this.getJudgeUrl(judgeIndex++, "exAiCombined")}`)
+                linkList.push(`${judgeIndex}: ${getJudgeUrl(judgeIndex++, "exAiCombined")}`)
             })
             judgeData.judgesAi.forEach(() => {
-                linkList.push(`${judgeIndex}: ${this.getJudgeUrl(judgeIndex++, "variety")}`)
+                linkList.push(`${judgeIndex}: ${getJudgeUrl(judgeIndex++, "variety")}`)
             })
             judgeData.judgesDiff.forEach(() => {
-                linkList.push(`${judgeIndex}: ${this.getJudgeUrl(judgeIndex++, "diff")}`)
+                linkList.push(`${judgeIndex}: ${getJudgeUrl(judgeIndex++, "diff")}`)
             })
         }
 
         this.copyArea.value = linkList.join("\n")
         this.copyArea.select()
         document.execCommand("copy")
+    }
+
+    generateQRCodes(pool) {
+        this.props.gotoQRCodesTabActive(pool)
     }
 
     getPoolComponents() {
@@ -259,7 +340,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                         </div>
                         <div className="controls">
                             <button onClick={() => this.onSetPool(pool)}>Set Pool</button>
-                            <button onClick={() => this.setLinksInClipboard(pool)}>Copy Links to Clipboard</button>
+                            <button onClick={() => this.setLinksInClipboard(pool)}>Copy Links</button>
+                            <button onClick={() => this.generateQRCodes(pool)}>QR Codes</button>
                         </div>
                         <div className="teams">
                             {this.getTeamComponents(pool)}

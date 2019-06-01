@@ -24,7 +24,8 @@
 #tab1:checked ~ #content1,
 #tab2:checked ~ #content2,
 #tab3:checked ~ #content3,
-#tab4:checked ~ #content4 {
+#tab4:checked ~ #content4,
+#tab5:checked ~ #content5 {
     display: block;
 }
 
@@ -94,6 +95,33 @@
             height: 0%;
         }
     }
+
+    .qrCodeRowContainer {
+        display: flex;
+
+        .codeContainer {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            justify-items: center;
+            align-content: center;
+            justify-items: center;
+
+            border: 2px solid black;
+            margin: 10px;
+
+            .judgeLabel {
+                align-self: center;
+
+                font-weight: bold;
+                font-size: 1.5em;
+            }
+
+            .code {
+                width: 100px;
+            }
+        }
+    }
 }
 
 .infoSummary {
@@ -134,17 +162,31 @@
     }
 
     body * {
-      visibility: hidden;
+        visibility: hidden;
     }
 
     #content4 * {
-      visibility: visible;
+        visibility: visible;
     }
 
     #content4 {
-      position: absolute;
-      left: 0;
-      top: 0;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    #content5 * {
+        visibility: visible;
+    }
+
+    #content5 {
+        position: absolute;
+        left: 0;
+        top: 0;
+
+        .qrCodeRowContainer {
+            page-break-inside: avoid;
+        }
     }
 
     #noPrint {
