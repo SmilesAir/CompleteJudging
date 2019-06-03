@@ -96,12 +96,17 @@ require("./overlayView.less")
     }
 
     onPointerDown() {
-        if (!this.state.enabled && !MainStore.isRoutineTimeElapsed) {
-            return
+        if (Interfaces.activeInterface.needShowFinishView) {
+            if (this.state.enabled) {
+                this.state.enabled = false
+                this.setState(this.state)
+            } else {
+                // Do nothing
+            }
+        } else {
+            this.state.enabled = !this.state.enabled
+            this.setState(this.state)
         }
-
-        this.state.enabled = !this.state.enabled
-        this.setState(this.state)
     }
     
     render() {
