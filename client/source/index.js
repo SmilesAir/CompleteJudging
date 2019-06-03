@@ -21,6 +21,7 @@ const DiffInspectorView = require("scripts/interfaces/fpa/diffInspectorView.js")
 const ExAiCombinedView = require("scripts/interfaces/fpa/exAiCombinedView.js")
 const AnnouncerView = require("scripts/interfaces/announcerView.js")
 const ScoreboardView = require("scripts/interfaces/scoreboardView.js")
+const OldExView = require("scripts/interfaces/old/oldExView.js")
 const BlockPromptView = require("scripts/views/blockPromptView.js")
 const CommonAction = require("scripts/actions/commonAction.js")
 
@@ -157,6 +158,9 @@ require("./index.less")
             break
         case Enums.EInterface.scoreboard:
             activeInterface = <ScoreboardView />
+            break
+        case Enums.EInterface.oldEx:
+            activeInterface = <OldExView />
             break
         }
 

@@ -11,6 +11,7 @@ const DiffInspectorModel = require("scripts/interfaces/fpa/diffInspectorModel.js
 const ExAiCombinedModel = require("scripts/interfaces/fpa/exAiCombinedModel.js")
 const AnnouncerModel = require("scripts/interfaces/announcerModel.js")
 const ScoreboardModel = require("scripts/interfaces/scoreboardModel.js")
+const OldEx = require("scripts/interfaces/old/oldExModel.js")
 
 class Interfaces {
     constructor() {
@@ -26,6 +27,7 @@ class Interfaces {
         this.exAiCombined = new ExAiCombinedModel()
         this.announcer = new AnnouncerModel()
         this.scoreboard = new ScoreboardModel()
+        this.oldEx = new OldEx()
 
         this.list = [
             this.default,
@@ -39,7 +41,8 @@ class Interfaces {
             this.diffInspector,
             this.exAiCombined,
             this.announcer,
-            this.scoreboard
+            this.scoreboard,
+            this.oldEx
         ]
     }
 

@@ -13,7 +13,8 @@ module.exports.EInterface = {
     diffInspector: 8,
     exAiCombined: 9,
     announcer: 10,
-    scoreboard: 11
+    scoreboard: 11,
+    oldEx: 12
 }
 
 module.exports.EStatus = {
