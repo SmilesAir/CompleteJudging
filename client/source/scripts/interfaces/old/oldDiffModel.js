@@ -18,11 +18,12 @@ module.exports = class extends InterfaceModelBase {
 
         this.obs.dragTeamIndex = undefined
         this.obs.editIndex = undefined
+        this.obs.activeInputIndex = undefined
     }
 
     init() {
         super.init()
-        
+
         if (MainStore.startupTournamentName !== undefined) {
             this.queryPoolData(MainStore.startupTournamentName)
         }
@@ -37,9 +38,11 @@ module.exports = class extends InterfaceModelBase {
     }
 
     setActiveScore(score) {
-        this.obs.results.addScore(this.getActiveTeamIndex(), score)
+        if (this.obs.activeInputIndex !== undefined) {
+            this.obs.results.setScore(this.getActiveTeamIndex(), this.obs.activeInputIndex, score)
 
-        this.reportScores()
+            this.reportScores()
+        }
     }
 
     startEdit(markIndex) {
@@ -56,5 +59,33 @@ module.exports = class extends InterfaceModelBase {
         }
 
         this.obs.editIndex = undefined
+    }
+
+    onRoutineStart() {
+        super.onRoutineStart()
+
+        this.obs.activeInputIndex = undefined
+    }
+
+    onRoutineUpdate() {
+        super.onRoutineUpdate()
+
+        this.obs.activeInputIndex = undefined
+
+        let scores = this.obs.results.teamScoreList[this.getActiveTeamIndex()].scores
+        let activeIndex = Math.min(Math.floor(MainStore.routineTimeMs / 15000) - 1, scores.length - 1)
+        if (activeIndex >= 0) {
+            let score = scores[activeIndex]
+
+            if (score === null || score === undefined) {
+                this.obs.activeInputIndex = activeIndex
+            }
+        }
+    }
+
+    onRoutineStop() {
+        super.onRoutineStop()
+
+        this.obs.activeInputIndex = undefined
     }
 }

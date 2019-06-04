@@ -105,7 +105,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 x <= bounds.right &&
                 y >= bounds.top &&
                 y <= bounds.bottom) {
-                
+
                 this.updateNumberOut(x)
             }
         }
@@ -114,7 +114,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     onParentInputEnd(event) {
         event.preventDefault()
         event.stopPropagation()
-        
+
         if (this.interface.obs.editIndex === undefined) {
             let score = this.getStateNumberOut()
             if (score !== undefined) {
@@ -158,6 +158,9 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     <div className="touchArea" ref={this.touchAreaRef}>
                         {this.getNumbers()}
                     </div>
+                    {/* <div className="removeArea">
+                        Drop Here to Remove
+                    </div> */}
                 </div>
                 {this.getNumberOutView()}
             </div>

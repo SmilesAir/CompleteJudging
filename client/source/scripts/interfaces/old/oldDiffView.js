@@ -105,7 +105,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 x <= bounds.right &&
                 y >= bounds.top &&
                 y <= bounds.bottom) {
-                
+
                 this.updateNumberOut(x)
             }
         }
@@ -114,7 +114,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     onParentInputEnd(event) {
         event.preventDefault()
         event.stopPropagation()
-        
+
         if (this.interface.obs.editIndex === undefined) {
             let score = this.getStateNumberOut()
             if (score !== undefined) {
@@ -139,6 +139,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             return <div className="diffTopContainer">Waiting for Head Judge</div>
         }
 
+        let inputClassName = `inputContainer ${this.interface.obs.activeInputIndex !== undefined ? "outlineActive" : ""}`
+
         return (
             <div className="diffTopContainer"
                 onTouchStart={(event) => this.onParentInputStart(event)}
@@ -147,7 +149,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 onTouchEnd={(event) => this.onParentInputEnd(event)}>
                 {this.getJudgeHeaderElement()}
                 <TimeMarksView />
-                <div id="inputContainer" className="inputContainer"
+                <div id="inputContainer" className={inputClassName}
                     onTouchStart={(event) => this.onTouchStart(event)}
                     onTouchMove={(event) => this.onTouchMove(event)}
                     onTouchEnd={(event) => this.onTouchEnd(event)}
@@ -158,9 +160,6 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     <div className="touchArea" ref={this.touchAreaRef}>
                         {this.getNumbers()}
                     </div>
-                    {/* <div className="removeArea">
-                        Drop Here to Remove
-                    </div> */}
                 </div>
                 {this.getNumberOutView()}
             </div>
@@ -190,7 +189,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     render() {
         let score = this.interface.obs.results.teamScoreList[this.interface.getActiveTeamIndex()].scores[this.markIndex]
-        let classname = "markContainer"
+        let classname = `markContainer ${this.interface.obs.activeInputIndex === this.markIndex ? "outlineActive" : ""}`
 
         return (
             <div className={classname}
