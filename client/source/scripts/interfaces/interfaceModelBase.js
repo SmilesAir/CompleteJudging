@@ -12,7 +12,7 @@ class InterfaceModelBase {
         this.name = "No Model Name"
         this.type = Enums.EInterface.invalid
         this.updateIntervalMs = 3000
-        this.needShowFinishView = true
+        this.needShowFinishView = false
 
         this.obs = Mobx.observable({
             routineLengthSeconds: 60,
