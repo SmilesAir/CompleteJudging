@@ -14,7 +14,9 @@ module.exports.EInterface = {
     exAiCombined: 9,
     announcer: 10,
     scoreboard: 11,
-    oldEx: 12
+    oldEx: 12,
+    oldAi: 13,
+    oldDiff: 14
 }
 
 module.exports.EStatus = {

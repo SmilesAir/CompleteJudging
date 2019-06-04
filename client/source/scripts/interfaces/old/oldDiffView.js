@@ -5,7 +5,7 @@ const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const CommonAction = require("scripts/actions/commonAction.js")
 
-require("./diffView.less")
+require("./oldDiffView.less")
 
 module.exports = @MobxReact.observer class extends InterfaceViewBase {
     constructor() {
@@ -14,8 +14,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.startTime = undefined
         this.state = {}
         this.touchAreaRef = React.createRef()
-        this.name = "Difficulty Judge"
-        this.interface = Interfaces.diff
+        this.name = "Old Difficulty Judge"
+        this.interface = Interfaces.oldDiff
     }
 
     fillWithResults() {
@@ -118,7 +118,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         if (this.interface.obs.editIndex === undefined) {
             let score = this.getStateNumberOut()
             if (score !== undefined) {
-                this.interface.addScore(score)
+                this.interface.setActiveScore(score)
 
                 CommonAction.vibrateSingleMedium()
             }
@@ -158,6 +158,9 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     <div className="touchArea" ref={this.touchAreaRef}>
                         {this.getNumbers()}
                     </div>
+                    {/* <div className="removeArea">
+                        Drop Here to Remove
+                    </div> */}
                 </div>
                 {this.getNumberOutView()}
             </div>
@@ -170,7 +173,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         super(props)
 
         this.markIndex = props.markIndex
-        this.interface = Interfaces.diff
+        this.interface = Interfaces.oldDiff
     }
 
     onTouchStart() {
@@ -187,7 +190,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     render() {
         let score = this.interface.obs.results.teamScoreList[this.interface.getActiveTeamIndex()].scores[this.markIndex]
-        let classname = `markContainer ${score === 0 ? "markZero" : ""}`
+        let classname = "markContainer"
 
         return (
             <div className={classname}
@@ -203,8 +206,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     constructor() {
         super()
 
-        this.marksPerGroup = 5
-        this.interface = Interfaces.diff
+        this.marksPerGroup = 4
+        this.interface = Interfaces.oldDiff
     }
 
     getGroupViews() {

@@ -10,12 +10,14 @@ module.exports = class {
         const ExAiCombinedData = require("scripts/interfaces/fpa/data/exAiCombinedData.js")
 
         const OldExData = require("scripts/interfaces/old/data/oldExData.js")
+        const OldAiData = require("scripts/interfaces/old/data/oldAiData.js")
 
         this.dataModelList = [
             DiffData,
             VarietyData,
             ExAiCombinedData,
-            OldExData
+            OldExData,
+            OldAiData
         ]
 
         for (let dataModel of this.dataModelList) {
