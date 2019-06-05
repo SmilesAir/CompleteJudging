@@ -10,6 +10,7 @@ module.exports = class extends InterfaceModelBase {
 
         this.name = "Ai Judge"
         this.type = Enums.EInterface.oldAi
+        this.showFinishOverlay = false
 
         this.playPoolHash = undefined
         this.observableHash = undefined

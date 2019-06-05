@@ -12,6 +12,7 @@ module.exports = class extends InterfaceModelBase {
 
         this.name = "Old Diff Judge"
         this.type = Enums.EInterface.oldDiff
+        this.showFinishOverlay = false
 
         this.playPoolHash = undefined
         this.observableHash = undefined
@@ -41,8 +42,6 @@ module.exports = class extends InterfaceModelBase {
         if (this.obs.activeInputIndex !== undefined) {
             this.obs.results.setScore(this.getActiveTeamIndex(), this.obs.activeInputIndex, score)
 
-            this.activateInputArray[this.obs.activeInputIndex] = false
-
             this.reportScores()
 
             return true
@@ -53,6 +52,8 @@ module.exports = class extends InterfaceModelBase {
 
     setConsec(blockIndex, isConsec) {
         this.obs.results.setConsec(this.getActiveTeamIndex(), blockIndex, isConsec)
+
+        this.activateInputArray[blockIndex] = false
 
         this.reportScores()
     }

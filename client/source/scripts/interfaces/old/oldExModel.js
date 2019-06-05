@@ -11,6 +11,7 @@ module.exports = class extends InterfaceModelBase {
 
         this.name = "Old Ex Judge"
         this.type = Enums.EInterface.oldEx
+        this.showFinishOverlay = false
 
         this.playPoolHash = undefined
         this.observableHash = undefined
