@@ -6,6 +6,12 @@ const MainStore = require("scripts/stores/mainStore.js")
 const OldDiffData = require("scripts/interfaces/old/data/oldDiffData.js")
 const CommonAction = require("scripts/actions/commonAction.js")
 
+let markSounds = []
+for (let i = 1; i <= 20; ++i) {
+    markSounds[i] = require(`sounds/Mark${i}.mp3`)
+}
+const markEnd = require("sounds/End.mp3")
+
 module.exports = class extends InterfaceModelBase {
     constructor() {
         super()
@@ -20,6 +26,8 @@ module.exports = class extends InterfaceModelBase {
         this.obs.dragTeamIndex = undefined
         this.obs.editIndex = undefined
         this.obs.activeInputIndex = undefined
+
+        this.lastPlayedMarkIndex = undefined
     }
 
     init() {
@@ -91,6 +99,18 @@ module.exports = class extends InterfaceModelBase {
         if (activeIndex >= 0) {
             if (this.activateInputArray[activeIndex] === undefined) {
                 this.obs.activeInputIndex = activeIndex
+            }
+
+            if (activeIndex !== this.lastPlayedMarkIndex) {
+                this.lastPlayedMarkIndex = activeIndex
+
+                new Audio(markSounds[activeIndex + 1]).play()
+
+                if (activeIndex === scores.length - 1) {
+                    setTimeout(() => {
+                        new Audio(markEnd).play()
+                    }, 2000)
+                }
             }
         }
     }
