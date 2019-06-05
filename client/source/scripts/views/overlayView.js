@@ -108,7 +108,7 @@ require("./overlayView.less")
             this.setState(this.state)
         }
     }
-    
+
     render() {
         if (this.state.enabled) {
             return (

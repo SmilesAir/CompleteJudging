@@ -1,7 +1,6 @@
 
 const Mobx = require("mobx")
 
-const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
 const Enums = require("scripts/stores/enumStore.js")
 const DataBase = require("scripts/stores/dataBase.js")

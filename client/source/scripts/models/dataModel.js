@@ -11,13 +11,15 @@ module.exports = class {
 
         const OldExData = require("scripts/interfaces/old/data/oldExData.js")
         const OldAiData = require("scripts/interfaces/old/data/oldAiData.js")
+        const OldDiffData = require("scripts/interfaces/old/data/oldDiffData.js")
 
         this.dataModelList = [
             DiffData,
             VarietyData,
             ExAiCombinedData,
             OldExData,
-            OldAiData
+            OldAiData,
+            OldDiffData
         ]
 
         for (let dataModel of this.dataModelList) {

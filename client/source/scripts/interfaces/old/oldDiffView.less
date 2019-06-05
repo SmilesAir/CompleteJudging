@@ -96,6 +96,10 @@
 
                 cursor: pointer;
             }
+
+            .markConsec {
+                background-color: gold;
+            }
         }
     }
 
@@ -128,7 +132,7 @@
     100% { border: 3px dashed purple; }
 }
 
-.inputContainer {
+.numberInputContainer {
     grid-area: input;
     background-color: burlywood;
 
@@ -142,5 +146,15 @@
 
     .number {
         font-size: 8vw;
+    }
+}
+
+.consecInputContainer {
+    grid-area: input;
+    display: flex;
+
+    button {
+        flex-grow: 1;
+        font-size: 3em;
     }
 }

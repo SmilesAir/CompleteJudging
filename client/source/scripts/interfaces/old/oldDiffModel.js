@@ -41,8 +41,20 @@ module.exports = class extends InterfaceModelBase {
         if (this.obs.activeInputIndex !== undefined) {
             this.obs.results.setScore(this.getActiveTeamIndex(), this.obs.activeInputIndex, score)
 
+            this.activateInputArray[this.obs.activeInputIndex] = false
+
             this.reportScores()
+
+            return true
+        } else {
+            return false
         }
+    }
+
+    setConsec(blockIndex, isConsec) {
+        this.obs.results.setConsec(this.getActiveTeamIndex(), blockIndex, isConsec)
+
+        this.reportScores()
     }
 
     startEdit(markIndex) {
@@ -65,6 +77,7 @@ module.exports = class extends InterfaceModelBase {
         super.onRoutineStart()
 
         this.obs.activeInputIndex = undefined
+        this.activateInputArray = []
     }
 
     onRoutineUpdate() {
@@ -75,9 +88,7 @@ module.exports = class extends InterfaceModelBase {
         let scores = this.obs.results.teamScoreList[this.getActiveTeamIndex()].scores
         let activeIndex = Math.min(Math.floor(MainStore.routineTimeMs / 15000) - 1, scores.length - 1)
         if (activeIndex >= 0) {
-            let score = scores[activeIndex]
-
-            if (score === null || score === undefined) {
+            if (this.activateInputArray[activeIndex] === undefined) {
                 this.obs.activeInputIndex = activeIndex
             }
         }

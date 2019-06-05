@@ -96,17 +96,19 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     onParentTouchMove(event) {
         if (this.interface.obs.editIndex !== undefined) {
             let inputContainer = document.getElementsByClassName("inputContainer")[0]
-            let bounds = inputContainer.getBoundingClientRect()
+            if (inputContainer !== undefined) {
+                let bounds = inputContainer.getBoundingClientRect()
 
-            let x = event.targetTouches[0].clientX
-            let y = event.targetTouches[0].clientY
+                let x = event.targetTouches[0].clientX
+                let y = event.targetTouches[0].clientY
 
-            if (x >= bounds.left &&
-                x <= bounds.right &&
-                y >= bounds.top &&
-                y <= bounds.bottom) {
+                if (x >= bounds.left &&
+                    x <= bounds.right &&
+                    y >= bounds.top &&
+                    y <= bounds.bottom) {
 
-                this.updateNumberOut(x)
+                    this.updateNumberOut(x)
+                }
             }
         }
     }
@@ -118,11 +120,15 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         if (this.interface.obs.editIndex === undefined) {
             let score = this.getStateNumberOut()
             if (score !== undefined) {
-                this.interface.setActiveScore(score)
+                let setScore = this.interface.setActiveScore(score)
+
+                this.setConsecInputEnable(setScore, this.interface.obs.activeInputIndex)
 
                 CommonAction.vibrateSingleMedium()
             }
         } else {
+            this.setConsecInputEnable(true, this.interface.obs.editIndex)
+
             this.interface.endEdit(this.getStateNumberOut())
         }
 
@@ -134,21 +140,33 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     }
 
+    onConsecInput(isConsec) {
+        this.interface.setConsec(this.state.consecInputIndex, isConsec)
+
+        this.setConsecInputEnable(false)
+    }
+
+    setConsecInputEnable(enable, blockIndex) {
+        this.state.isConsecInputEnable = enable
+        this.state.consecInputIndex = blockIndex
+        this.setState(this.state)
+    }
+
     render() {
         if (this.interface.obs.playingPool === undefined) {
             return <div className="diffTopContainer">Waiting for Head Judge</div>
         }
 
-        let inputClassName = `inputContainer ${this.interface.obs.activeInputIndex !== undefined ? "outlineActive" : ""}`
-
-        return (
-            <div className="diffTopContainer"
-                onTouchStart={(event) => this.onParentInputStart(event)}
-                onMouseUp={(event) => this.onParentInputEnd(event)}
-                onTouchMove={(event) => this.onParentTouchMove(event)}
-                onTouchEnd={(event) => this.onParentInputEnd(event)}>
-                {this.getJudgeHeaderElement()}
-                <TimeMarksView />
+        let inputClassName = `numberInputContainer ${this.interface.obs.activeInputIndex !== undefined ? "outlineActive" : ""}`
+        let inputElement = null
+        if (this.state.isConsecInputEnable) {
+            inputElement =
+                <div className="consecInputContainer">
+                    <button onClick={() => this.onConsecInput(false)}>None</button>
+                    <button onClick={() => this.onConsecInput(true)}>+</button>
+                </div>
+        } else {
+            inputElement =
                 <div id="inputContainer" className={inputClassName}
                     onTouchStart={(event) => this.onTouchStart(event)}
                     onTouchMove={(event) => this.onTouchMove(event)}
@@ -161,6 +179,17 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                         {this.getNumbers()}
                     </div>
                 </div>
+        }
+
+        return (
+            <div className="diffTopContainer"
+                onTouchStart={(event) => this.onParentInputStart(event)}
+                onMouseUp={(event) => this.onParentInputEnd(event)}
+                onTouchMove={(event) => this.onParentTouchMove(event)}
+                onTouchEnd={(event) => this.onParentInputEnd(event)}>
+                {this.getJudgeHeaderElement()}
+                <TimeMarksView />
+                {inputElement}
                 {this.getNumberOutView()}
             </div>
         )
@@ -188,8 +217,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     render() {
-        let score = this.interface.obs.results.teamScoreList[this.interface.getActiveTeamIndex()].scores[this.markIndex]
-        let classname = `markContainer ${this.interface.obs.activeInputIndex === this.markIndex ? "outlineActive" : ""}`
+        let data = this.interface.obs.results.teamScoreList[this.interface.getActiveTeamIndex()]
+        let score = data.scores[this.markIndex]
+        let isConsec = data.consecs[this.markIndex]
+        let classname = `markContainer ${this.interface.obs.activeInputIndex === this.markIndex ? "outlineActive" : ""} ${isConsec ? "markConsec" : ""}`
 
         return (
             <div className={classname}

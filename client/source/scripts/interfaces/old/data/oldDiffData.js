@@ -16,16 +16,21 @@ class TeamDiffScores extends DataBase.class {
         super()
 
         this.scores = Mobx.observable(new Array(blockCount))
+        this.consecs = Mobx.observable(new Array(blockCount))
     }
 
     setScore(blockIndex, score) {
         this.scores[blockIndex] = score
     }
+
+    setConsec(blockIndex, isConsec) {
+        this.consecs[blockIndex] = isConsec
+    }
 }
 
 module.exports.DataClass = class extends DataStore.ResultsDataBase {
     constructor(poolData, results, routineLengthSeconds) {
-        super(Enums.EInterface.diff, poolData.divisionIndex, poolData.roundIndex, poolData.poolIndex, poolData.teamList)
+        super(Enums.EInterface.oldDiff, poolData.divisionIndex, poolData.roundIndex, poolData.poolIndex, poolData.teamList)
 
         this.teamScoreList = []
         for (let i = 0; i < this.teamList.length; ++i) {
@@ -38,10 +43,9 @@ module.exports.DataClass = class extends DataStore.ResultsDataBase {
             for (let resultIndex = 0; resultIndex < results.teamScoreList.length; ++resultIndex) {
                 let data = results.teamScoreList[resultIndex]
 
-                this.setGeneral(resultIndex, data.general)
-
                 for (let blockIndex = 0; blockIndex < data.scores.length; ++blockIndex) {
                     this.setScore(resultIndex, blockIndex, data.scores[blockIndex])
+                    this.setConsec(resultIndex, blockIndex, data.consecs && data.consecs[blockIndex] || false)
                 }
             }
         }
@@ -50,18 +54,22 @@ module.exports.DataClass = class extends DataStore.ResultsDataBase {
     setScore(teamIndex, blockIndex, score) {
         this.teamScoreList[teamIndex].setScore(blockIndex, score)
     }
+
+    setConsec(teamIndex, blockIndex, isConsec) {
+        this.teamScoreList[teamIndex].setConsec(blockIndex, isConsec)
+    }
 }
 
 module.exports.verify = function(resultsData) {
-    return resultsData !== undefined && resultsData.type === Enums.EInterface.diff
+    return resultsData !== undefined && resultsData.type === Enums.EInterface.oldDiff
 }
 
-function getDiffScore(inScores) {
-    if (inScores.length === 0) {
+function getDiffScore(data) {
+    if (data.scores.length === 0) {
         return 0
     }
 
-    let scores = inScores.slice(0)
+    let scores = data.scores.slice(0)
     scores.sort((a, b) => {
         return a - b
     })
@@ -70,29 +78,35 @@ function getDiffScore(inScores) {
 
     let total = 0
     for (let score of scores) {
-        total += score
+        total += score || 0
     }
 
-    return total / scores.length
+    let consecTotal = 0
+    for (let consec of data.consecs) {
+        consecTotal += consec ? 1 : 0
+    }
+
+    return (total / scores.length + consecTotal / data.consecs.length) * 1.5
 }
 
 module.exports.getSummary = function(resultsData, teamIndex) {
     if (module.exports.verify(resultsData)) {
-        return `D: ${getDiffScore(scoreList.scores).toFixed(2)}`
+        let data = resultsData.teamScoreList[teamIndex]
+        return `D: ${getDiffScore(data).toFixed(2)}`
     }
 
     return undefined
 }
 
 module.exports.getOverlaySummary = function(data) {
-    return ` [Difficulty: ${getDiffScore(data.scores).toFixed(2)}]`
+    return ` [Difficulty: ${getDiffScore(data).toFixed(2)}]`
 }
 
 module.exports.getFullProcessed = function(data, preProcessedData) {
     let processed = []
 
     processed.push({
-        Score: getDiffScore(data.scores)
+        Score: getDiffScore(data)
     })
 
     return processed
@@ -109,7 +123,7 @@ module.exports.getScoreboardProcessed = function(data, preProcessedData, process
 }
 
 module.exports.getCategoryResultsProcessed = function(data, preProcessedData, processedData) {
-    processedData.diff = getDiffScore(data.scores)
+    processedData.diff = getDiffScore(data)
 
     return undefined
 }
@@ -121,7 +135,7 @@ module.exports.getDiffDetailedProcessed = function(data, preProcessedData) {
         Marks: data.scores.join(" ")
     })
     processed.push({
-        Score: getDiffScore(data.scores)
+        Score: getDiffScore(data)
     })
 
     return processed
