@@ -80,10 +80,6 @@ class InterfaceModelBase {
             }
         }
 
-        if (awsData.serverTime !== undefined) {
-            MainStore.serverTimeOffset = awsData.serverTime - Date.now()
-        }
-
         let userIdDirty = false
         if (MainStore.judgeIndex !== undefined) {
             let judgeIndex = 0
@@ -195,7 +191,7 @@ class InterfaceModelBase {
     }
 
     onRoutineUpdate() {
-        MainStore.routineTimeMs = this.obs.startTime !== undefined ? Date.now() - this.obs.startTime + MainStore.serverTimeOffset : undefined
+        MainStore.routineTimeMs = this.obs.startTime !== undefined ? Date.now() - this.obs.startTime : undefined
 
         MainStore.isRoutineTimeElapsed = this.hasRoutineTimeElapsed()
     }
