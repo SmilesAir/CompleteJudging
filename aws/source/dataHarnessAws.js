@@ -91,6 +91,19 @@ module.exports.updateActivePoolAttribute = async function(tournamentName, attrib
     }
 }
 
+module.exports.updatePoolAttribute = async function(tournamentName, poolKey, attributeName, attributeValue) {
+    let updatePoolParams = {
+        TableName: process.env.ACTIVE_POOLS,
+        Key: { "key": poolKey },
+        UpdateExpression: "set #attributeName = :value",
+        ExpressionAttributeNames: { "#attributeName": attributeName },
+        ExpressionAttributeValues: { ":value": attributeValue }
+    }
+    return docClient.update(updatePoolParams).promise().catch((error) => {
+        throw new Error(`Update pool ${poolKey} for ${tournamentName}. ${error}`)
+    })
+}
+
 module.exports.updateTournamentKeyWithObject = async function(tournamentName, newObject) {
     let expresssions = []
     let names = {}

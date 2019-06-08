@@ -21,6 +21,10 @@ module.exports.updateActivePoolAttribute = async function(tournamentName, attrib
     await DataManager.updateActivePoolAttribute(tournamentName, attributeName, attributeValue)
 }
 
+module.exports.updatePoolAttribute = async function(tournamentName, attributeName, attributeValue) {
+    await DataManager.updatePoolAttribute(tournamentName, attributeName, attributeValue)
+}
+
 module.exports.updateTournamentKeyWithObject = async function(tournamentName, newObject) {
     await DataManager.updateTournamentKeyWithObject(tournamentName, newObject)
 }
