@@ -13,6 +13,7 @@ class InterfaceModelBase {
         this.type = Enums.EInterface.invalid
         this.updateIntervalMs = 3000
         this.needShowFinishView = false
+        this.showFinishOverlay = true
 
         this.obs = Mobx.observable({
             routineLengthSeconds: 60,

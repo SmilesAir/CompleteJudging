@@ -94,7 +94,13 @@ require("./finishView.less")
     onPointerDown(event) {
         event.preventDefault()
 
-        MainStore.isFinishViewShowing = !MainStore.isFinishViewShowing
+        if (Interfaces.activeInterface.showFinishOverlay) {
+            this.state.enabled = !this.state.enabled
+            MainStore.isFinishViewShowing = this.state.enabled
+            this.setState(this.state)
+        } else {
+            this.onFinish()
+        }
     }
 
     onInputEnd(number) {
@@ -107,7 +113,7 @@ require("./finishView.less")
         this.forceUpdate()
     }
 
-    onFinishClick() {
+    onFinish() {
         Interfaces.activeInterface.needShowFinishView = false
 
         Interfaces.activeInterface.sendState(Enums.EStatus.finished)
@@ -123,7 +129,7 @@ require("./finishView.less")
                     {this.getInfo()}
                     <div className="instruction">Enter General Impression Score</div>
                     <NumberLinePickerView className="input" onInputEnd={(event) => this.onInputEnd(event)}/>
-                    <button className="finish" onClick={() => this.onFinishClick()}>Finished</button>
+                    <button className="finish" onClick={() => this.onFinish()}>Finished</button>
                 </div>
             )
         } else if (MainStore.isRoutineTimeElapsed && Interfaces.activeInterface.needShowFinishView) {
