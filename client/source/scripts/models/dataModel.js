@@ -124,9 +124,13 @@ module.exports = class {
     }
 
     setCurrentTeamGeneral(score) {
+        this.setGeneral(MainStore.interfaceObs.playingTeamIndex, score)
+    }
+
+    setGeneral(teamIndex, score) {
         let model = this.getModel(MainStore.interfaceObs.results)
-        if (model !== undefined && MainStore.interfaceObs.playingTeamIndex !== undefined) {
-            MainStore.interfaceObs.results.teamScoreList[MainStore.interfaceObs.playingTeamIndex].general = score
+        if (model !== undefined && teamIndex !== undefined) {
+            MainStore.interfaceObs.results.teamScoreList[teamIndex].general = score
         }
     }
 

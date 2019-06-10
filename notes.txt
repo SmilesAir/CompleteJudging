@@ -9,11 +9,9 @@ Figure out how scoreboard works in lan mode
 Express needs to import data if requests are for a different tournament
 Express handle spaces in tournament name
 Judge status is null if link opened before pool is set
-When can overlay be opened
+Add "Incremental" to scoreboard title
+Sort the summary results
 
-
-Remove results button
-QR codes for judges to get the url
 
 Livestream overlay
 .5/half scores in ai

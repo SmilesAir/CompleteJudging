@@ -141,7 +141,9 @@ module.exports.reportJudgeScore = async function(tournamentName, judgeId, result
         time: Date.now()
     }
 
-    await Common.updateActivePoolAttribute(tournamentName, `${Common.getResultsKeyPrefix()}${judgeId}`, resultsKey)
+    let tournamentKey = await Common.getTournamentKey(tournamentName)
+    let poolKey = tournamentKey[Common.getPoolName(results.divisionIndex, results.roundIndex, results.poolIndex)]
+    await Common.updatePoolAttribute(tournamentName, poolKey, `${Common.getResultsKeyPrefix()}${judgeId}`, resultsKey)
 
     return DataHarness.setResults(judgeId, resultsKey.time, results)
 }
@@ -227,6 +229,10 @@ module.exports.getResultItem = function(resultsKey) {
 
 module.exports.updateActivePoolAttribute = async function(tournamentName, attributeName, attributeValue) {
     return DataHarness.updateActivePoolAttribute(tournamentName, attributeName, attributeValue)
+}
+
+module.exports.updatePoolAttribute = async function(tournamentName, poolKey, attributeName, attributeValue) {
+    return DataHarness.updatePoolAttribute(tournamentName, poolKey, attributeName, attributeValue)
 }
 
 module.exports.updateTournamentKeyWithObject = async function(tournamentName, newObject) {

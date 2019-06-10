@@ -17,7 +17,7 @@ require("./finishView.less")
         super()
 
         this.state = {
-            enabled: false
+            editTeamIndex: undefined
         }
     }
 
@@ -44,17 +44,31 @@ require("./finishView.less")
         return DataAction.getTeamPlayersShort(playersList) + scoreString
     }
 
+    onTeamSelected(teamIndex) {
+        if (MainStore.interfaceObs.playingTeamIndex === teamIndex) {
+            this.state.editTeamIndex = undefined
+        } else {
+            this.state.editTeamIndex = teamIndex
+        }
+
+        this.setState(this.state)
+    }
+
+    getInputIndex() {
+        return this.state.editTeamIndex || MainStore.interfaceObs.playingTeamIndex
+    }
+
     getInfo() {
         let teamViews = []
         if (MainStore.interfaceObs !== undefined && MainStore.interfaceObs.playingPool !== undefined) {
             let key = 0
             teamViews = MainStore.interfaceObs.playingPool.teamList.map((playersList) => {
-                let isPlaying = MainStore.interfaceObs.playingTeamIndex === key
+                let isInput = this.getInputIndex() === key
                 let teamIndex = key
                 return (
                     <div
                         key={key++}
-                        className={`teamContainer ${isPlaying ? "playing" : ""}`}
+                        className={`teamContainer ${isInput ? "playing" : ""}`}
                         onClick={() => this.onTeamSelected(teamIndex)}>
                         {this.getTeamText(playersList, teamIndex)}
                     </div>
@@ -92,7 +106,7 @@ require("./finishView.less")
     onInputEnd(number) {
         CommonAction.vibrateSingleMedium()
 
-        DataStore.dataModel.setCurrentTeamGeneral(number)
+        DataStore.dataModel.setGeneral(this.getInputIndex(), number)
 
         Interfaces.activeInterface.reportScores()
 
@@ -104,13 +118,11 @@ require("./finishView.less")
 
         Interfaces.activeInterface.sendState(Enums.EStatus.finished)
 
-        this.state.enabled = false
-        MainStore.isFinishViewShowing = this.state.enabled
-        this.setState(this.state)
+        MainStore.isFinishViewShowing = false
     }
 
     render() {
-        if (this.state.enabled) {
+        if (MainStore.isFinishViewShowing) {
             return (
                 <div className="finishContainer">
                     {this.getHeader()}

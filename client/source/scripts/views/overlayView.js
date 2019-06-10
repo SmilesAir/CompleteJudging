@@ -26,14 +26,22 @@ require("./overlayView.less")
                 </div>
                 <div>
                     {MainStore.userId}
+                    <button onClick={() => this.onOpenGeneralClick()}>Open General Impression</button>
                 </div>
-                <div className="backupControlsContainer">
+                <div className="headerControlsContainer">
                     <button onClick={() => this.onBackupModeEnableClick()}>{MainStore.interfaceObs.backupModeEnabled ? "Disable Backup Mode" : "Enabled Backup Mode"}</button>
                     <button disabled={!MainStore.interfaceObs.backupModeEnabled} onClick={() => Interfaces.activeInterface.moveToNewerBackup()}>Newer</button>
                     <button disabled={!MainStore.interfaceObs.backupModeEnabled} onClick={() => Interfaces.activeInterface.moveToOlderBackup()}>Older</button>
                 </div>
             </div>
         )
+    }
+
+    onOpenGeneralClick() {
+        this.state.enabled = false
+        this.setState(this.state)
+
+        MainStore.isFinishViewShowing = true
     }
 
     onBackupModeEnableClick() {

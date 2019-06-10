@@ -153,6 +153,19 @@ class DataManager {
         }
     }
 
+    async updatePoolAttribute(tournamentName, poolKey, attributeName, attributeValue) {
+        await this.init(tournamentName)
+
+        if (this.tournamentData !== undefined) {
+            let pool = this.getPoolItem(poolKey)
+            if (pool !== undefined) {
+                pool[attributeName] = attributeValue
+
+                this.onDataChanged()
+            }
+        }
+    }
+
     setResults(judgeName, time, results) {
         if (this.tournamentData !== undefined) {
             this.tournamentData.resultsMap[judgeName] = this.tournamentData.resultsMap[judgeName] || {}

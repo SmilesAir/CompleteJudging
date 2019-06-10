@@ -71,7 +71,7 @@ module.exports.getSummary = function(resultsData, teamIndex) {
 }
 
 module.exports.getOverlaySummary = function(data) {
-    return ` [Quantity: ${data.quantityScore}, Quality: ${data.qualityScore}]`
+    return ` [Quantity: ${data.quantityScore}, Quality: ${data.qualityScore}, G: ${data.general}]`
 }
 
 function calcScore(data, preProcessedData) {
