@@ -24,6 +24,7 @@ const ScoreboardView = require("scripts/interfaces/scoreboardView.js")
 const OldExView = require("scripts/interfaces/old/oldExView.js")
 const OldAiView = require("scripts/interfaces/old/oldAiView.js")
 const OldDiffView = require("scripts/interfaces/old/oldDiffView.js")
+const StreamView = require("scripts/interfaces/streamView.js")
 const BlockPromptView = require("scripts/views/blockPromptView.js")
 const CommonAction = require("scripts/actions/commonAction.js")
 
@@ -68,23 +69,26 @@ require("./index.less")
     }
 
     render() {
-        let classname = `mainContainer ${MainStore.showControlsHeader ? "" : "noHeader"} ${this.isAlertState() ? "alertState" : ""}`
-
-        return (
-            <div className={classname}>
-                <HeaderView />
-                <InterfaceView />
-                <OverlayView />
-                <FinishView />
-                {
-                    this.state.showFullscreenPrompt ? <BlockPromptView promptText="Go Fullscreen" onClick={() => {
-                        document.body.requestFullscreen()
-                        this.state.showFullscreenPrompt = false
-                        this.setState(this.state)
-                    }}/> : undefined
-                }
-            </div>
-        )
+        if (MainStore.activeInterface === Enums.EInterface.stream) {
+            return <InterfaceView />
+        } else {
+            let classname = `mainContainer ${MainStore.showControlsHeader ? "" : "noHeader"} ${this.isAlertState() ? "alertState" : ""}`
+            return (
+                <div className={classname}>
+                    <HeaderView />
+                    <InterfaceView />
+                    <OverlayView />
+                    <FinishView />
+                    {
+                        this.state.showFullscreenPrompt ? <BlockPromptView promptText="Go Fullscreen" onClick={() => {
+                            document.body.requestFullscreen()
+                            this.state.showFullscreenPrompt = false
+                            this.setState(this.state)
+                        }}/> : undefined
+                    }
+                </div>
+            )
+        }
     }
 }
 
@@ -169,6 +173,9 @@ require("./index.less")
             break
         case Enums.EInterface.oldDiff:
             activeInterface = <OldDiffView />
+            break
+        case Enums.EInterface.stream:
+            activeInterface = <StreamView />
             break
         }
 

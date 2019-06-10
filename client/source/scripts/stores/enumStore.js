@@ -16,7 +16,8 @@ module.exports.EInterface = {
     scoreboard: 11,
     oldEx: 12,
     oldAi: 13,
-    oldDiff: 14
+    oldDiff: 14,
+    stream: 15
 }
 
 module.exports.EStatus = {

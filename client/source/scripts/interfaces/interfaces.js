@@ -14,6 +14,7 @@ const ScoreboardModel = require("scripts/interfaces/scoreboardModel.js")
 const OldExModel = require("scripts/interfaces/old/oldExModel.js")
 const OldAiModel = require("scripts/interfaces/old/oldAiModel.js")
 const OldDiffModel = require("scripts/interfaces/old/oldDiffModel.js")
+const StreamModel = require("scripts/interfaces/streamModel.js")
 
 class Interfaces {
     constructor() {
@@ -32,6 +33,7 @@ class Interfaces {
         this.oldEx = new OldExModel()
         this.oldAi = new OldAiModel()
         this.oldDiff = new OldDiffModel()
+        this.stream = new StreamModel()
 
         this.list = [
             this.default,
@@ -48,7 +50,8 @@ class Interfaces {
             this.scoreboard,
             this.oldEx,
             this.oldAi,
-            this.oldDiff
+            this.oldDiff,
+            this.stream
         ]
     }
 
