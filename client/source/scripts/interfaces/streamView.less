@@ -87,6 +87,8 @@
     }
 }
 
+@hudFontSize: 2.3em;
+
 .playingContainer {
     grid-area: interface;
     display: grid;
@@ -110,8 +112,20 @@
         .timeText {
             padding-top: 5%;
             padding-left: 7%;
-            font-size: 2.5em;
+            font-size: @hudFontSize;
             color: white;
+        }
+
+        .exText {
+            padding-left: 7%;
+            font-size: @hudFontSize;
+            color: lightcoral;
+        }
+
+        .diffText {
+            padding-left: 7%;
+            font-size: @hudFontSize;
+            color: lightgreen;
         }
     }
 

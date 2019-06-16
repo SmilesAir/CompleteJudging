@@ -420,6 +420,31 @@ function getExAiCombinedDetailedResultsProcessed(pool, routineLengthSeconds) {
 }
 module.exports.getExAiCombinedDetailedResultsProcessed = getExAiCombinedDetailedResultsProcessed
 
+function getHudProcessed(pool, routineLengthSeconds) {
+    let processed = getResultsProcessed(
+        pool,
+        routineLengthSeconds,
+        DataStore.dataModel.getHudProcessed,
+        createTeamDataObject)
+
+    for (let teamData of processed) {
+        let rank = 1
+        let score = teamData.data.totalScore
+        for (let searchData of processed) {
+            if (searchData !== teamData) {
+                if (score <= searchData.data.totalScore) {
+                    ++rank
+                }
+            }
+        }
+
+        teamData.data.rank = rank
+    }
+
+    return processed
+}
+module.exports.getHudProcessed = getHudProcessed
+
 function getResultsInspected(results, teamIndex) {
     return DataStore.dataModel.getResultsInspected(results, teamIndex)
 }

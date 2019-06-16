@@ -217,6 +217,17 @@ module.exports = class {
         return undefined
     }
 
+    getHudProcessed(data, teamIndex, preProcessedData, processedData) {
+        let model = this.getModel(data)
+        if (model !== undefined) {
+            if (model.getHudProcessed !== undefined) {
+                return model.getHudProcessed(data.teamScoreList[teamIndex], preProcessedData, processedData)
+            }
+        }
+
+        return undefined
+    }
+
     preProcessedData(data, teamIndex, preProcessedData) {
         let model = this.getModel(data)
         if (model !== undefined) {

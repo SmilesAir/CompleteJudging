@@ -97,10 +97,16 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
             this.startTime = response.observable.startTime
 
-            let pool = response.pool
-            return DataAction.getPoolResults(pool.divisionIndex, pool.roundIndex, pool.poolIndex)
+            // Preserve the results
+            let oldResults = this.pool && this.pool.results
+            this.pool = response.pool
+            this.pool.results = oldResults || this.pool.results
+
+            return DataAction.getPoolResults(this.pool.divisionIndex, this.pool.roundIndex, this.pool.poolIndex)
+        }).then((response) => {
+            this.pool.results = response
         }).catch((error) => {
-            console.log("Error: Set Playing Pool", error)
+            console.log("Error: Get Playing Pool", error)
         })
     }
 
@@ -254,11 +260,20 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
             let headerClassName = `headerContainer ${this.isDuringRoutine() || secondsSinceStart < this.routineLengthSeconds + 30 ? "" : "headerHide"}`
 
+            let hudData = DataAction.getHudProcessed(this.pool, this.pool.routineLengthSeconds)
+            let teamData = hudData[this.teamIndex] && hudData[this.teamIndex].data
+
             return (
                 <div className="playingContainer">
                     <div className={headerClassName}>
                         <div className="timeText">
                             Time: {this.getRoutineTimerString()}
+                        </div>
+                        <div className="exText">
+                            Penalty: {-teamData.ex.toFixed(1)}
+                        </div>
+                        <div className="diffText">
+                            Difficulty: {teamData.diff.toFixed(1)}
                         </div>
                     </div>
                     <div className={footerClassName}>

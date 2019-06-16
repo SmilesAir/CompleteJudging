@@ -154,7 +154,7 @@ function calcDeductions(data, phraseCount, routineLengthSeconds) {
     let raw = data.point1Count * .1 + data.point2Count * .2 + data.point3Count * .3 + data.point5Count * .5
 
     raw *= MainStore.constants.exAiCombined.baseScaler
-    
+
     return raw * getExScaler(phraseCount, routineLengthSeconds)
 }
 
@@ -202,7 +202,7 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
 module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedData, processedData) {
     processedData.rawEx = (processedData.rawEx || 0) + calcDeductions(data)
     processedData.ex = (processedData.ex || 0) + calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds)
-    
+
     return undefined
 }
 
@@ -267,4 +267,8 @@ module.exports.getExAiCombinedDetailedProcessed = function(data, preProcessedDat
     })
 
     return processed
+}
+
+module.exports.getHudProcessed = function(data, preProcessedData, processedData) {
+    processedData.ex = calcDeductions(data)
 }

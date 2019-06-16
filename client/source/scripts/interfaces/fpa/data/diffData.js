@@ -164,7 +164,7 @@ function generateGradientArray(count, routineLengthSeconds) {
 
 function getGradientScore(data, adjusted, routineLengthSeconds) {
     let sortedScores = sortScores(data.scores)
-    
+
     let asdf = 0
     let gradientArray = generateGradientArray(sortedScores.length, routineLengthSeconds)
     let totalScore = 0
@@ -177,7 +177,7 @@ function getGradientScore(data, adjusted, routineLengthSeconds) {
         }
     }
 
-    console.log(totalScore / (4 / 60 * routineLengthSeconds), asdf / (4 / 60 * routineLengthSeconds))
+    //console.log(totalScore / (4 / 60 * routineLengthSeconds), asdf / (4 / 60 * routineLengthSeconds))
 
     return totalScore / (4 / 60 * routineLengthSeconds) + DataBase.calcCommonScore(data)
 }
@@ -255,6 +255,10 @@ module.exports.getDiffDetailedProcessed = function(data, preProcessedData) {
     })
 
     return processed
+}
+
+module.exports.getHudProcessed = function(data, preProcessedData, processedData) {
+    processedData.diff = getGradientScore(data, true, preProcessedData.routineLengthSeconds)
 }
 
 module.exports.getPreProcessed = function(data, preProcessedData) {
