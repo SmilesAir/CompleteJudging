@@ -1,10 +1,11 @@
 
-.streamTopContainer {
+.scoreboardContainer {
     grid-area: interface;
     display: flex;
     flex-direction: column;
+    border: burlywood 2px solid;
 
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, .75);
 
     overflow: auto;
 
@@ -75,6 +76,75 @@
 
         background-color: antiquewhite;
         font-size: 4vw;
+
+        .timeTitle {
+            font-size: 1.5vw;
+        }
+
+        .time {
+            font-size: 2.5vw;
+        }
+    }
+}
+
+.playingContainer {
+    grid-area: interface;
+    display: grid;
+    width: 100%;
+    height: 100%;
+
+    grid-template-areas:
+        "header"
+        "middle"
+        "footer";
+    grid-template-rows: 25% auto 20%;
+
+    .headerContainer {
+        grid-area: header;
+        background-image: url("../../images/header.png");
+        width: 22%;
+        height: 100%;
+
+        transition: all .75s ease-in-out;
+
+        .timeText {
+            padding-top: 5%;
+            padding-left: 7%;
+            font-size: 2.5em;
+            color: white;
+        }
+    }
+
+    .headerHide {
+        opacity: 0;
+    }
+
+    .footerContainer {
+        grid-area: footer;
+        background-image: url("../../images/footer.png");
+        position: relative;
+        left: 0;
+
+        transition: all .75s ease-in-out;
+
+        .titleText {
+            padding-top: .5em;
+            padding-left: 3%;
+            font-size: 2em;
+            color: white;
+        }
+
+        .namesText {
+            padding-left: 3%;
+            font-size: 3em;
+            color: white;
+        }
+    }
+
+    .footerHide {
+        position: relative;
+        left: -100%;
+        opacity: 0;
     }
 }
 

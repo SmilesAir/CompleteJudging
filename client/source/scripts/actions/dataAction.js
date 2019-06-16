@@ -102,9 +102,13 @@ function getFullPlayerNameShort(id) {
 module.exports.getFullPlayerNameShort = getFullPlayerNameShort
 
 function getTeamPlayers(team, divider = " - ") {
-    return team.playerList.map((playerId) => {
-        return getFullPlayerName(playerId)
-    }).join(divider)
+    if (team !== undefined) {
+        return team.playerList.map((playerId) => {
+            return getFullPlayerName(playerId)
+        }).join(divider)
+    }
+
+    return ""
 }
 module.exports.getTeamPlayers = getTeamPlayers
 

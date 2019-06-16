@@ -5,8 +5,16 @@ const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const CommonAction = require("scripts/actions/commonAction.js")
+const DataAction = require("scripts/actions/dataAction.js")
+
 
 require("./streamView.less")
+
+const EState = {
+    none: 0,
+    scoreboard: 1,
+    playing: 2
+}
 
 module.exports = @MobxReact.observer class extends InterfaceViewBase {
     constructor() {
@@ -14,6 +22,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
         this.interface = Interfaces.stream
         this.obs = this.interface.obs
+        this.obs.state = EState.playing
+        this.obs.teamChanged = false
 
         this.alwaysUpdate = MainStore.url.searchParams.get("alwaysUpdate") === "true"
 
@@ -41,6 +51,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             }, timeoutMs)
         }
 
+        this.obs.teamChanged &= !this.isDuringRoutine()
+
         this.forceUpdate()
     }
 
@@ -60,10 +72,35 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             this.resultsData = response.data
             this.title = response.title
             this.incremental = response.incremental
-            this.startTime = response.startTime
             this.routineLengthSeconds = response.routineLengthSeconds
         }).catch(() => {
             // Nothing
+        })
+
+        CommonAction.fetchEx("GET_PLAYING_POOL", {
+            tournamentName: MainStore.tournamentName
+        }, undefined, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((response) => {
+            if (response.status < 400) {
+                return response.json()
+            } else {
+                throw new Error(response.statusText)
+            }
+        }).then((response) => {
+            this.obs.teamChanged |= response.observable.playingTeamIndex !== this.teamIndex
+            this.teamIndex = response.observable.playingTeamIndex
+            this.obs.awsData = response
+
+            this.startTime = response.observable.startTime
+
+            let pool = response.pool
+            return DataAction.getPoolResults(pool.divisionIndex, pool.roundIndex, pool.poolIndex)
+        }).catch((error) => {
+            console.log("Error: Set Playing Pool", error)
         })
     }
 
@@ -159,34 +196,83 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return undefined
     }
 
-    getTitleString() {
+    getRoutineTimerString() {
+        let secondsSinceStart = this.getSecondsSinceRoutineStart()
+        if (secondsSinceStart !== undefined) {
+            let secondsRemaining = Math.max(0, Math.round(this.routineLengthSeconds - secondsSinceStart))
+            return `${Math.floor(secondsRemaining / 60)}:${`${secondsRemaining % 60}`.padStart(2, "0")}`
+        }
+
+        return ""
+    }
+
+    getTitleString(noTime) {
         let secondsSinceStart = this.getSecondsSinceRoutineStart()
         let routineTimeStr = ""
-        if (secondsSinceStart < this.routineLengthSeconds) {
-            let secondsRemaining = Math.round(this.routineLengthSeconds - secondsSinceStart)
-            routineTimeStr = ` [${Math.floor(secondsRemaining / 60)}:${`${secondsRemaining % 60}`.padStart(2, "0")}]`
+        if (!noTime && secondsSinceStart < this.routineLengthSeconds) {
+            routineTimeStr = ` [${this.getRoutineTimerString()}]`
         }
 
         return this.title + routineTimeStr
     }
 
+    isDuringRoutine() {
+        return this.getSecondsSinceRoutineStart() < this.routineLengthSeconds
+    }
+
     render() {
         if (this.resultsData === undefined) {
-            return <div>No Stream Data</div>
+            return null
         }
 
-        return (
-            <div className="streamTopContainer">
-                <div className="header">
-                    <div className="title">
-                        {this.getTitleString()}
+        if (this.obs.state === EState.scoreboard) {
+            return (
+                <div className="scoreboardContainer">
+                    <div className="header">
+                        <div className="title">
+                            {this.getTitleString()}
+                        </div>
+                        <div>
+                            <div className="timeTitle">
+                                Local Time
+                            </div>
+                            <div className="time">
+                                {this.getTimeString()}
+                            </div>
+                        </div>
                     </div>
-                    <div className="time">
-                        {this.getTimeString()}
+                    {this.getBoard(this.resultsData)}
+                </div>
+            )
+        } else if (this.obs.state === EState.playing) {
+            let secondsSinceStart = this.getSecondsSinceRoutineStart()
+            let hide = !this.obs.teamChanged && (this.isDuringRoutine() && secondsSinceStart > 3 ||
+                secondsSinceStart > this.routineLengthSeconds + 30) ||
+                this.teamIndex === undefined
+
+            let footerClassName = `footerContainer ${hide ? "footerHide" : ""}`
+
+            let headerClassName = `headerContainer ${this.isDuringRoutine() || secondsSinceStart < this.routineLengthSeconds + 30 ? "" : "headerHide"}`
+
+            return (
+                <div className="playingContainer">
+                    <div className={headerClassName}>
+                        <div className="timeText">
+                            Time: {this.getRoutineTimerString()}
+                        </div>
+                    </div>
+                    <div className={footerClassName}>
+                        <div className="titleText">
+                            {this.getTitleString(true)}
+                        </div>
+                        <div className="namesText">
+                            {DataAction.getTeamPlayers(this.obs.awsData && this.obs.awsData.pool.teamList[this.teamIndex])}
+                        </div>
                     </div>
                 </div>
-                {this.getBoard(this.resultsData)}
-            </div>
-        )
+            )
+        }
+
+        return null
     }
 }
