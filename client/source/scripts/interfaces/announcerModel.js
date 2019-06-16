@@ -21,7 +21,7 @@ module.exports = class extends InterfaceModelBase {
         this.obs.startTime = undefined
         this.obs.isJudging = false
         this.obs.judgingTimeMs = 0
-        this.obs.passiveMode = false
+        this.obs.passiveMode = true
 
         this.awsData = undefined
     }
@@ -89,12 +89,19 @@ module.exports = class extends InterfaceModelBase {
         this.obs.playingPool = new DataStore.PoolData(awsData.pool)
         this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
         this.obs.routineLengthSeconds = awsData.observable.routineLengthSeconds
+        if (this.obs.showScoreboard === undefined) {
+            this.obs.showScoreboard = awsData.state.streamOverlay.showScoreboard === true
+        }
 
         if (this.obs.passiveMode) {
             this.obs.startTime = awsData.observable.startTime
         }
 
         this.awsData = awsData
+
+        return {
+            userIdDirty: false
+        }
     }
 
     sendDataToAWS() {
@@ -108,12 +115,6 @@ module.exports = class extends InterfaceModelBase {
             body: JSON.stringify({
                 data: this.awsData
             })
-        }).then((response) => {
-            return response.json()
-        }).then((response) => {
-            if (response.status < 400) {
-                this.playingPoolKey = response.playingPoolKey
-            }
         }).catch((error) => {
             console.log("Error: Set Playing Pool", error)
         })
@@ -177,5 +178,15 @@ module.exports = class extends InterfaceModelBase {
 
     createResultsData() {
         // unused
+    }
+
+    toggleShowScoreboard() {
+        this.obs.showScoreboard = !this.obs.showScoreboard
+
+        this.awsData.state.streamOverlay = this.awsData.state.streamOverlay || {}
+        this.awsData.state.streamOverlay.showScoreboard = this.obs.showScoreboard
+        this.dirtyObs()
+
+        this.sendDataToAWS()
     }
 }

@@ -93,6 +93,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         }).then((response) => {
             this.obs.teamChanged |= response.observable.playingTeamIndex !== this.teamIndex
             this.teamIndex = response.observable.playingTeamIndex
+            this.obs.state = response.state.streamOverlay.showScoreboard === true ? EState.scoreboard : EState.playing
             this.obs.awsData = response
 
             this.startTime = response.observable.startTime
@@ -231,9 +232,24 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             return null
         }
 
-        if (this.obs.state === EState.scoreboard) {
-            return (
-                <div className="scoreboardContainer">
+        let scoreboardClassName = `scoreboardContainer ${this.obs.state === EState.scoreboard ? "" : "streamViewOff"}`
+        let playingClassName = `playingContainer ${this.obs.state === EState.playing ? "" : "streamViewOff"}`
+
+        let secondsSinceStart = this.getSecondsSinceRoutineStart()
+        let hide = !this.obs.teamChanged && (this.isDuringRoutine() && secondsSinceStart > 3 ||
+            secondsSinceStart > this.routineLengthSeconds + 30) ||
+            this.teamIndex === undefined
+
+        let footerClassName = `footerContainer ${hide ? "footerHide" : ""}`
+
+        let headerClassName = `headerContainer ${this.isDuringRoutine() || secondsSinceStart < this.routineLengthSeconds + 30 ? "" : "headerHide"}`
+
+        let hudData = DataAction.getHudProcessed(this.pool, this.routineLengthSeconds)
+        let teamData = hudData[this.teamIndex] && hudData[this.teamIndex].data
+
+        return (
+            <div>
+                <div className={scoreboardClassName}>
                     <div className="header">
                         <div className="title">
                             {this.getTitleString()}
@@ -249,23 +265,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     </div>
                     {this.getBoard(this.resultsData)}
                 </div>
-            )
-        } else if (this.obs.state === EState.playing) {
-            let secondsSinceStart = this.getSecondsSinceRoutineStart()
-            let hide = !this.obs.teamChanged && (this.isDuringRoutine() && secondsSinceStart > 3 ||
-                secondsSinceStart > this.routineLengthSeconds + 30) ||
-                this.teamIndex === undefined
-
-            let footerClassName = `footerContainer ${hide ? "footerHide" : ""}`
-
-            let headerClassName = `headerContainer ${this.isDuringRoutine() || secondsSinceStart < this.routineLengthSeconds + 30 ? "" : "headerHide"}`
-
-            let hudData = DataAction.getHudProcessed(this.pool, this.pool.routineLengthSeconds)
-            let teamData = hudData[this.teamIndex] && hudData[this.teamIndex].data
-
-            return (
-                <div className="playingContainer">
-                    <div className={headerClassName}>
+                <div className={playingClassName}>
+                    {teamData !== undefined ? <div className={headerClassName}>
                         <div className="timeText">
                             Time: {this.getRoutineTimerString()}
                         </div>
@@ -275,7 +276,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                         <div className="diffText">
                             Difficulty: {teamData.diff.toFixed(1)}
                         </div>
-                    </div>
+                    </div> : null}
                     <div className={footerClassName}>
                         <div className="titleText">
                             {this.getTitleString(true)}
@@ -285,9 +286,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                         </div>
                     </div>
                 </div>
-            )
-        }
-
-        return null
+            </div>
+        )
     }
 }

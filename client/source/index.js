@@ -65,7 +65,8 @@ require("./index.less")
     }
 
     isAlertState() {
-        return Interfaces.activeInterface.isEditing() || Interfaces.activeInterface.isBackupModeEnabled() || Interfaces.head && Interfaces.head.obs.passiveMode
+        return Interfaces.activeInterface.isEditing() || Interfaces.activeInterface.isBackupModeEnabled() ||
+            Interfaces.head && Interfaces.head.obs.passiveMode || Interfaces.announcer && !Interfaces.announcer.obs.passiveMode
     }
 
     render() {

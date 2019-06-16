@@ -39,6 +39,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     getPlayingTeamElement() {
+        if (this.obs.passiveMode) {
+            return null
+        }
+
         let teamName = "No Playing Team Set"
         let teamIndex = this.obs.playingTeamIndex
         if (teamIndex !== undefined && teamIndex < this.obs.playingPool.teamList.length) {
@@ -49,7 +53,9 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onTeamClick(teamData) {
-        this.interface.setPlayingTeam(teamData)
+        if (!this.obs.passiveMode) {
+            this.interface.setPlayingTeam(teamData)
+        }
     }
 
     getTeamsElement() {
@@ -111,6 +117,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onMainButtonDown() {
+        if (this.obs.passiveMode) {
+            return
+        }
+
         if (this.obs.isJudging) {
             if (this.interface.hasRoutineTimeElapsed()) {
                 this.interface.stopRoutine()
@@ -171,15 +181,40 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.interface.startRoutine()
     }
 
+    getMainButton() {
+        if (this.obs.passiveMode) {
+            return null
+        } else {
+            let downScaler = Math.min(1, this.state.buttonDownTime / this.holdReadyMs)
+
+            let mainButtonStyle = {
+                backgroundColor: this.state.buttonDown ? `rgb(100, ${100 + 155 * downScaler}, 100)` : "gainsboro"
+            }
+            return <div className="mainButton" style={mainButtonStyle}
+                onPointerDown={() => this.onMainButtonDown()}
+                onPointerUp={() => this.onMainButtonUp()}
+                onPointerLeave={() => this.onMainButtonLeave()}
+                onTouchStart={() => this.onTouchStart()}
+                onTouchEnd={() => this.onTouchEnd()}>{this.getButtonText()}</div>
+        }
+    }
+
+    getOverlayControls() {
+        return (
+            <div>
+                <div>
+                    Stream Overlay Controls:
+                </div>
+                <div>
+                    <button onClick={() => this.interface.toggleShowScoreboard()}>{this.obs.showScoreboard ? "Hide Scoreboard" : "Show Scoreboard"}</button>
+                </div>
+            </div>
+        )
+    }
+
     render() {
         if (this.obs.playingPool === undefined) {
             return <div className="headTopContainer">Set playing pool for Head Judge to function</div>
-        }
-
-        let downScaler = Math.min(1, this.state.buttonDownTime / this.holdReadyMs)
-
-        let mainButtonStyle = {
-            backgroundColor: this.state.buttonDown ? `rgb(100, ${100 + 155 * downScaler}, 100)` : "gainsboro"
         }
 
         return (
@@ -188,18 +223,14 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     <div>
                         Announcer
                     </div>
-                    <button className="passiveButton" onClick={() => this.onPassiveButtonClick()}>{this.obs.passiveMode ? "Disable Passive Mode" : "Enable Passive Mode"}</button>
+                    <button className="passiveButton" onClick={() => this.onPassiveButtonClick()}>{this.obs.passiveMode ? "Enable Active Mode" : "Disable Active Mode"}</button>
                 </div>
                 <div className="poolDetailsContainer">{DataAction.getFullPoolDescription(this.obs.playingPool)}</div>
                 {this.getTimeElement()}
                 {this.getPlayingTeamElement()}
-                <div className="mainButton" style={mainButtonStyle}
-                    onPointerDown={() => this.onMainButtonDown()}
-                    onPointerUp={() => this.onMainButtonUp()}
-                    onPointerLeave={() => this.onMainButtonLeave()}
-                    onTouchStart={() => this.onTouchStart()}
-                    onTouchEnd={() => this.onTouchEnd()}>{this.getButtonText()}</div>
+                {this.getMainButton()}
                 {this.getTeamsElement()}
+                {this.getOverlayControls()}
             </div>
         )
     }

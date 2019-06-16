@@ -163,7 +163,6 @@ class InterfaceModelBase {
         }).then((response) => {
             awsData = response
             let pool = awsData.pool
-            console.log(response)
             return DataAction.getPoolResults(pool.divisionIndex, pool.roundIndex, pool.poolIndex)
         }).then((results) => {
             let userIdDirty = this.updateFromAws(awsData).userIdDirty || false
