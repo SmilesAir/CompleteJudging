@@ -115,7 +115,7 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
     let processed = []
 
     processed.push({
-        Score: calcDeductions(data)
+        Score: -calcDeductions(data)
     })
 
     return processed
@@ -123,7 +123,7 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
 
 module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedData, processedData) {
     processedData.ex = calcDeductions(data)
-    
+
     return undefined
 }
 
@@ -156,7 +156,7 @@ module.exports.getOldExDetailedProcessed = function(data, preProcessedData) {
     })
 
     processed.push({
-        Ex: calcDeductions(data)
+        Ex: -calcDeductions(data)
     })
 
     return processed

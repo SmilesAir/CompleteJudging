@@ -28,6 +28,10 @@ class TeamOldAiScores extends DataBase.class {
 
         return this[key]
     }
+
+    setAiData(key, value) {
+        this[key] = value
+    }
 }
 
 module.exports.DataClass = class extends DataStore.ResultsDataBase {

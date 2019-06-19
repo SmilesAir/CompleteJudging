@@ -1,6 +1,8 @@
 const React = require("react")
 const MobxReact = require("mobx-react")
 const qrCode = require("qrcode")
+const JSZip = require("jszip")
+const saveAs = require("file-saver").saveAs
 
 const MainStore = require("scripts/stores/mainStore.js")
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
@@ -8,7 +10,6 @@ const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
 const ResultsView = require("scripts/views/resultsView.js")
 const CommonAction = require("scripts/actions/commonAction.js")
-
 
 require("./infoView.less")
 
@@ -291,13 +292,28 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         }
     }
 
+    onDownloadFpaResultsSheet(pool) {
+        DataAction.fillPoolResults(pool).then(() => {
+            const zip = new JSZip()
+
+            let xmlData = Interfaces.info.getFpaResultsXml(pool)
+
+            zip.file("ExportData.xml", xmlData)
+
+            zip.generateAsync({ type: "blob" }).then((content) => {
+                saveAs(content, "test.zip")
+            })
+        })
+    }
+
     getResults(pool) {
         return (
             <div className="results">
                 <div>
                     {"Results Summary   "}
                     <button onClick={() => this.onFullResultsClick(pool)}>See Full Results</button>
-                    <button onClick={() => this.onClearResultsClick(pool)}>Clear Results [DANGER]</button>
+                    <button onClick={() => this.onDownloadFpaResultsSheet(pool)}>Download FPA Result Sheet</button>
+                    <button className="clearResultsButton" onClick={() => this.onClearResultsClick(pool)}>Clear Results [DANGER]</button>
                 </div>
                 {DataAction.getResultsSummary(pool.results)}
             </div>

@@ -28,6 +28,7 @@ module.exports = class extends InterfaceModelBase {
         this.obs.activeInputIndex = undefined
 
         this.lastPlayedMarkIndex = undefined
+        this.activateInputArray = []
     }
 
     init() {

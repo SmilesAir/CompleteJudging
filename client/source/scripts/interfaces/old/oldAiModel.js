@@ -34,7 +34,7 @@ module.exports = class extends InterfaceModelBase {
 
     setAiScore(value, key) {
         let teamResults = this.getActiveResultsData()
-        teamResults.getAiData(key).score = value
+        teamResults.setAiData(key, value)
 
         this.reportScores()
     }

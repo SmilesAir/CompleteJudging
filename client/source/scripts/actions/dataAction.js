@@ -31,6 +31,8 @@ function loadDataFromPoolCreator(info) {
         return undefined
     }
 
+    console.log(info)
+
     if (info.isPoolCreatorData) {
         let data = info.data
 
@@ -537,7 +539,6 @@ function fillPoolResults(poolData) {
     }).then((response) => {
         return response.json()
     }).then((response) => {
-        console.log("get results", response)
         poolData.results = response
     }).catch((error) => {
         console.log("Fill Pool Results Error", error)
