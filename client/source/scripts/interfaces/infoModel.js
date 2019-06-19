@@ -144,8 +144,6 @@ module.exports = class extends InterfaceModelBase {
     getFpaResultsXml(pool) {
         let xmlDoc = document.implementation.createDocument(xmlNS, "ns2:ScoreSheet")
 
-        console.log(pool)
-
         let roundSettings = this.appendChild(xmlDoc.documentElement, "ns2:RoundSettings")
         this.appendChildValue(roundSettings, "ns2:EventTitle", MainStore.tournamentName || "Missing Tournament Name")
         this.appendChildValue(roundSettings, "ns2:EventSubtitle", MainStore.saveData.TournamentSubtitle || "")

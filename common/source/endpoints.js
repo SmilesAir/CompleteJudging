@@ -8,6 +8,7 @@ const urls = {
     GET_ACTIVE_TOURNAMENTS: "<path>/getActiveTournaments",
     GET_BACKUP_RESULTS: "<path>/judge/<judge>/time/<time>/getBackupResults",
     GET_CONSTANTS: "https://s3-us-west-2.amazonaws.com/<stage>-completejudging-constants/base-constants.json",
+    GET_FPA_SPREADSHEET: "https://s3-us-west-2.amazonaws.com/completejudging-<stage>/AutoImportScoresheets.xlsm",
     GET_PLAYING_POOL: "<path>/tournamentName/<tournamentName>/getPlayingPool",
     GET_POOL_RESULTS: "<path>/tournamentName/<tournamentName>/divisionIndex/<divisionIndex>/roundIndex/<roundIndex>/poolIndex/<poolIndex>/getPoolResults",
     GET_S3_RESULTS: "https://s3-us-west-2.amazonaws.com/<stage>-completejudging-results/<tournamentName>-results.json",
@@ -46,7 +47,7 @@ module.exports.buildUrl = function(lanMode, key, pathParams, queryParams) {
     for (let paramName in queryParams) {
         let prefix = firstQueryParam ? "?" : "&"
         firstQueryParam = false
-        
+
         url += `${prefix}${paramName}=${queryParams[paramName]}`
     }
 

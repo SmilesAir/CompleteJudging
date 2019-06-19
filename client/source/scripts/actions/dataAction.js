@@ -31,8 +31,6 @@ function loadDataFromPoolCreator(info) {
         return undefined
     }
 
-    console.log(info)
-
     if (info.isPoolCreatorData) {
         let data = info.data
 
@@ -589,3 +587,8 @@ function getTimeString(timeMs) {
     return `${timeDate.getMinutes()}:${("0" + timeDate.getSeconds()).slice(-2)}`
 }
 module.exports.getTimeString = getTimeString
+
+function getResultsFilename(pool) {
+    return `${getDivisionNameFromIndex(pool.divisionIndex)} ${getRoundNameFromIndex(pool.roundIndex)} ${getPoolNameFromIndex(pool.poolIndex)}`
+}
+module.exports.getResultsFilename = getResultsFilename

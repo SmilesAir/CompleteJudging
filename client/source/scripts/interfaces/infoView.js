@@ -3,6 +3,7 @@ const MobxReact = require("mobx-react")
 const qrCode = require("qrcode")
 const JSZip = require("jszip")
 const saveAs = require("file-saver").saveAs
+const JSZipUtils = require("jszip-utils")
 
 const MainStore = require("scripts/stores/mainStore.js")
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
@@ -10,6 +11,7 @@ const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
 const ResultsView = require("scripts/views/resultsView.js")
 const CommonAction = require("scripts/actions/commonAction.js")
+const EndpointStore = require("complete-judging-common/source/endpoints.js")
 
 require("./infoView.less")
 
@@ -294,14 +296,22 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     onDownloadFpaResultsSheet(pool) {
         DataAction.fillPoolResults(pool).then(() => {
-            const zip = new JSZip()
-
             let xmlData = Interfaces.info.getFpaResultsXml(pool)
 
-            zip.file("ExportData.xml", xmlData)
+            JSZipUtils.getBinaryContent(EndpointStore.buildUrl(MainStore.lanMode, "GET_FPA_SPREADSHEET"), (error, data) => {
+                if (error) {
+                    console.error(error)
+                } else {
+                    const zip = new JSZip()
+                    let resultsName = DataAction.getResultsFilename(pool)
 
-            zip.generateAsync({ type: "blob" }).then((content) => {
-                saveAs(content, "test.zip")
+                    zip.file(resultsName + ".xlsm", data, { binary: true })
+                    zip.file("ExportData.xml", xmlData)
+
+                    zip.generateAsync({ type: "blob" }).then((content) => {
+                        saveAs(content, `${resultsName}.zip`)
+                    })
+                }
             })
         })
     }
