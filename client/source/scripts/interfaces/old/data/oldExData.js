@@ -161,3 +161,7 @@ module.exports.getOldExDetailedProcessed = function(data, preProcessedData) {
 
     return processed
 }
+
+module.exports.getHudProcessed = function(data, preProcessedData, processedData) {
+    processedData.ex = calcDeductions(data)
+}

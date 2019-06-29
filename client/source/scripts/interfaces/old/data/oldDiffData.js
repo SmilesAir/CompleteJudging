@@ -140,3 +140,7 @@ module.exports.getDiffDetailedProcessed = function(data, preProcessedData) {
 
     return processed
 }
+
+module.exports.getHudProcessed = function(data, preProcessedData, processedData) {
+    processedData.diff = getDiffScore(data)
+}

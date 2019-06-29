@@ -93,7 +93,9 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         }).then((response) => {
             this.obs.teamChanged |= response.observable.playingTeamIndex !== this.teamIndex
             this.teamIndex = response.observable.playingTeamIndex
-            this.obs.state = response.state.streamOverlay.showScoreboard === true ? EState.scoreboard : EState.playing
+            this.obs.state = response.state &&
+                response.state.streamOverlay &&
+                response.state.streamOverlay.showScoreboard === true ? EState.scoreboard : EState.playing
             this.obs.awsData = response
 
             this.startTime = response.observable.startTime
@@ -228,7 +230,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     render() {
-        if (this.resultsData === undefined) {
+        if (this.resultsData === undefined || this.pool === undefined || this.pool.results === undefined) {
             return null
         }
 
@@ -271,10 +273,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                             Time: {this.getRoutineTimerString()}
                         </div>
                         <div className="exText">
-                            Penalty: {-teamData.ex.toFixed(1)}
+                            Penalty: {-(teamData.ex || 0).toFixed(1)}
                         </div>
                         <div className="diffText">
-                            Difficulty: {teamData.diff.toFixed(1)}
+                            Difficulty: {(teamData.diff || 0).toFixed(1)}
                         </div>
                     </div> : null}
                     <div className={footerClassName}>
