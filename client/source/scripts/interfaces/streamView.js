@@ -70,7 +70,6 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             return response.json()
         }).then((response) => {
             this.resultsData = response.data
-            this.title = response.title
             this.incremental = response.incremental
             this.routineLengthSeconds = response.routineLengthSeconds
         }).catch(() => {
@@ -222,7 +221,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             routineTimeStr = ` [${this.getRoutineTimerString()}]`
         }
 
-        return this.title + routineTimeStr
+        return DataAction.getFullPoolDescription(this.pool) + routineTimeStr
     }
 
     isDuringRoutine() {
@@ -250,7 +249,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         let teamData = hudData[this.teamIndex] && hudData[this.teamIndex].data
 
         return (
-            <div>
+            <div className="streamContainer">
                 <div className={scoreboardClassName}>
                     <div className="header">
                         <div className="title">

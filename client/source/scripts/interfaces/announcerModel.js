@@ -183,6 +183,8 @@ module.exports = class extends InterfaceModelBase {
     toggleShowScoreboard() {
         this.obs.showScoreboard = !this.obs.showScoreboard
 
+        this.awsData.state = this.awsData.state || {}
+
         this.awsData.state.streamOverlay = this.awsData.state.streamOverlay || {}
         this.awsData.state.streamOverlay.showScoreboard = this.obs.showScoreboard
         this.dirtyObs()
