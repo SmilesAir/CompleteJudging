@@ -6,6 +6,12 @@ module.exports.handler = (e, c, cb) => { Common.handler(e, c, cb, async (event, 
 
     event.body = JSON.parse(event.body) || {}
 
-    return Common.setPlayingPool(event.pathParameters.tournamentName, event.body.data)
+    if (event.body.data !== undefined) {
+        Common.setPlayingPool(event.pathParameters.tournamentName, event.body.data)
+    }
+
+    if (event.body.dataAlt !== undefined) {
+        Common.setPlayingPool(event.pathParameters.tournamentName, event.body.dataAlt)
+    }
 })}
 

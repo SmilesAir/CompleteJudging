@@ -278,8 +278,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         })
     }
 
-    onSetPool(pool) {
-        Interfaces.head.setPlayingPool(pool)
+    onSetPool(pool, isAlt) {
+        Interfaces.head.setPlayingPool(pool, isAlt)
     }
 
     onFullResultsClick(pool) {
@@ -366,6 +366,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                         </div>
                         <div className="controls">
                             <button onClick={() => this.onSetPool(pool)}>Set Pool</button>
+                            <button onClick={() => this.onSetPool(pool, true)}>Set Pool Alt</button>
                             <button onClick={() => this.setLinksInClipboard(pool)}>Copy Links</button>
                             <button onClick={() => this.generateQRCodes(pool)}>QR Codes</button>
                         </div>
@@ -386,6 +387,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return (
             <div id="content3" className="infoTabContent">
                 <div className="poolsContainer">
+                    <button>Stop Playing Pools</button>
                     {this.getPoolComponents()}
                 </div>
             </div>

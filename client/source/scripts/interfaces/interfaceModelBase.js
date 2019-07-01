@@ -26,6 +26,8 @@ class InterfaceModelBase {
     }
 
     init() {
+        this.isAlt = MainStore.url.searchParams.get("alt") === "true"
+
         if (this.obs !== undefined) {
             this.setObs(this.obs)
         }
@@ -149,7 +151,9 @@ class InterfaceModelBase {
         let awsData = undefined
         CommonAction.fetchEx("GET_PLAYING_POOL", {
             tournamentName: tournamentName
-        }, undefined, {
+        }, {
+            isAlt: this.isAlt
+        }, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"

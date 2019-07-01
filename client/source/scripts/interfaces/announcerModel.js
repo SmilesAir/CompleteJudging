@@ -47,17 +47,6 @@ module.exports = class extends InterfaceModelBase {
         }
     }
 
-    setPlayingPool(pool) {
-        if (this.obs.playingPool !== pool) {
-            this.obs.playingPool = pool
-            this.obs.playingTeamIndex = pool.teamList.length > 0 ? 0 : undefined
-
-            this.awsData = this.getPoolDataForAWS()
-        }
-
-        this.sendDataToAWS()
-    }
-
     setPlayingTeam(teamData) {
         let index = this.obs.playingPool.teamList.indexOf(teamData)
         if (index !== -1) {

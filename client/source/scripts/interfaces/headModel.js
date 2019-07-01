@@ -30,6 +30,7 @@ module.exports = class extends InterfaceModelBase {
         this.autoUpdateTimeRemainingHandle = undefined
 
         this.awsData = undefined
+        this.awsDataAlt = undefined
         this.obs.poolState = {}
     }
 
@@ -44,21 +45,42 @@ module.exports = class extends InterfaceModelBase {
         }
     }
 
-    getPoolDataForAWS() {
-        return {
-            poolHash: uuid4(),
-            pool: this.obs.playingPool,
-            observableHash: uuid4(),
-            observable: {
-                routineLengthSeconds: this.obs.playingPool.routineLengthSeconds,
-                playingTeamIndex: this.obs.playingTeamIndex,
-                startTime: this.obs.startTime
+    getPoolDataForAWS(isAlt) {
+        if (isAlt) {
+            return {
+                isAlt: true,
+                poolHash: uuid4(),
+                pool: this.obs.playingPoolAlt,
+                observableHash: uuid4(),
+                observable: {
+                    routineLengthSeconds: this.obs.playingPoolAlt.routineLengthSeconds,
+                    playingTeamIndex: this.obs.playingTeamIndex,
+                    startTime: this.obs.startTime
+                }
+            }
+        } else {
+            return {
+                poolHash: uuid4(),
+                pool: this.obs.playingPool,
+                observableHash: uuid4(),
+                observable: {
+                    routineLengthSeconds: this.obs.playingPool.routineLengthSeconds,
+                    playingTeamIndex: this.obs.playingTeamIndex,
+                    startTime: this.obs.startTime
+                }
             }
         }
     }
 
-    setPlayingPool(pool) {
-        if (this.obs.playingPool !== pool) {
+    setPlayingPool(pool, isAlt) {
+        if (isAlt) {
+            if (this.obs.playingPoolAlt !== pool) {
+                this.obs.playingPoolAlt = pool
+                this.obs.playingTeamIndex = pool.teamList.length > 0 ? 0 : undefined
+
+                this.awsDataAlt = this.getPoolDataForAWS(true)
+            }
+        } else if (this.obs.playingPool !== pool) {
             this.obs.playingPool = pool
             this.obs.playingTeamIndex = pool.teamList.length > 0 ? 0 : undefined
 
@@ -138,7 +160,8 @@ module.exports = class extends InterfaceModelBase {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                data: this.awsData
+                data: this.awsData,
+                dataAlt: this.awsDataAlt
             })
         }).then((response) => {
             return response.json()
@@ -187,7 +210,7 @@ module.exports = class extends InterfaceModelBase {
 
     onStopClick(skipAwsUpdate) {
         this.obs.isJudging = false
-        
+
         clearInterval(this.updateHandle)
 
         this.obs.judgingTimeMs = 0

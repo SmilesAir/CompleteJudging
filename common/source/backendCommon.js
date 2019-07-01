@@ -38,7 +38,7 @@ module.exports.handler = async function(event, context, callback, func) {
             statusCode: 500,
             headers: {
               "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
-              "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS 
+              "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
             },
             body: error
         }
@@ -51,11 +51,13 @@ module.exports.isItemEmpty = function(item) {
     return Object.keys(item).length === 0 && item.constructor === Object
 }
 
-module.exports.getActivePool = async function(tournamentName) {
+module.exports.getActivePool = async function(tournamentName, isAlt) {
     let tournamentKey = await DataHarness.getTournamentKey(tournamentName)
-    if (tournamentKey.playingPoolKey !== undefined) {
-        let pool = await Common.getPoolData(tournamentKey.playingPoolKey)
+    let poolKey = isAlt === true ? tournamentKey.playingPoolKeyAlt : tournamentKey.playingPoolKey
+    if (poolKey !== undefined) {
+        let pool = await Common.getPoolData(poolKey)
         pool.serverTime = Date.now()
+        console.log(pool)
         return pool
     } else {
         console.log("getactivepool error")
@@ -150,7 +152,7 @@ module.exports.reportJudgeScore = async function(tournamentName, judgeId, result
 module.exports.setPlayingPool = async function(tournamentName, data) {
     let activePool = undefined
     try {
-        activePool = await Common.getActivePool(tournamentName)
+        activePool = await Common.getActivePool(tournamentName, data.isAlt)
     } catch(error) {
         console.log(`No active pool currenty set. ${tournamentName}`)
     }
@@ -168,6 +170,7 @@ module.exports.setPlayingPool = async function(tournamentName, data) {
             key: playingPoolKey,
             data: data
         }
+        console.log(data)
         let poolName = Common.getPoolNameFromData(data)
 
         // Carry over results from previous pool data
@@ -180,8 +183,10 @@ module.exports.setPlayingPool = async function(tournamentName, data) {
             }
         }
 
+        let playingPoolAttr = data.isAlt ? "playingPoolKeyAlt" : "playingPoolKey"
+
         let attributeValues = {
-            playingPoolKey: playingPoolKey,
+            [playingPoolAttr]: playingPoolKey,
             [poolName]: playingPoolKey
         }
 

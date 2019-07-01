@@ -12,6 +12,9 @@ Judge status is null if link opened before pool is set
 Add "Incremental" to scoreboard title
 Sort the summary results
 
+festival judging
+Scores don't reload properly after switching pools
+
 
 Livestream overlay
 .5/half scores in ai
