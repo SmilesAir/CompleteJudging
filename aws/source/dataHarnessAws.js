@@ -73,12 +73,13 @@ module.exports.getResultItem = function(resultsKey) {
     })
 }
 
-module.exports.updateActivePoolAttribute = async function(tournamentName, attributeName, attributeValue) {
+module.exports.updateActivePoolAttribute = async function(tournamentName, attributeName, attributeValue, isAlt) {
     let tournamentKey = await module.exports.getTournamentKey(tournamentName)
-    if (tournamentKey.playingPoolKey !== undefined) {
+    let poolKey = isAlt ? tournamentKey.playingPoolKeyAlt : tournamentKey.playingPoolKey
+    if (poolKey !== undefined) {
         let updatePoolParams = {
             TableName: process.env.ACTIVE_POOLS,
-            Key: { "key": tournamentKey.playingPoolKey },
+            Key: { "key": poolKey },
             UpdateExpression: "set #attributeName = :value",
             ExpressionAttributeNames: { "#attributeName": attributeName },
             ExpressionAttributeValues: { ":value": attributeValue }

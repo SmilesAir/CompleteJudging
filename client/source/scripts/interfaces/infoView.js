@@ -279,7 +279,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onSetPool(pool, isAlt) {
-        Interfaces.head.setPlayingPool(pool, isAlt)
+        Interfaces.head.setupPlayingPool(pool, isAlt)
     }
 
     onFullResultsClick(pool) {

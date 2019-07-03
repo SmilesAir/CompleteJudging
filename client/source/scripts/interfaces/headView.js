@@ -33,8 +33,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     getPlayingTeamElement() {
         let teamName = "No Playing Team Set"
         let teamIndex = this.obs.playingTeamIndex
-        if (teamIndex !== undefined && teamIndex < this.obs.playingPool.teamList.length) {
-            teamName = this.obs.playingPool.teamList[teamIndex].getPlayerNamesString()
+        let teamList = this.interface.calcTeamList()
+
+        if (teamIndex !== undefined && teamIndex < teamList.length) {
+            teamName = teamList[teamIndex].getPlayerNamesString()
         }
 
         return <div>Playing Team: {teamName}</div>
@@ -46,9 +48,11 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     getTeamsElement() {
         let teamIndex = -1
-        let teamList = this.obs.playingPool.teamList.map((teamData) => {
+        let teamList = this.interface.calcTeamList()
+        let teamListElements = teamList.map((teamData) => {
             ++teamIndex
-            let className = `teamContainer ${this.obs.playingTeamIndex === teamIndex ? "playing" : ""}`
+            let playingIndex = this.interface.getAdjustPlayingIndex()
+            let className = `teamContainer ${playingIndex === teamIndex ? "playing" : ""}`
             return <div key={teamIndex} className={className}
                 onClick={() => this.onTeamClick(teamData)}>{teamData.getPlayerNamesString()}</div>
         })
@@ -56,7 +60,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return (
             <div className="teamListContainer">
                 Teams:
-                {teamList}
+                {teamListElements}
             </div>
         )
     }
@@ -116,25 +120,43 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         )
     }
 
+    parseJudgeElements(judgeData) {
+        let exElements = judgeData.judgesEx.map((judge) => {
+            return this.getJudgeStatusElement("Ex/Ai", judge)
+        })
+        let aiElements = judgeData.judgesAi.map((judge) => {
+            return this.getJudgeStatusElement("Variety", judge)
+        })
+        let diffElements = judgeData.judgesDiff.map((judge) => {
+            return this.getJudgeStatusElement("Diff", judge)
+        })
+
+        return {
+            ex: exElements,
+            ai: aiElements,
+            diff: diffElements
+        }
+    }
+
     getJudgesElement() {
-        let judgeData = this.obs.playingPool.judgeData
+        let judgeData = this.interface.getPool(false).judgeData
         if (judgeData !== undefined) {
-            let exAiElements = judgeData.judgesEx.map((judge) => {
-                return this.getJudgeStatusElement("Ex/Ai", judge)
-            })
-            let varietyElements = judgeData.judgesAi.map((judge) => {
-                return this.getJudgeStatusElement("Variety", judge)
-            })
-            let diffElements = judgeData.judgesDiff.map((judge) => {
-                return this.getJudgeStatusElement("Diff", judge)
-            })
-    
+            let parsedData = this.parseJudgeElements(judgeData)
+
+            let poolAlt = this.interface.getPool(true)
+            let judgeDataAlt = poolAlt && poolAlt.judgeData
+            let parsedDataAlt = judgeDataAlt && this.parseJudgeElements(judgeDataAlt)
+
             return (
                 <div>
                     Judges:
-                    {exAiElements}
-                    {varietyElements}
-                    {diffElements}
+                    {parsedData.ex}
+                    {parsedData.ai}
+                    {parsedData.diff}
+                    {parsedDataAlt !== undefined ? "Alt Pool Judges:" : ""}
+                    {parsedDataAlt !== undefined ? parsedDataAlt.ex : null}
+                    {parsedDataAlt !== undefined ? parsedDataAlt.ai : null}
+                    {parsedDataAlt !== undefined ? parsedDataAlt.diff : null}
                 </div>
             )
         }
@@ -143,9 +165,12 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     render() {
-        if (this.obs.playingPool === undefined) {
+        if (this.interface.getPool(false) === undefined) {
             return <div className="headTopContainer">Set playing pool for Head Judge to function</div>
         }
+
+        let altPool = this.interface.getPool(true)
+        let altPoolName = altPool !== undefined ? ` / ${DataAction.getFullPoolDescription(altPool)}` : ""
 
         return (
             <div className="headTopContainer">
@@ -160,7 +185,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     </button>
                     <button className="uploadScoreboardButton" onClick={() => this.interface.finalizeScoreboardData()}>Finalize Scoreboard</button>
                 </div>
-                <div className="poolDetailsContainer">{DataAction.getFullPoolDescription(this.obs.playingPool)}</div>
+                <div className="poolDetailsContainer">{DataAction.getFullPoolDescription(this.interface.getPool(false))}{altPoolName}</div>
                 {this.getTimeElement()}
                 {this.getPlayingTeamElement()}
                 <button disabled={Interfaces.head.isDuringRoutineTime() || this.obs.playingTeamIndex === undefined} className="startButton" onClick={() => this.onStartButtonClick()}>

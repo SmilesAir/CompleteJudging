@@ -23,14 +23,17 @@ module.exports = class extends InterfaceModelBase {
         this.obs.isJudging = false
         this.obs.judgingTimeMs = 0
         this.obs.passiveMode = false
+        this.obs.playingPool = new Array(2)
+        this.obs.playingTeamIndex = new Array(2)
+        this.obs.playingAlt = false
+        this.obs.adjustedPlayingIndex = undefined
 
         this.obs.autoUpdateScoreboard = false
         this.obs.autoUpdateTimeRemaining = 0
         this.autoUpdateScoreboardHandle = undefined
         this.autoUpdateTimeRemainingHandle = undefined
 
-        this.awsData = undefined
-        this.awsDataAlt = undefined
+        this.awsData = new Array(2)
         this.obs.poolState = {}
     }
 
@@ -46,65 +49,90 @@ module.exports = class extends InterfaceModelBase {
     }
 
     getPoolDataForAWS(isAlt) {
-        if (isAlt) {
-            return {
-                isAlt: true,
-                poolHash: uuid4(),
-                pool: this.obs.playingPoolAlt,
-                observableHash: uuid4(),
-                observable: {
-                    routineLengthSeconds: this.obs.playingPoolAlt.routineLengthSeconds,
-                    playingTeamIndex: this.obs.playingTeamIndex,
-                    startTime: this.obs.startTime
-                }
-            }
-        } else {
-            return {
-                poolHash: uuid4(),
-                pool: this.obs.playingPool,
-                observableHash: uuid4(),
-                observable: {
-                    routineLengthSeconds: this.obs.playingPool.routineLengthSeconds,
-                    playingTeamIndex: this.obs.playingTeamIndex,
-                    startTime: this.obs.startTime
-                }
+        return {
+            isAlt: isAlt,
+            poolHash: uuid4(),
+            pool: this.getPool(isAlt),
+            observableHash: uuid4(),
+            observable: {
+                routineLengthSeconds: this.getPool(isAlt).routineLengthSeconds,
+                playingTeamIndex: this.getPlayingIndex(isAlt),
+                startTime: this.obs.startTime
             }
         }
     }
 
-    setPlayingPool(pool, isAlt) {
-        if (isAlt) {
-            if (this.obs.playingPoolAlt !== pool) {
-                this.obs.playingPoolAlt = pool
-                this.obs.playingTeamIndex = pool.teamList.length > 0 ? 0 : undefined
+    getPool(isAlt) {
+        return this.obs.playingPool[isAlt ? 1 : 0]
+    }
 
-                this.awsDataAlt = this.getPoolDataForAWS(true)
-            }
-        } else if (this.obs.playingPool !== pool) {
-            this.obs.playingPool = pool
-            this.obs.playingTeamIndex = pool.teamList.length > 0 ? 0 : undefined
+    setPool(pool, isAlt) {
+        this.obs.playingPool[isAlt ? 1 : 0] = pool
+    }
 
-            this.awsData = this.getPoolDataForAWS()
+    getPlayingIndex(isAlt) {
+        return this.obs.playingTeamIndex[isAlt ? 1 : 0] || 0
+    }
+
+    setPlayingIndex(index, isAlt) {
+        this.obs.playingTeamIndex[isAlt ? 1 : 0] = index
+    }
+
+    setupPlayingPool(pool, isAlt) {
+        if (this.getPool(isAlt) !== pool) {
+            this.setPool(pool, isAlt)
+            this.setPlayingIndex(pool.teamList.length > 0 ? 0 : undefined, isAlt)
+
+            this.awsData[isAlt ? 1 : 0] = this.getPoolDataForAWS(isAlt)
         }
 
         this.sendDataToAWS()
     }
 
-    setPlayingTeam(teamData) {
-        let index = this.obs.playingPool.teamList.indexOf(teamData)
-        if (index !== -1) {
-            this.setPlayingTeamIndex(index)
+    calcTeamList() {
+        let teamList = this.getPool(false).teamList.slice(0)
+        let poolAlt = this.getPool(true)
+        if (poolAlt !== undefined) {
+            let insertIndex = 1
+            for (let i = 0; i < poolAlt.teamList.length; ++i) {
+                teamList.splice(insertIndex, 0, poolAlt.teamList[i])
+                insertIndex = Math.min(teamList.length, insertIndex + 2)
+            }
         }
+
+        return teamList
     }
 
-    setPlayingTeamIndex(index) {
-        if (this.obs.playingTeamIndex !== index) {
-            this.obs.playingTeamIndex = index
-            this.awsData.observable.playingTeamIndex = index
-            this.dirtyObs()
+    setPlayingTeam(teamData) {
+        let index = this.getPool(false) && this.getPool(false).teamList.indexOf(teamData)
+        let indexAlt = this.getPool(true) && this.getPool(true).teamList.indexOf(teamData)
+
+        if (index !== undefined && index !== -1) {
+            this.setPlayingTeamIndex(index, false)
+        }
+
+        if (indexAlt !== undefined && indexAlt !== -1) {
+            this.setPlayingTeamIndex(indexAlt, true)
+        }
+
+        let teamList = this.calcTeamList()
+        this.obs.adjustedPlayingIndex = teamList.indexOf(teamData)
+    }
+
+    setPlayingTeamIndex(index, isAlt) {
+        if (this.getPlayingIndex(isAlt) !== index) {
+            this.setPlayingIndex(index, isAlt)
+            this.awsData[isAlt ? 1 : 0].observable.playingTeamIndex = index
+            this.dirtyObs(isAlt)
+
+            this.obs.playingAlt = isAlt
 
             this.sendDataToAWS()
         }
+    }
+
+    getAdjustPlayingIndex() {
+        return this.obs.adjustedPlayingIndex
     }
 
     moveToNextTeam() {
@@ -112,15 +140,16 @@ module.exports = class extends InterfaceModelBase {
         this.setPlayingTeamIndex(isLastTeam ? undefined : this.obs.playingTeamIndex + 1)
     }
 
-    dirtyObs() {
-        this.awsData.observableHash = uuid4()
-        this.awsData.observable.startTime = this.obs.startTime
+    dirtyObs(isAlt) {
+        this.awsData[isAlt ? 1 : 0].observableHash = uuid4()
+        this.awsData[isAlt ? 1 : 0].observable.startTime = this.obs.startTime
     }
 
     updateFromAws(awsData) {
+        const isAlt = awsData.isAlt
         if (this.obs.passiveMode) {
-            this.obs.playingPool = new DataStore.PoolData(awsData.pool)
-            this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
+            this.setPool(new DataStore.PoolData(awsData.pool), isAlt)
+            this.setPlayingIndex(awsData.observable.playingTeamIndex, isAlt)
             this.obs.routineLengthSeconds = awsData.observable.routineLengthSeconds
 
             if (this.obs.startTime !== awsData.observable.startTime) {
@@ -129,15 +158,15 @@ module.exports = class extends InterfaceModelBase {
                 this.uploadIncrementalScoreboardData()
             }
 
-            this.awsData = awsData
-        } else if (DataAction.isSamePool(this.obs.playingPool, awsData.pool) === false) {
+            this.awsData[isAlt ? 1 : 0] = awsData
+        } else if (DataAction.isSamePool(this.getPool(isAlt), awsData.pool) === false) {
             location.reload(false)
-        } else if (this.obs.playingPool === undefined) {
-            this.obs.playingPool = new DataStore.PoolData(awsData.pool)
-            this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
+        } else if (this.getPool(isAlt) === undefined) {
+            this.setPool(new DataStore.PoolData(awsData.pool), isAlt)
+            this.setPlayingIndex(awsData.observable.playingTeamIndex, isAlt)
             this.obs.routineLengthSeconds = awsData.observable.routineLengthSeconds
 
-            this.awsData = awsData
+            this.awsData[isAlt ? 1 : 0] = awsData
         }
 
         this.obs.poolState = awsData.state
@@ -160,8 +189,8 @@ module.exports = class extends InterfaceModelBase {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                data: this.awsData,
-                dataAlt: this.awsDataAlt
+                data: this.awsData[0],
+                dataAlt: this.awsData[1]
             })
         }).then((response) => {
             return response.json()
@@ -176,6 +205,7 @@ module.exports = class extends InterfaceModelBase {
 
     update() {
         this.queryPoolData(MainStore.tournamentName)
+        this.queryPoolData(MainStore.tournamentName, true)
 
         this.obs.judgingTimeMs = this.obs.startTime !== undefined ? Date.now() - this.obs.startTime : 0
     }

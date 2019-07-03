@@ -147,12 +147,12 @@ class InterfaceModelBase {
         }
     }
 
-    queryPoolData(tournamentName) {
+    queryPoolData(tournamentName, forceAlt) {
         let awsData = undefined
         CommonAction.fetchEx("GET_PLAYING_POOL", {
             tournamentName: tournamentName
         }, {
-            isAlt: this.isAlt
+            isAlt: forceAlt || this.isAlt
         }, {
             method: "GET",
             headers: {

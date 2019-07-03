@@ -161,7 +161,8 @@ module.exports.setPlayingPool = async function(tournamentName, data) {
 
     if (activePool !== undefined && activePool.poolHash === data.poolHash) {
         if (activePool.observableHash !== data.observableHash) {
-            return DataHarness.updateActivePoolAttribute(tournamentName, "data", data)
+            console.log("Update data", data)
+            return DataHarness.updateActivePoolAttribute(tournamentName, "data", data, data.isAlt)
         }
     } else {
         let now = Date.now()
@@ -191,6 +192,8 @@ module.exports.setPlayingPool = async function(tournamentName, data) {
         }
 
         await Common.updateTournamentKeyWithObject(tournamentName, attributeValues)
+
+        console.log(playingPoolAttr, newPoolItem)
 
         return DataHarness.setPoolItem(newPoolItem)
     }
@@ -231,8 +234,8 @@ module.exports.getResultItem = function(resultsKey) {
     return DataHarness.getResultItem(resultsKey)
 }
 
-module.exports.updateActivePoolAttribute = async function(tournamentName, attributeName, attributeValue) {
-    return DataHarness.updateActivePoolAttribute(tournamentName, attributeName, attributeValue)
+module.exports.updateActivePoolAttribute = async function(tournamentName, attributeName, attributeValue, isAlt) {
+    return DataHarness.updateActivePoolAttribute(tournamentName, attributeName, attributeValue, isAlt)
 }
 
 module.exports.updatePoolAttribute = async function(tournamentName, poolKey, attributeName, attributeValue) {
