@@ -104,8 +104,9 @@ class DataManager {
         })
     }
 
-    getPlayingPool() {
-        return this.tournamentData && this.tournamentData.poolMap[this.tournamentData.tournamentKey.playingPoolKey]
+    getPlayingPool(isAlt) {
+        let poolKey = isAlt ? this.tournamentData.tournamentKey.playingPoolKeyAlt : this.tournamentData.tournamentKey.playingPoolKey
+        return this.tournamentData && this.tournamentData.poolMap[poolKey]
     }
 
     async getTournamentInfo(tournamentName) {
@@ -140,11 +141,11 @@ class DataManager {
         }
     }
 
-    async updateActivePoolAttribute(tournamentName, attributeName, attributeValue) {
+    async updateActivePoolAttribute(tournamentName, attributeName, attributeValue, isAlt) {
         await this.init(tournamentName)
 
         if (this.tournamentData !== undefined) {
-            let pool = this.getPlayingPool()
+            let pool = this.getPlayingPool(isAlt)
             if (pool !== undefined) {
                 pool[attributeName] = attributeValue
 
@@ -183,7 +184,6 @@ class DataManager {
         await this.init(tournamentName)
 
         if (this.tournamentData !== undefined) {
-            console.log("before", newObject)
             let tournamentKey = await this.getTournamentKey(tournamentName)
             if (tournamentKey !== undefined) {
                 for (let key in newObject) {
@@ -192,8 +192,6 @@ class DataManager {
                     this.onDataChanged()
                 }
             }
-
-            console.log("afer", this.tournamentData.tournamentKey)
         }
     }
 
@@ -210,11 +208,11 @@ class DataManager {
         }
     }
 
-    async setJudgeState(tournamentName, judgeId, status) {
+    async setJudgeState(tournamentName, judgeId, status, isAlt) {
         await this.init(tournamentName)
 
         if (this.tournamentData !== undefined) {
-            let pool = this.getPlayingPool()
+            let pool = this.getPlayingPool(isAlt)
             if (pool !== undefined) {
                 pool.data.state = pool.data.state || {}
                 pool.data.state[judgeId] = {

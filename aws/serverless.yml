@@ -158,6 +158,13 @@ functions:
           path: tournamentName/{tournamentName}/divisionIndex/{divisionIndex}/roundIndex/{roundIndex}/poolIndex/{poolIndex}/clearPoolResults
           method: post
           cors: true
+  stopPlayingPools:
+    handler: source/stopPlayingPools.handler
+    events:
+      - http:
+          path: tournamentName/{tournamentName}/stopPlayingPools
+          method: post
+          cors: true
 
 resources:
   Resources:

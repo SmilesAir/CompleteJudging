@@ -41,7 +41,7 @@ module.exports = class extends InterfaceModelBase {
         teamResults.setPointCount(point, newCount)
 
         this.reportScores()
-        
+
         return newCount
     }
 
@@ -53,7 +53,7 @@ module.exports = class extends InterfaceModelBase {
         teamResults.setPointCount(point, newCount)
 
         this.reportScores()
-        
+
         return newCount
     }
 }

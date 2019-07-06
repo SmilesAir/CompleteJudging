@@ -180,10 +180,10 @@ module.exports.setResults = function(judgeName, time, results) {
     })
 }
 
-module.exports.setJudgeState = async function(tournamentName, judgeId, status) {
+module.exports.setJudgeState = async function(tournamentName, judgeId, status, isAlt) {
     let activePool = undefined
     try {
-        activePool = await Common.getActivePool(tournamentName)
+        activePool = await Common.getActivePool(tournamentName, isAlt)
     } catch(error) {
         console.log(`No active pool currenty set. ${tournamentName}`)
     }
@@ -202,7 +202,7 @@ module.exports.setJudgeState = async function(tournamentName, judgeId, status) {
         let updateParams = {
             TableName : process.env.ACTIVE_POOLS,
             Key: {
-                key: tournamentKey.playingPoolKey
+                key: isAlt ? tournamentKey.playingPoolKeyAlt : tournamentKey.playingPoolKey
             },
             UpdateExpression: "set #data = :data",
             ExpressionAttributeNames: {

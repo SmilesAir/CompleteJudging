@@ -54,10 +54,9 @@ module.exports.isItemEmpty = function(item) {
 module.exports.getActivePool = async function(tournamentName, isAlt) {
     let tournamentKey = await DataHarness.getTournamentKey(tournamentName)
     let poolKey = isAlt === true ? tournamentKey.playingPoolKeyAlt : tournamentKey.playingPoolKey
-    if (poolKey !== undefined) {
+    if (poolKey !== undefined && poolKey != null) {
         let pool = await Common.getPoolData(poolKey)
         pool.serverTime = Date.now()
-        console.log(pool)
         return pool
     } else {
         console.log("getactivepool error")
@@ -171,7 +170,6 @@ module.exports.setPlayingPool = async function(tournamentName, data) {
             key: playingPoolKey,
             data: data
         }
-        console.log(data)
         let poolName = Common.getPoolNameFromData(data)
 
         // Carry over results from previous pool data
@@ -193,14 +191,12 @@ module.exports.setPlayingPool = async function(tournamentName, data) {
 
         await Common.updateTournamentKeyWithObject(tournamentName, attributeValues)
 
-        console.log(playingPoolAttr, newPoolItem)
-
         return DataHarness.setPoolItem(newPoolItem)
     }
 }
 
-module.exports.setJudgeState = function(tournamentName, judgeId, status) {
-    DataHarness.setJudgeState(tournamentName, judgeId, status)
+module.exports.setJudgeState = function(tournamentName, judgeId, status, isAlt) {
+    DataHarness.setJudgeState(tournamentName, judgeId, status, isAlt)
 }
 
 module.exports.clearPoolResults = async function(tournamentName, divisionIndex, roundIndex, poolIndex) {
@@ -215,6 +211,13 @@ module.exports.clearPoolResults = async function(tournamentName, divisionIndex, 
     }
 
     DataHarness.setPoolItem(poolItem)
+}
+
+module.exports.stopPlayingPools = async function(tournamentName) {
+    await Common.updateTournamentKeyWithObject(tournamentName, {
+        playingPoolKey: null,
+        playingPoolKeyAlt: null
+    })
 }
 
 ///////////////////////// Harness Passthrough /////////////////////////

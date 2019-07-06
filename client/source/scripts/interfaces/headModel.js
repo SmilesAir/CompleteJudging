@@ -34,7 +34,7 @@ module.exports = class extends InterfaceModelBase {
         this.autoUpdateTimeRemainingHandle = undefined
 
         this.awsData = new Array(2)
-        this.obs.poolState = {}
+        this.obs.poolState = new Array(2)
     }
 
     init() {
@@ -125,10 +125,10 @@ module.exports = class extends InterfaceModelBase {
             this.awsData[isAlt ? 1 : 0].observable.playingTeamIndex = index
             this.dirtyObs(isAlt)
 
-            this.obs.playingAlt = isAlt
-
             this.sendDataToAWS()
         }
+
+        this.obs.playingAlt = isAlt
     }
 
     getAdjustPlayingIndex() {
@@ -169,7 +169,7 @@ module.exports = class extends InterfaceModelBase {
             this.awsData[isAlt ? 1 : 0] = awsData
         }
 
-        this.obs.poolState = awsData.state
+        this.obs.poolState[isAlt ? 1 : 0] = awsData.state
 
         return {
             userIdDirty: false
@@ -223,7 +223,7 @@ module.exports = class extends InterfaceModelBase {
             this.obs.isJudging = true
 
             this.obs.startTime = Date.now()
-            this.dirtyObs()
+            this.dirtyObs(this.obs.playingAlt)
             this.sendDataToAWS()
 
             this.uploadIncrementalScoreboardData()
@@ -247,7 +247,7 @@ module.exports = class extends InterfaceModelBase {
         this.obs.startTime = undefined
 
         if (!skipAwsUpdate) {
-            this.dirtyObs()
+            this.dirtyObs(this.obs.playingAlt)
             this.sendDataToAWS()
         }
     }

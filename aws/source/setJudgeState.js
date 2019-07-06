@@ -8,7 +8,7 @@ module.exports.handler = (e, c, cb) => { Common.handler(e, c, cb, async (event, 
 
     event.body = JSON.parse(event.body) || {}
 
-    Common.setJudgeState(event.pathParameters.tournamentName, event.body.judgeId, event.body.status)
+    Common.setJudgeState(event.pathParameters.tournamentName, event.body.judgeId, event.body.status, event.body.isAlt)
 })}
 
 

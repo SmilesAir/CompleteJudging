@@ -17,8 +17,8 @@ module.exports.setPoolItem = function(pool) {
     DataManager.setPoolItem(pool)
 }
 
-module.exports.updateActivePoolAttribute = async function(tournamentName, attributeName, attributeValue) {
-    await DataManager.updateActivePoolAttribute(tournamentName, attributeName, attributeValue)
+module.exports.updateActivePoolAttribute = async function(tournamentName, attributeName, attributeValue, isAlt) {
+    await DataManager.updateActivePoolAttribute(tournamentName, attributeName, attributeValue, isAlt)
 }
 
 module.exports.updatePoolAttribute = async function(tournamentName, poolKey, attributeName, attributeValue) {
@@ -41,6 +41,6 @@ module.exports.setResults = function(judgeName, time, results) {
     DataManager.setResults(judgeName, time, results)
 }
 
-module.exports.setJudgeState = async function(tournamentName, judgeId, status) {
-    await DataManager.setJudgeState(tournamentName, judgeId, status)
+module.exports.setJudgeState = async function(tournamentName, judgeId, status, isAlt) {
+    await DataManager.setJudgeState(tournamentName, judgeId, status, isAlt)
 }

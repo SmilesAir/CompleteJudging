@@ -289,7 +289,7 @@ class InterfaceModelBase {
             ++this.backupIndex
 
             this.obs.results = this.backupResultsList[this.backupIndex].data
-            
+
             this.fillWithResults()
         }
     }
@@ -299,7 +299,7 @@ class InterfaceModelBase {
             --this.backupIndex
 
             this.obs.results = this.backupResultsList[this.backupIndex].data
-            
+
             this.fillWithResults()
         }
     }
@@ -314,7 +314,8 @@ class InterfaceModelBase {
             },
             body: JSON.stringify({
                 judgeId: MainStore.userId,
-                status: status
+                status: status,
+                isAlt: this.isAlt
             })
         }).catch((error) => {
             console.log("Send state Error:", error)

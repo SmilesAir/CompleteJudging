@@ -93,10 +93,22 @@ module.exports = class extends InterfaceModelBase {
         }).then((response) => {
             return response.json()
         }).then((response) => {
-            console.log(response)
             return response
         }).catch((error) => {
             console.log("Import Tournament Data Error", error)
+        })
+    }
+
+    stopPlayingPools() {
+        return CommonAction.fetchEx("STOP_PLAYING_POOLS", {
+            tournamentName: MainStore.tournamentName
+        }, undefined, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).catch((error) => {
+            console.log("Stop Playing Pools Error", error)
         })
     }
 

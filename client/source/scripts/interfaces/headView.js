@@ -107,7 +107,9 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     getJudgeStatus(judge) {
-        let judgeState = this.obs.poolState && this.obs.poolState[judge.FullName]
+        let judgeState = this.obs.poolState[0] && this.obs.poolState[0][judge.FullName] ||
+        this.obs.poolState[1] && this.obs.poolState[1][judge.FullName]
+
         return this.getJudgeStatusString(judgeState && judgeState.status || Enums.EStatus.none)
     }
 

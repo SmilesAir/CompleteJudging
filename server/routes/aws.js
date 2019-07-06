@@ -21,7 +21,7 @@ router.post("/tournamentName/:tournamentName/exportTournamentDataToAWS", async (
 })
 
 router.get("/tournamentName/:tournamentName/getPlayingPool", async (req, res) => {
-    res.json(await Common.getActivePool(req.params.tournamentName))
+    res.json(await Common.getActivePool(req.params.tournamentName, req.query.isAlt === "true"))
 })
 
 router.get("/tournamentName/:tournamentName/divisionIndex/:divisionIndex/roundIndex/:roundIndex/poolIndex/:poolIndex/getPoolResults", async (req, res) => {
@@ -50,7 +50,13 @@ router.post("/reportJudgeScore", async (req, res) => {
 })
 
 router.post("/tournamentName/:tournamentName/setPlayingPool", async (req, res) => {
-    await Common.setPlayingPool(req.params.tournamentName, req.body.data)
+    if (req.body.data !== undefined) {
+        await Common.setPlayingPool(req.params.tournamentName, req.body.data)
+    }
+
+    if (req.body.dataAlt !== undefined) {
+        await Common.setPlayingPool(req.params.tournamentName, req.body.dataAlt)
+    }
 
     res.json({
         success: true
@@ -58,7 +64,7 @@ router.post("/tournamentName/:tournamentName/setPlayingPool", async (req, res) =
 })
 
 router.post("/tournamentName/:tournamentName/setJudgeState", async (req, res) => {
-    await Common.setJudgeState(req.params.tournamentName, req.body.judgeId, req.body.status)
+    await Common.setJudgeState(req.params.tournamentName, req.body.judgeId, req.body.status, req.body.isAlt)
 
     res.json({
         success: true
@@ -66,11 +72,15 @@ router.post("/tournamentName/:tournamentName/setJudgeState", async (req, res) =>
 })
 
 router.post("/tournamentName/:tournamentName/divisionIndex/:divisionIndex/roundIndex/:roundIndex/poolIndex/:poolIndex/clearPoolResults", async (req, res) => {
-    console.log("found clear resutsl")
     let data = await Common.clearPoolResults(req.params.tournamentName,
         req.params.divisionIndex,
         req.params.roundIndex,
         req.params.poolIndex)
+    res.json(data)
+})
+
+router.post("/tournamentName/:tournamentName/stopPlayingPools", async (req, res) => {
+    let data = await Common.stopPlayingPools(req.params.tournamentName)
     res.json(data)
 })
 

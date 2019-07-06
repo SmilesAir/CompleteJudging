@@ -119,6 +119,8 @@ require("./finishView.less")
         Interfaces.activeInterface.sendState(Enums.EStatus.finished)
 
         MainStore.isFinishViewShowing = false
+
+        this.forceUpdate()
     }
 
     render() {

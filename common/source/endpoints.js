@@ -19,7 +19,8 @@ const urls = {
     REPORT_JUDGE_SCORE: "<path>/reportJudgeScore",
     SET_JUDGE_STATE: "<path>/tournamentName/<tournamentName>/setJudgeState",
     SET_PLAYING_POOL: "<path>/tournamentName/<tournamentName>/setPlayingPool",
-    SET_SCOREBOARD_DATA: "<path>/tournamentName/<tournamentName>/setScoreboardData"
+    SET_SCOREBOARD_DATA: "<path>/tournamentName/<tournamentName>/setScoreboardData",
+    STOP_PLAYING_POOLS: "<path>/tournamentName/<tournamentName>/stopPlayingPools"
 }
 
 module.exports.buildUrl = function(lanMode, key, pathParams, queryParams) {
