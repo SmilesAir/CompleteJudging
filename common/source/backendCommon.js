@@ -54,7 +54,7 @@ module.exports.isItemEmpty = function(item) {
 module.exports.getActivePool = async function(tournamentName, isAlt) {
     let tournamentKey = await DataHarness.getTournamentKey(tournamentName)
     let poolKey = isAlt === true ? tournamentKey.playingPoolKeyAlt : tournamentKey.playingPoolKey
-    if (poolKey !== undefined && poolKey != null) {
+    if (poolKey !== undefined && poolKey !== null) {
         let pool = await Common.getPoolData(poolKey)
         pool.serverTime = Date.now()
         return pool

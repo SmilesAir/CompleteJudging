@@ -158,9 +158,13 @@ class InterfaceModelBase {
             headers: {
                 "Content-Type": "application/json"
             }
-        }).then((response) => {
+        }).then(async(response) => {
             if (response.status < 400) {
-                return response.json()
+                try {
+                    return await response.json()
+                } catch(error) {
+                    throw new Error("")
+                }
             } else {
                 throw new Error(response.statusText)
             }
@@ -172,7 +176,9 @@ class InterfaceModelBase {
             let userIdDirty = this.updateFromAws(awsData).userIdDirty || false
             this.updateResultsFromAws(results, userIdDirty)
         }).catch((error) => {
-            console.log("Error: Set Playing Pool", error)
+            if (error.message.length > 0) {
+                console.log("Error: Set Playing Pool", error)
+            }
         })
     }
 

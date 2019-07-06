@@ -56,6 +56,51 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.forceUpdate()
     }
 
+    getPlayingPoolResults(isAlt) {
+        CommonAction.fetchEx("GET_PLAYING_POOL", {
+            tournamentName: MainStore.tournamentName
+        }, {
+            isAlt: isAlt
+        }, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((response) => {
+            if (response.status < 400) {
+                return response.json()
+            } else {
+                throw new Error(response.statusText)
+            }
+        }).then((response) => {
+            if (response.observable.isPlaying) {
+                this.obs.teamChanged |= response.observable.playingTeamIndex !== this.teamIndex
+                this.teamIndex = response.observable.playingTeamIndex
+                this.obs.state = response.state &&
+                    response.state.streamOverlay &&
+                    response.state.streamOverlay.showScoreboard === true ? EState.scoreboard : EState.playing
+                this.obs.awsData = response
+
+                this.startTime = response.observable.startTime
+
+                // Preserve the results
+                let oldResults = this.pool && this.pool.results
+                this.pool = response.pool
+                this.pool.results = oldResults || this.pool.results
+
+                return DataAction.getPoolResults(this.pool.divisionIndex, this.pool.roundIndex, this.pool.poolIndex)
+            } else {
+                throw new Error("")
+            }
+        }).then((response) => {
+            this.pool.results = response
+        }).catch((error) => {
+            if (error.message.length > 0) {
+                console.log("Error: Get Playing Pool", error)
+            }
+        })
+    }
+
     queryResults() {
         CommonAction.fetchEx("GET_S3_RESULTS", {
             tournamentName: MainStore.tournamentName.replace(" ", "+")
@@ -76,40 +121,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             // Nothing
         })
 
-        CommonAction.fetchEx("GET_PLAYING_POOL", {
-            tournamentName: MainStore.tournamentName
-        }, undefined, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).then((response) => {
-            if (response.status < 400) {
-                return response.json()
-            } else {
-                throw new Error(response.statusText)
-            }
-        }).then((response) => {
-            this.obs.teamChanged |= response.observable.playingTeamIndex !== this.teamIndex
-            this.teamIndex = response.observable.playingTeamIndex
-            this.obs.state = response.state &&
-                response.state.streamOverlay &&
-                response.state.streamOverlay.showScoreboard === true ? EState.scoreboard : EState.playing
-            this.obs.awsData = response
-
-            this.startTime = response.observable.startTime
-
-            // Preserve the results
-            let oldResults = this.pool && this.pool.results
-            this.pool = response.pool
-            this.pool.results = oldResults || this.pool.results
-
-            return DataAction.getPoolResults(this.pool.divisionIndex, this.pool.roundIndex, this.pool.poolIndex)
-        }).then((response) => {
-            this.pool.results = response
-        }).catch((error) => {
-            console.log("Error: Get Playing Pool", error)
-        })
+        this.getPlayingPoolResults(false)
+        this.getPlayingPoolResults(true)
     }
 
     getIncrementalHeaderRow() {

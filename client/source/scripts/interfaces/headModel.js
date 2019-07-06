@@ -103,9 +103,24 @@ module.exports = class extends InterfaceModelBase {
         return teamList
     }
 
+    setPoolPlaying(playing, playingAlt) {
+        if (playing !== undefined && this.awsData[0] !== undefined && this.awsData[0].observable.isPlaying !== playing) {
+            this.awsData[0].observable.isPlaying = playing
+            this.dirtyObs(false)
+        }
+
+        if (playingAlt !== undefined && this.awsData[1] !== undefined && this.awsData[1].observable.isPlaying !== playingAlt) {
+            this.awsData[1].observable.isPlaying = playingAlt
+            this.dirtyObs(true)
+        }
+    }
+
     setPlayingTeam(teamData) {
         let index = this.getPool(false) && this.getPool(false).teamList.indexOf(teamData)
         let indexAlt = this.getPool(true) && this.getPool(true).teamList.indexOf(teamData)
+        let isAlt = index === -1
+
+        this.setPoolPlaying(!isAlt, isAlt)
 
         if (index !== undefined && index !== -1) {
             this.setPlayingTeamIndex(index, false)
@@ -120,13 +135,11 @@ module.exports = class extends InterfaceModelBase {
     }
 
     setPlayingTeamIndex(index, isAlt) {
-        if (this.getPlayingIndex(isAlt) !== index) {
-            this.setPlayingIndex(index, isAlt)
-            this.awsData[isAlt ? 1 : 0].observable.playingTeamIndex = index
-            this.dirtyObs(isAlt)
+        this.setPlayingIndex(index, isAlt)
+        this.awsData[isAlt ? 1 : 0].observable.playingTeamIndex = index
+        this.dirtyObs(isAlt)
 
-            this.sendDataToAWS()
-        }
+        this.sendDataToAWS()
 
         this.obs.playingAlt = isAlt
     }
@@ -140,6 +153,7 @@ module.exports = class extends InterfaceModelBase {
         let isLastTeam = this.obs.adjustedPlayingIndex >= teamList.length - 1
         if (isLastTeam) {
             this.obs.adjustedPlayingIndex = undefined
+            this.setPoolPlaying(false, false)
             this.setPlayingTeamIndex(undefined, false)
             this.setPlayingTeamIndex(undefined, true)
         } else {

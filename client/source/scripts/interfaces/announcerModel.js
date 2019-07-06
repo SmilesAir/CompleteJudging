@@ -79,7 +79,7 @@ module.exports = class extends InterfaceModelBase {
         this.obs.playingTeamIndex = awsData.observable.playingTeamIndex
         this.obs.routineLengthSeconds = awsData.observable.routineLengthSeconds
         if (this.obs.showScoreboard === undefined) {
-            this.obs.showScoreboard = awsData.state.streamOverlay.showScoreboard === true
+            this.obs.showScoreboard = awsData.state.streamOverlay && awsData.state.streamOverlay.showScoreboard === true
         }
 
         if (this.obs.passiveMode) {
