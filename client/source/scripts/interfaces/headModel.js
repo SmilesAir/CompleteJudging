@@ -136,8 +136,15 @@ module.exports = class extends InterfaceModelBase {
     }
 
     moveToNextTeam() {
-        let isLastTeam = this.obs.playingTeamIndex >= this.obs.playingPool.teamList.length - 1
-        this.setPlayingTeamIndex(isLastTeam ? undefined : this.obs.playingTeamIndex + 1)
+        let teamList = this.calcTeamList()
+        let isLastTeam = this.obs.adjustedPlayingIndex >= teamList.length - 1
+        if (isLastTeam) {
+            this.obs.adjustedPlayingIndex = undefined
+            this.setPlayingTeamIndex(undefined, false)
+            this.setPlayingTeamIndex(undefined, true)
+        } else {
+            this.setPlayingTeam(teamList[this.obs.adjustedPlayingIndex + 1])
+        }
     }
 
     dirtyObs(isAlt) {
@@ -261,8 +268,9 @@ module.exports = class extends InterfaceModelBase {
     }
 
     uploadIncrementalScoreboardData() {
-        DataAction.fillPoolResults(this.obs.playingPool).then(() => {
-            let data = DataAction.getScoreboardResultsProcessed(this.obs.playingPool, this.obs.routineLengthSeconds, true)
+        let playingPool = this.getPool(this.obs.playingAlt)
+        DataAction.fillPoolResults(playingPool).then(() => {
+            let data = DataAction.getScoreboardResultsProcessed(playingPool, this.obs.routineLengthSeconds, true)
 
             CommonAction.fetchEx("SET_SCOREBOARD_DATA", {
                 tournamentName: MainStore.tournamentName
@@ -270,7 +278,7 @@ module.exports = class extends InterfaceModelBase {
                 method: "POST",
                 body: JSON.stringify({
                     scoreboardData: {
-                        title: DataAction.getFullPoolDescription(this.obs.playingPool),
+                        title: DataAction.getFullPoolDescription(playingPool),
                         data: data,
                         incremental: true,
                         startTime: this.obs.startTime,
@@ -285,9 +293,10 @@ module.exports = class extends InterfaceModelBase {
 
     finalizeScoreboardData() {
         this.setEnabledAutoUpdateScoreboard(false)
+        let playingPool = this.getPool(this.obs.playingAlt)
 
-        DataAction.fillPoolResults(this.obs.playingPool).then(() => {
-            let data = DataAction.getScoreboardResultsProcessed(this.obs.playingPool, this.obs.routineLengthSeconds)
+        DataAction.fillPoolResults(playingPool).then(() => {
+            let data = DataAction.getScoreboardResultsProcessed(playingPool, this.obs.routineLengthSeconds)
 
             CommonAction.fetchEx("SET_SCOREBOARD_DATA", {
                 tournamentName: MainStore.tournamentName
@@ -295,7 +304,7 @@ module.exports = class extends InterfaceModelBase {
                 method: "POST",
                 body: JSON.stringify({
                     scoreboardData: {
-                        title: DataAction.getFullPoolDescription(this.obs.playingPool),
+                        title: DataAction.getFullPoolDescription(playingPool),
                         data: data,
                         startTime: this.obs.startTime,
                         routineLengthSeconds: this.obs.routineLengthSeconds
