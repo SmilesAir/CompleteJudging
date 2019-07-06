@@ -19,21 +19,23 @@ const urls = {
     REPORT_JUDGE_SCORE: "<path>/reportJudgeScore",
     SET_JUDGE_STATE: "<path>/tournamentName/<tournamentName>/setJudgeState",
     SET_PLAYING_POOL: "<path>/tournamentName/<tournamentName>/setPlayingPool",
-    SET_SCOREBOARD_DATA: "<path>/tournamentName/<tournamentName>/setScoreboardData",
+    SET_SCOREBOARD_DATA: "<pathAws>/tournamentName/<tournamentName>/setScoreboardData",
     STOP_PLAYING_POOLS: "<path>/tournamentName/<tournamentName>/stopPlayingPools"
 }
 
 module.exports.buildUrl = function(lanMode, key, pathParams, queryParams) {
     let path = undefined
+    let pathAws = __STAGE__ === "DEVELOPMENT" ? "https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com" : "https://w0wkbj0dd9.execute-api.us-west-2.amazonaws.com"
+    pathAws += `/${__STAGE__.toLowerCase()}`
     if (lanMode) {
         path = serverPath
     } else {
-        path = __STAGE__ === "DEVELOPMENT" ? "https://0uzw9x3t5g.execute-api.us-west-2.amazonaws.com" : "https://w0wkbj0dd9.execute-api.us-west-2.amazonaws.com"
-        path += `/${__STAGE__.toLowerCase()}`
+        path = pathAws
     }
 
     let pathReplaceData = {
         "path": path,
+        "pathAws": pathAws,
         "stage": __STAGE__.toLowerCase()
     }
 
