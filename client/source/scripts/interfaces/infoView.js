@@ -16,11 +16,11 @@ const EndpointStore = require("complete-judging-common/source/endpoints.js")
 require("./infoView.less")
 
 
-function getJudgeUrl(judgeIndex, interfaceName) {
+function getJudgeUrl(judgeIndex, interfaceName, isAlt) {
     if (__STAGE__ === "PRODUCTION") {
-        return `https://d5rsjgoyn07f8.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&judgeIndex=${judgeIndex}&header=false`
+        return `https://d5rsjgoyn07f8.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&judgeIndex=${judgeIndex}&alt=${isAlt ? "true" : "false"}`
     } else {
-        return `https://d27wqtus28jqqk.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&judgeIndex=${judgeIndex}&header=false`
+        return `https://d27wqtus28jqqk.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&judgeIndex=${judgeIndex}&alt=${isAlt ? "true" : "false"}`
     }
 }
 
@@ -42,7 +42,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.setState(this.state)
     }
 
-    gotoQRCodesTabActive(pool) {
+    gotoQRCodesTabActive(pool, isAlt) {
         // Because QrCode is latent, generate the QR Codes next frame
         setTimeout(() => {
             for (let ref of this.canvasRefs) {
@@ -53,6 +53,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.qrCodesTabRef.checked = true
 
         this.state.qrCodesPool = pool
+        this.state.isQrCodesAlt = isAlt
         this.setState(this.state)
     }
 
@@ -86,7 +87,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return null
     }
 
-    addQRCodeCanvas(rows, judgeIndex, url) {
+    addQRCodeCanvas(rows, judgeIndex, url, fullName) {
         let rowIndex = Math.floor(judgeIndex / 3)
 
         rows[rowIndex] = rows[rowIndex] || []
@@ -97,7 +98,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         rows[rowIndex].push(
             <div key={judgeIndex} className="codeContainer">
                 <div className="judgeLabel">
-                    Judge: {judgeIndex + 1}
+                    {judgeIndex + 1}. {fullName}
                 </div>
                 <canvas className="code" ref={(ref) => this.canvasRefs[judgeIndex].ref = ref}/>
             </div>
@@ -110,14 +111,14 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             let judgeData = this.state.qrCodesPool.judgeData
             if (judgeData !== undefined) {
                 let judgeIndex = 0
-                judgeData.judgesEx.forEach(() => {
-                    this.addQRCodeCanvas(rows, judgeIndex, getJudgeUrl(judgeIndex++, "exAiCombined"))
+                judgeData.judgesEx.forEach((judge) => {
+                    this.addQRCodeCanvas(rows, judgeIndex, getJudgeUrl(judgeIndex++, "exAiCombined", this.state.isQrCodesAlt), judge.FullName)
                 })
-                judgeData.judgesAi.forEach(() => {
-                    this.addQRCodeCanvas(rows, judgeIndex, getJudgeUrl(judgeIndex++, "variety"))
+                judgeData.judgesAi.forEach((judge) => {
+                    this.addQRCodeCanvas(rows, judgeIndex, getJudgeUrl(judgeIndex++, "variety", this.state.isQrCodesAlt), judge.FullName)
                 })
-                judgeData.judgesDiff.forEach(() => {
-                    this.addQRCodeCanvas(rows, judgeIndex, getJudgeUrl(judgeIndex++, "diff"))
+                judgeData.judgesDiff.forEach((judge) => {
+                    this.addQRCodeCanvas(rows, judgeIndex, getJudgeUrl(judgeIndex++, "diff", this.state.isQrCodesAlt), judge.FullName)
                 })
             }
         }
@@ -131,7 +132,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 </div>
             )
         })
-        
+
         return (
             <div>
                 <button id="noPrint" onClick={() => this.printResults()}>Print</button>
@@ -155,7 +156,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 <label className="infoLabel" htmlFor="tab5">QR Codes</label>
                 <TournamentSelection/>
                 <PlayerAndTeams/>
-                <PoolsView gotoResultsTabActive={(pool) => this.gotoResultsTabActive(pool)} gotoQRCodesTabActive={(pool) => this.gotoQRCodesTabActive(pool)} />
+                <PoolsView gotoResultsTabActive={(pool) => this.gotoResultsTabActive(pool)} gotoQRCodesTabActive={(pool, isAlt) => this.gotoQRCodesTabActive(pool, isAlt)} />
                 <div id="content4" className="infoTabContent">
                     {this.getFullResultsElements()}
                 </div>
@@ -321,9 +322,9 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             <div className="results">
                 <div>
                     {"Results Summary   "}
-                    <button onClick={() => this.onFullResultsClick(pool)}>See Full Results</button>
-                    <button onClick={() => this.onDownloadFpaResultsSheet(pool)}>Download FPA Result Sheet</button>
-                    <button className="clearResultsButton" onClick={() => this.onClearResultsClick(pool)}>Clear Results [DANGER]</button>
+                    <button onClick={() => this.onFullResultsClick(pool)}>Full Results</button>
+                    <button onClick={() => this.onDownloadFpaResultsSheet(pool)}>FPA Result Sheet</button>
+                    <button className="clearResultsButton" onClick={() => this.onClearResultsClick(pool)}>Clear Results</button>
                 </div>
                 {DataAction.getResultsSummary(pool.results)}
             </div>
@@ -351,8 +352,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         document.execCommand("copy")
     }
 
-    generateQRCodes(pool) {
-        this.props.gotoQRCodesTabActive(pool)
+    generateQRCodes(pool, isAlt) {
+        this.props.gotoQRCodesTabActive(pool, isAlt)
     }
 
     getPoolComponents() {
@@ -368,7 +369,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                             <button onClick={() => this.onSetPool(pool)}>Set Pool</button>
                             <button onClick={() => this.onSetPool(pool, true)}>Set Pool Alt</button>
                             <button onClick={() => this.setLinksInClipboard(pool)}>Copy Links</button>
-                            <button onClick={() => this.generateQRCodes(pool)}>QR Codes</button>
+                            <button onClick={() => this.generateQRCodes(pool, false)}>QR Codes</button>
+                            <button onClick={() => this.generateQRCodes(pool, true)}>QR Codes Alt</button>
                         </div>
                         <div className="teams">
                             {this.getTeamComponents(pool)}
