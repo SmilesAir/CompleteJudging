@@ -95,7 +95,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     onParentTouchMove(event) {
         if (this.interface.obs.editIndex !== undefined) {
-            let inputContainer = document.getElementsByClassName("inputContainer")[0]
+            let inputContainer = document.getElementById("inputContainer")
             if (inputContainer !== undefined) {
                 let bounds = inputContainer.getBoundingClientRect()
 
@@ -114,9 +114,6 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onParentInputEnd(event) {
-        event.preventDefault()
-        event.stopPropagation()
-
         if (this.interface.obs.editIndex === undefined) {
             let score = this.getStateNumberOut()
             if (score !== undefined) {
