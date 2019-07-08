@@ -4,6 +4,7 @@ const InterfaceModelBase = require("scripts/interfaces/interfaceModelBase.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
 const CommonAction = require("scripts/actions/commonAction.js")
+const EndpointStore = require("complete-judging-common/source/endpoints.js")
 
 const xmlNS = "http://freestyledisc.org/FPAScoresheets.xsd"
 
@@ -13,6 +14,12 @@ module.exports = class extends InterfaceModelBase {
 
         this.name = "Tournament Info"
         this.type = Enums.EInterface.info
+
+        let ipParam = MainStore.url.searchParams.get("serverIp")
+        if (ipParam) {
+            MainStore.overrideServerIp = ipParam.split("_").join(".")
+            EndpointStore.overrideServerPath(`http://${MainStore.overrideServerIp}:3000`)
+        }
     }
 
     async init() {

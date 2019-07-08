@@ -7,6 +7,8 @@ require("favicon.ico")
 //const fpaLogo = require("images/fpa_logo.png")
 
 const MainStore = require("scripts/stores/mainStore.js")
+MainStore.url = new URL(window.location.href)
+
 const Enums = require("scripts/stores/enumStore.js")
 const InfoView = require("scripts/interfaces/infoView.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
@@ -36,9 +38,7 @@ require("./index.less")
 
         MainStore.activeInterface = Enums.EInterface.default
 
-        let url = new URL(window.location.href)
-        MainStore.url = url
-        let startupParam = url.searchParams.get("startup")
+        let startupParam = MainStore.url.searchParams.get("startup")
         for (let interfaceName in Enums.EInterface) {
             if (interfaceName === startupParam) {
                 MainStore.activeInterface = Enums.EInterface[interfaceName]
@@ -46,14 +46,14 @@ require("./index.less")
             }
         }
 
-        MainStore.startupTournamentName = url.searchParams.get("tournamentName")
+        MainStore.startupTournamentName = MainStore.url.searchParams.get("tournamentName")
         MainStore.tournamentName = MainStore.startupTournamentName
-        MainStore.userId = url.searchParams.get("userId")
-        MainStore.judgeIndex = url.searchParams.get("judgeIndex")
+        MainStore.userId = MainStore.url.searchParams.get("userId")
+        MainStore.judgeIndex = MainStore.url.searchParams.get("judgeIndex")
         MainStore.judgeIndex = MainStore.judgeIndex !== undefined && parseInt(MainStore.judgeIndex, 10)
-        let headerParam = url.searchParams.get("header")
+        let headerParam = MainStore.url.searchParams.get("header")
         MainStore.showControlsHeader = headerParam !== null && headerParam === "true"
-        let lanModeParam = url.searchParams.get("lanMode")
+        let lanModeParam = MainStore.url.searchParams.get("lanMode")
         MainStore.lanMode = MainStore.forceLanMode || lanModeParam !== null && lanModeParam === "true"
 
         DataAction.init()

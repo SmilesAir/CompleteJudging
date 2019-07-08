@@ -21,5 +21,6 @@ module.exports = Mobx.observable({
     lanMode: false,
     forceLanMode: false,
     isFinishViewShowing: false,
-    isRoutineTimeElapsed: false
+    isRoutineTimeElapsed: false,
+    overrideServerIp: undefined
 })

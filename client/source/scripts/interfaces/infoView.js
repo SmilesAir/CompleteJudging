@@ -17,11 +17,24 @@ require("./infoView.less")
 
 
 function getJudgeUrl(judgeIndex, interfaceName, isAlt) {
-    if (__STAGE__ === "PRODUCTION") {
-        return `https://d5rsjgoyn07f8.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&judgeIndex=${judgeIndex}&alt=${isAlt ? "true" : "false"}`
+    let serverAddress = undefined
+    if (MainStore.overrideServerIp !== undefined) {
+        serverAddress = `http://${MainStore.overrideServerIp}:8080`
+    } else if (__STAGE__ === "PRODUCTION") {
+        serverAddress = "https://d5rsjgoyn07f8.cloudfront.net"
     } else {
-        return `https://d27wqtus28jqqk.cloudfront.net/index.html?startup=${interfaceName}&tournamentName=${encodeURIComponent(MainStore.tournamentName)}&judgeIndex=${judgeIndex}&alt=${isAlt ? "true" : "false"}`
+        serverAddress = "https://d27wqtus28jqqk.cloudfront.net"
     }
+
+    let url = `${serverAddress}/index.html`
+    url += `?startup=${interfaceName}`
+    url += `&tournamentName=${encodeURIComponent(MainStore.tournamentName)}`
+    url += `&judgeIndex=${judgeIndex}`
+    url += `&alt=${isAlt ? "true" : "false"}`
+    url += `&lanMode=${MainStore.lanMode ? "true" : "false"}`
+    url += MainStore.overrideServerIp !== undefined ? `&serverIp=${MainStore.url.searchParams.get("serverIp")}` : ""
+
+    return url
 }
 
 module.exports = @MobxReact.observer class extends InterfaceViewBase {
