@@ -65,7 +65,7 @@ module.exports.verify = function(resultsData) {
 }
 
 function getDiffScore(data) {
-    if (data.scores.length === 0) {
+    if (data === undefined || data.scores === undefined || data.scores.length === 0) {
         return 0
     }
 
