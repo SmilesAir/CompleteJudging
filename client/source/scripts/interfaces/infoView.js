@@ -125,13 +125,13 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             if (judgeData !== undefined) {
                 let judgeIndex = 0
                 judgeData.judgesEx.forEach((judge) => {
-                    this.addQRCodeCanvas(rows, judgeIndex, getJudgeUrl(judgeIndex++, "exAiCombined", this.state.isQrCodesAlt), judge.FullName)
+                    this.addQRCodeCanvas(rows, judgeIndex, getJudgeUrl(judgeIndex++, "oldEx", this.state.isQrCodesAlt), judge.FullName)
                 })
                 judgeData.judgesAi.forEach((judge) => {
-                    this.addQRCodeCanvas(rows, judgeIndex, getJudgeUrl(judgeIndex++, "variety", this.state.isQrCodesAlt), judge.FullName)
+                    this.addQRCodeCanvas(rows, judgeIndex, getJudgeUrl(judgeIndex++, "oldAi", this.state.isQrCodesAlt), judge.FullName)
                 })
                 judgeData.judgesDiff.forEach((judge) => {
-                    this.addQRCodeCanvas(rows, judgeIndex, getJudgeUrl(judgeIndex++, "diff", this.state.isQrCodesAlt), judge.FullName)
+                    this.addQRCodeCanvas(rows, judgeIndex, getJudgeUrl(judgeIndex++, "oldDiff", this.state.isQrCodesAlt), judge.FullName)
                 })
             }
         }
