@@ -95,7 +95,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     onParentTouchMove(event) {
         if (this.interface.obs.editIndex !== undefined) {
-            let inputContainer = document.getElementsByClassName("inputContainer")[0]
+            let inputContainer = document.getElementsByClassName("inputContainer")[0] // Might want to change to let inputContainer = document.getElementById("inputContainer")
             let bounds = inputContainer.getBoundingClientRect()
 
             let x = event.targetTouches[0].clientX
