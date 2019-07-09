@@ -115,7 +115,7 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
     let processed = []
 
     processed.push({
-        Score: -calcDeductions(data)
+        Score: 10 - calcDeductions(data)
     })
 
     return processed

@@ -122,6 +122,11 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 this.setConsecInputEnable(setScore, this.interface.obs.activeInputIndex)
 
                 CommonAction.vibrateSingleMedium()
+
+                this.isInputCooldown = true
+                setTimeout(() => {
+                    this.isInputCooldown = false
+                }, 200)
             }
         } else {
             this.setConsecInputEnable(true, this.interface.obs.editIndex)
@@ -138,6 +143,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onConsecInput(isConsec) {
+        if (this.isInputCooldown) {
+            return
+        }
+
         this.interface.setConsec(this.state.consecInputIndex, isConsec)
 
         this.setConsecInputEnable(false)

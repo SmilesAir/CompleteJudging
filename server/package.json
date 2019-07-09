@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npm i && nodemon ./bin/www -- --stage=development"
+    "start": "npm i && nodemon ./bin/www -- --stage=development",
+    "start:production": "npm i && nodemon ./bin/www -- --stage=production"
   },
   "dependencies": {
     "complete-judging-common": "../common",
