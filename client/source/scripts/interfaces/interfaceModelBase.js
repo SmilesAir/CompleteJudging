@@ -21,7 +21,8 @@ class InterfaceModelBase {
             playingTeamIndex: undefined,
             editTeamIndex: undefined,
             backupModeEnabled: false,
-            results: undefined
+            results: undefined,
+            currentTeamScore: 0
         })
     }
 
@@ -230,10 +231,14 @@ class InterfaceModelBase {
     getCurrentTeamString() {
         let teamIndex = this.getActiveTeamIndex()
         if (this.obs.playingPool !== undefined && teamIndex !== undefined) {
-            return `[${DataAction.getTeamPlayers(this.obs.playingPool.teamList[teamIndex], ", ")}]`
+            return `${DataAction.getTeamPlayers(this.obs.playingPool.teamList[teamIndex], ", ")}`
         }
 
         return undefined
+    }
+
+    getCurrentTeamScore() {
+        return this.obs.currentTeamScore
     }
 
     fillWithResults() {

@@ -53,6 +53,10 @@ class TeamOldExScores extends DataBase.class {
             break
         }
     }
+
+    getExScore() {
+        return 10 - calcDeductions(this)
+    }
 }
 
 module.exports.DataClass = class extends DataStore.ResultsDataBase {
