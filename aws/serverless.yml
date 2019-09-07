@@ -179,8 +179,8 @@ resources:
           - AttributeName: key
             KeyType: HASH
         ProvisionedThroughput:
-          ReadCapacityUnits: 10
-          WriteCapacityUnits: 10
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
     tournamentInfo:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -205,8 +205,8 @@ resources:
           - AttributeName: key
             KeyType: HASH
         ProvisionedThroughput:
-          ReadCapacityUnits: 10
-          WriteCapacityUnits: 10
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
     activeResults:
       Type: AWS::DynamoDB::Table
       Properties:
