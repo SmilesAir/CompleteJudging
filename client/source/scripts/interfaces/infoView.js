@@ -15,6 +15,7 @@ const EndpointStore = require("complete-judging-common/source/endpoints.js")
 
 require("./infoView.less")
 
+const backupAutoImportSpreadsheet = require("data/AutoImportScoresheets.xlsm")
 
 function getJudgeUrl(judgeIndex, interfaceName, isAlt) {
     let serverAddress = undefined
@@ -314,7 +315,21 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
             JSZipUtils.getBinaryContent(EndpointStore.buildUrl(MainStore.lanMode, "GET_FPA_SPREADSHEET"), (error, data) => {
                 if (error) {
-                    console.error(error)
+                    JSZipUtils.getBinaryContent(backupAutoImportSpreadsheet, (secondError, secondData) => {
+                        if (secondError) {
+                            console.error(secondError)
+                        } else {
+                            const zip = new JSZip()
+                            let resultsName = DataAction.getResultsFilename(pool)
+
+                            zip.file(resultsName + ".xlsm", secondData, { binary: true })
+                            zip.file("ExportData.xml", xmlData)
+
+                            zip.generateAsync({ type: "blob" }).then((content) => {
+                                saveAs(content, `${resultsName}.zip`)
+                            })
+                        }
+                    })
                 } else {
                     const zip = new JSZip()
                     let resultsName = DataAction.getResultsFilename(pool)
