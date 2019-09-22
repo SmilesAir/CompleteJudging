@@ -27,6 +27,10 @@ class TeamDiffScores extends DataBase.class {
         this.consecs[blockIndex] = isConsec
     }
 
+    getConsec(blockIndex) {
+        return this.consecs[blockIndex]
+    }
+
     getDiffScore() {
         return getDiffScore(this)
     }
@@ -61,6 +65,10 @@ module.exports.DataClass = class extends DataStore.ResultsDataBase {
 
     setConsec(teamIndex, blockIndex, isConsec) {
         this.teamScoreList[teamIndex].setConsec(blockIndex, isConsec)
+    }
+
+    getConsec(teamIndex, blockIndex) {
+        return this.teamScoreList[teamIndex].getConsec(blockIndex)
     }
 
     getDiffScore(teamIndex) {

@@ -155,7 +155,25 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     setConsecInputEnable(enable, blockIndex) {
         this.state.isConsecInputEnable = enable
         this.state.consecInputIndex = blockIndex
+
+        if (enable) {
+            this.state.consecTimeoutHandle = setTimeout(() => {
+                this.trySetNoneConsec()
+            }, 6000)
+        }
+
         this.setState(this.state)
+    }
+
+    trySetNoneConsec() {
+        clearInterval(this.setState(this.state))
+
+        if (this.state.isConsecInputEnable) {
+            let prevConsec = this.interface.getConsec(this.state.consecInputIndex)
+            this.interface.setConsec(this.state.consecInputIndex, prevConsec === true)
+
+            this.setConsecInputEnable(false)
+        }
     }
 
     render() {

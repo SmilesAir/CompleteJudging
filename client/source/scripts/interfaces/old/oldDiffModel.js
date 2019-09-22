@@ -79,6 +79,10 @@ module.exports = class extends InterfaceModelBase {
         this.reportScores()
     }
 
+    getConsec(blockIndex) {
+        return this.obs.results.getConsec(this.getActiveTeamIndex(), blockIndex)
+    }
+
     startEdit(markIndex) {
         this.obs.editIndex = markIndex
     }
