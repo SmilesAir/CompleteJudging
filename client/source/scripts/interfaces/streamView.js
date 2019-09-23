@@ -10,6 +10,9 @@ const DataAction = require("scripts/actions/dataAction.js")
 
 require("./streamView.less")
 
+const fpaLogo = require("images/fpa_logo_black.png")
+const fgLogo = require("images/fgLogo.png")
+
 const EState = {
     none: 0,
     scoreboard: 1,
@@ -292,12 +295,16 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                         </div>
                     </div> : null}
                     <div className={footerClassName}>
-                        <div className="titleText">
-                            {this.getTitleString(true)}
+                        <img className="fpaLogo" src={fpaLogo}/>
+                        <div className="content">
+                            <div className="titleText">
+                                {this.getTitleString(true)}
+                            </div>
+                            <div className="namesText">
+                                {DataAction.getTeamPlayersRankAndCountry(this.obs.awsData && this.obs.awsData.pool.teamList[this.teamIndex])}
+                            </div>
                         </div>
-                        <div className="namesText">
-                            {DataAction.getTeamPlayers(this.obs.awsData && this.obs.awsData.pool.teamList[this.teamIndex])}
-                        </div>
+                        <img className="fgLogo" src={fgLogo}/>
                     </div>
                 </div>
             </div>

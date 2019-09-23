@@ -7,6 +7,7 @@ module.exports.PlayerData = class {
     constructor(poolCreatorPlayer) {
         this.firstNameRaw = poolCreatorPlayer.firstName
         this.lastNameRaw = poolCreatorPlayer.lastName
+        this.countryRaw = poolCreatorPlayer.country
         this.points = poolCreatorPlayer.points
         this.womenPoints = poolCreatorPlayer.womenPoints
         this.rank = poolCreatorPlayer.rank
@@ -22,6 +23,10 @@ module.exports.PlayerData = class {
 
     get lastNameShort() {
         return this.lastNameRaw !== undefined ? this.lastNameRaw.slice(0, 1) : "?"
+    }
+
+    get country() {
+        return this.countryRaw || "<No Country>"
     }
 }
 

@@ -95,6 +95,12 @@ function getFullPlayerName(id) {
 }
 module.exports.getFullPlayerName = getFullPlayerName
 
+function getFullPlayerNameRankAndCountry(id) {
+    let player = getPlayerData(id)
+    return player !== undefined ? `${player.firstName} ${player.lastName} (#${player.rank}) ${player.country}` : undefined
+}
+module.exports.getFullPlayerNameRankAndCountry = getFullPlayerNameRankAndCountry
+
 function getFullPlayerNameShort(id) {
     let player = getPlayerData(id)
     return player !== undefined ? `${player.firstName} ${player.lastNameShort}.` : undefined
@@ -111,6 +117,17 @@ function getTeamPlayers(team, divider = " - ") {
     return ""
 }
 module.exports.getTeamPlayers = getTeamPlayers
+
+function getTeamPlayersRankAndCountry(team, divider = " - ") {
+    if (team !== undefined) {
+        return team.playerList.map((playerId) => {
+            return getFullPlayerNameRankAndCountry(playerId)
+        }).join(divider)
+    }
+
+    return ""
+}
+module.exports.getTeamPlayersRankAndCountry = getTeamPlayersRankAndCountry
 
 function getTeamPlayersShort(team, divider = " - ") {
     return team.playerList.map((playerId) => {

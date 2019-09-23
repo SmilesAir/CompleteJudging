@@ -163,20 +163,44 @@
         background-image: url("../../images/footer.png");
         position: relative;
         left: 0;
+        margin: 1em;
+        border-radius: 1.5em;
+        border-style: solid;
+        border-width: .2em;
+        border-color: white;
 
         transition: all .75s ease-in-out;
 
-        .titleText {
-            padding-top: .5em;
-            padding-left: 3%;
-            font-size: 2em;
-            color: white;
+        display: flex;
+
+        .fpaLogo {
+            object-fit: contain;
+            border-radius: em;
+            margin: .5em;
         }
 
-        .namesText {
-            padding-left: 3%;
-            font-size: 3em;
-            color: white;
+        .content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+
+            .titleText {
+                font-size: 2em;
+                color: white;
+            }
+
+            .namesText {
+                font-size: 3em;
+                color: white;
+            }
+        }
+
+        .fgLogo {
+            object-fit: contain;
+            border-radius: 1em;
+            margin: .5em;
+            background-color: white;
         }
     }
 
