@@ -294,14 +294,16 @@ function getResultsProcessed(pool, routineLengthSeconds, processFunc, createTeam
             let totalScore = 0
 
             for (let key in teamData) {
-                if (key === "diff" ||
-                    key === "variety" ||
-                    key === "ai") {
+                // if (key === "diff" ||
+                //     key === "variety" ||
+                //     key === "ai") {
 
-                    totalScore += teamData[key]
-                } else if (key === "ex") {
-                    totalScore -= teamData[key]
-                }
+                //     totalScore += teamData[key]
+                // } else if (key === "ex") {
+                //     totalScore -= teamData[key]
+                // }
+
+                totalScore += teamData[key]
             }
 
             teamData.totalScore = totalScore

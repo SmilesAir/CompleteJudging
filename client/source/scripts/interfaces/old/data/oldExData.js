@@ -126,13 +126,13 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
 }
 
 module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedData, processedData) {
-    processedData.ex = calcDeductions(data)
+    processedData.ex = 10 - calcDeductions(data)
 
     return undefined
 }
 
 module.exports.getScoreboardProcessed = function(data, preProcessedData, processedData) {
-    processedData.ex = calcDeductions(data)
+    processedData.ex = 10 - calcDeductions(data)
 
     return undefined
 }

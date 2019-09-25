@@ -133,7 +133,7 @@ module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedDa
 }
 
 module.exports.getScoreboardProcessed = function(data, preProcessedData, processedData) {
-    processedData.diff = getDiffScore(data.scores)
+    processedData.diff = getDiffScore(data)
 
     return undefined
 }

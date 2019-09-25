@@ -8,6 +8,9 @@ const CommonAction = require("scripts/actions/commonAction.js")
 
 require("./scoreboardView.less")
 
+const fpaLogo = require("images/fpa_logo_black.png")
+const fgLogo = require("images/fgLogo.png")
+
 module.exports = @MobxReact.observer class extends InterfaceViewBase {
     constructor() {
         super()
@@ -127,6 +130,52 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         )
     }
 
+    getOldIncrementalHeaderRow() {
+        return (
+            <div key={0} className="rowOldContainer headerRow rowContainerOldIncremental">
+                <div>{"#"}</div>
+                <div>{"Team"}</div>
+                <div>{"Ex"}</div>
+            </div>
+        )
+    }
+
+    getOldHeaderRow() {
+        return (
+            <div key={0} className="rowOldContainer headerRow">
+                <div>{"#"}</div>
+                <div>{"Team"}</div>
+                <div>{"Diff"}</div>
+                <div>{"AI"}</div>
+                <div>{"Ex"}</div>
+                <div>{"Score"}</div>
+            </div>
+        )
+    }
+
+    getOldIncrementalRow(rank, teamNames, ex) {
+        return (
+            <div key={teamNames} className="rowOldContainer rowContainerOldIncremental">
+                <div className="rank">{rank}</div>
+                <div className="teamNames">{teamNames}</div>
+                <div className="ex">{ex}</div>
+            </div>
+        )
+    }
+
+    getOldRow(rank, teamNames, diff, ai, ex, totalScore) {
+        return (
+            <div key={teamNames} className="rowOldContainer">
+                <div className="rank">{rank}</div>
+                <div className="teamNames">{teamNames}</div>
+                <div className="diff">{diff}</div>
+                <div className="ai">{ai}</div>
+                <div className="ex">{ex}</div>
+                <div className="score">{totalScore}</div>
+            </div>
+        )
+    }
+
     getPrettyDecimalValue(value, negative) {
         return value !== undefined && value !== 0 ? (negative ? "-" : "") + value.toFixed(2) : ""
     }
@@ -134,13 +183,23 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     getBoard(data) {
         let rowList = []
 
-        rowList.push(this.incremental ? this.getIncrementalHeaderRow() : this.getHeaderRow())
+        if (data.length > 0 && data[0].data.unique !== undefined) {
+            rowList.push(this.incremental ? this.getIncrementalHeaderRow() : this.getHeaderRow())
+        } else {
+            rowList.push(this.incremental ? this.getOldIncrementalHeaderRow() : this.getOldHeaderRow())
+        }
 
         for (let rowData of data) {
             let teamData = rowData.data
-            rowList.push(this.incremental ?
-                this.getIncrementalRow(rowData.data.rank, rowData.teamNames, teamData.phrases, teamData.unique, this.getPrettyDecimalValue(teamData.diff), this.getPrettyDecimalValue(teamData.ex, true), this.getPrettyDecimalValue(teamData.totalScore)) :
-                this.getRow(rowData.data.rank, rowData.teamNames, teamData.phrases, teamData.unique, this.getPrettyDecimalValue(teamData.diff), this.getPrettyDecimalValue(teamData.variety), this.getPrettyDecimalValue(teamData.ai), this.getPrettyDecimalValue(teamData.ex, true), this.getPrettyDecimalValue(teamData.totalScore)))
+            if (teamData.unique !== undefined) {
+                rowList.push(this.incremental ?
+                    this.getIncrementalRow(rowData.data.rank, rowData.teamNames, teamData.phrases, teamData.unique, this.getPrettyDecimalValue(teamData.diff), this.getPrettyDecimalValue(teamData.ex, true), this.getPrettyDecimalValue(teamData.totalScore)) :
+                    this.getRow(rowData.data.rank, rowData.teamNames, teamData.phrases, teamData.unique, this.getPrettyDecimalValue(teamData.diff), this.getPrettyDecimalValue(teamData.variety), this.getPrettyDecimalValue(teamData.ai), this.getPrettyDecimalValue(teamData.ex, true), this.getPrettyDecimalValue(teamData.totalScore)))
+            } else {
+                rowList.push(this.incremental ?
+                    this.getOldIncrementalRow(rowData.data.rank, rowData.teamNames, this.getPrettyDecimalValue(teamData.ex)) :
+                    this.getOldRow(rowData.data.rank, rowData.teamNames, this.getPrettyDecimalValue(teamData.diff), this.getPrettyDecimalValue(teamData.ai), this.getPrettyDecimalValue(teamData.ex), this.getPrettyDecimalValue(teamData.totalScore)))
+            }
         }
 
         return rowList
@@ -178,9 +237,11 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return (
             <div className="scoreboardTopContainer">
                 <div className="header">
+                    <img className="fpaLogo" src={fpaLogo}/>
                     <div className="title">
                         {this.getTitleString()}
                     </div>
+                    <img className="fgLogo" src={fgLogo}/>
                     <div className="time">
                         {this.getTimeString()}
                     </div>
