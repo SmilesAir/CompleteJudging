@@ -129,7 +129,7 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
 }
 
 module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedData, processedData) {
-    return module.exports.getScoreboardProcessed(data, preProcessedData, processedData)
+    return undefined
 }
 
 module.exports.getScoreboardProcessed = function(data, preProcessedData, processedData) {
