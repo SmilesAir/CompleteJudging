@@ -26,7 +26,7 @@ module.exports.PlayerData = class {
     }
 
     get country() {
-        return this.countryRaw || "<No Country>"
+        return this.countryRaw || ""
     }
 }
 
