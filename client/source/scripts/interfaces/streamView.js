@@ -341,17 +341,6 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     {this.getBoard(this.resultsData)}
                 </div>
                 <div className={playingClassName}>
-                    {teamData !== undefined ? <div className={headerClassName}>
-                        <div className="timeText">
-                            Time: {this.getRoutineTimerString()}
-                        </div>
-                        <div className="exText">
-                            Penalty: {-(teamData.ex || 0).toFixed(1)}
-                        </div>
-                        <div className="diffText">
-                            Difficulty: {(teamData.diff || 0).toFixed(1)}
-                        </div>
-                    </div> : null}
                     <div className={footerClassName}>
                         <img className="fpaLogo" src={fpaLogo}/>
                         <div className="content">

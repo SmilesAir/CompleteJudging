@@ -226,7 +226,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             routineTimeStr = ` [${Math.floor(secondsRemaining / 60)}:${`${secondsRemaining % 60}`.padStart(2, "0")}]`
         }
 
-        return (this.incremental ? "[PARTIAL] " : "") + this.title + routineTimeStr
+        return (this.incremental ? "[Ex Only] " : "") + this.title + routineTimeStr
     }
 
     render() {
