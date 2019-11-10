@@ -124,10 +124,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     parseJudgeElements(judgeData) {
         let exElements = judgeData.judgesEx.map((judge) => {
-            return this.getJudgeStatusElement("Ex", judge)
+            return this.getJudgeStatusElement("Ex/Ai", judge)
         })
         let aiElements = judgeData.judgesAi.map((judge) => {
-            return this.getJudgeStatusElement("AI", judge)
+            return this.getJudgeStatusElement("Variety", judge)
         })
         let diffElements = judgeData.judgesDiff.map((judge) => {
             return this.getJudgeStatusElement("Diff", judge)

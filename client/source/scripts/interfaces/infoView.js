@@ -92,8 +92,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                         resultsData={DataAction.getDiffDetailedResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}
                         title={"Diff Results for " + DataAction.getFullPoolDescription(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}/>
                     <ResultsView
-                        resultsData={DataAction.getExAiCombinedDetailedResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}
-                        title={"Ex/Ai Combined Results for " + DataAction.getFullPoolDescription(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}/>
+                        resultsData={DataAction.getExAiDetailedResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}
+                        title={"Ex/Ai Results for " + DataAction.getFullPoolDescription(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}/>
                 </div>
             )
         }
@@ -365,7 +365,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         if (judgeData !== undefined) {
             let judgeIndex = 0
             judgeData.judgesEx.forEach(() => {
-                linkList.push(`${judgeIndex}: ${getJudgeUrl(judgeIndex++, "exAiCombined")}`)
+                linkList.push(`${judgeIndex}: ${getJudgeUrl(judgeIndex++, "exAi")}`)
             })
             judgeData.judgesAi.forEach(() => {
                 linkList.push(`${judgeIndex}: ${getJudgeUrl(judgeIndex++, "variety")}`)

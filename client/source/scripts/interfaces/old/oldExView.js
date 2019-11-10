@@ -101,11 +101,11 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     render() {
         if (this.interface.obs.playingPool === undefined || this.interface.obs.results === undefined) {
-            return <div className="exAiCombinedContainer">Waiting for Head Judge</div>
+            return <div className="exAiContainer">Waiting for Head Judge</div>
         }
 
         return (
-            <div className="exAiCombinedContainer"
+            <div className="exAiContainer"
                 onMouseMove={(event) => this.onMouseMove(event)}
                 onMouseUp={() => this.onMouseUp()}
                 onMouseLeave={() => this.onMouseUp()}>

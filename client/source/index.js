@@ -20,7 +20,7 @@ const DataAction = require("scripts/actions/dataAction.js")
 const OverlayView = require("scripts/views/overlayView.js")
 const FinishView = require("scripts/views/finishView.js")
 const DiffInspectorView = require("scripts/interfaces/fpa/diffInspectorView.js")
-const ExAiCombinedView = require("scripts/interfaces/fpa/exAiCombinedView.js")
+const ExAiView = require("scripts/interfaces/fpa/exAiView.js")
 const AnnouncerView = require("scripts/interfaces/announcerView.js")
 const ScoreboardView = require("scripts/interfaces/scoreboardView.js")
 const OldExView = require("scripts/interfaces/old/oldExView.js")
@@ -157,8 +157,8 @@ require("./index.less")
         case Enums.EInterface.diffInspector:
             activeInterface = <DiffInspectorView />
             break
-        case Enums.EInterface.exAiCombined:
-            activeInterface = <ExAiCombinedView />
+        case Enums.EInterface.exAi:
+            activeInterface = <ExAiView />
             break
         case Enums.EInterface.announcer:
             activeInterface = <AnnouncerView />

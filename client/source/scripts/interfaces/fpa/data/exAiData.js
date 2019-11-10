@@ -8,7 +8,7 @@ const DataBase = require("scripts/stores/dataBase.js")
 
 module.exports.getDefaultConstants = function() {
     return {
-        name: "exAiCombined",
+        name: "exAi",
         startCountPerSecond: 0.08,
         endCountPerSecond: 0.333,
         xScaler: 0.5,
@@ -16,7 +16,7 @@ module.exports.getDefaultConstants = function() {
     }
 }
 
-class TeamExAiCombinedScores extends DataBase.class {
+class TeamExAiScores extends DataBase.class {
     constructor() {
         super()
 
@@ -78,11 +78,11 @@ class TeamExAiCombinedScores extends DataBase.class {
 
 module.exports.DataClass = class extends DataStore.ResultsDataBase {
     constructor(poolData, results) {
-        super(Enums.EInterface.exAiCombined, poolData.divisionIndex, poolData.roundIndex, poolData.poolIndex, poolData.teamList)
+        super(Enums.EInterface.exAi, poolData.divisionIndex, poolData.roundIndex, poolData.poolIndex, poolData.teamList)
 
         this.teamScoreList = []
         for (let i = 0; i < this.teamList.length; ++i) {
-            this.teamScoreList.push(new TeamExAiCombinedScores())
+            this.teamScoreList.push(new TeamExAiScores())
         }
 
         this.teamScoreList = Mobx.observable(this.teamScoreList)
@@ -110,7 +110,7 @@ module.exports.DataClass = class extends DataStore.ResultsDataBase {
 }
 
 module.exports.verify = function(resultsData) {
-    return resultsData !== undefined && resultsData.type === Enums.EInterface.exAiCombined
+    return resultsData !== undefined && resultsData.type === Enums.EInterface.exAi
 }
 
 module.exports.getTotalDeductions = function(resultsData, teamIndex) {
@@ -137,7 +137,7 @@ function calcAiScore(data) {
 // https://www.wolframalpha.com/input/?i=y+%3D+(((50+-+x+%2F+2)+%2F+50)+%5E+2),+x+from+0+to+50
 function getExScaler(phraseCount, routineLengthSeconds) {
     if (phraseCount !== undefined && routineLengthSeconds !== undefined) {
-        let constants = MainStore.constants.exAiCombined
+        let constants = MainStore.constants.exAi
         let start = routineLengthSeconds * constants.startCountPerSecond
         let end = routineLengthSeconds * constants.endCountPerSecond
         let delta = end - start
@@ -153,7 +153,7 @@ function getExScaler(phraseCount, routineLengthSeconds) {
 function calcDeductions(data, phraseCount, routineLengthSeconds) {
     let raw = data.point1Count * .1 + data.point2Count * .2 + data.point3Count * .3 + data.point5Count * .5
 
-    raw *= MainStore.constants.exAiCombined.baseScaler
+    raw *= MainStore.constants.exAi.baseScaler
 
     return raw * getExScaler(phraseCount, routineLengthSeconds)
 }
@@ -220,7 +220,7 @@ module.exports.getCategoryResultsProcessed = function(data, preProcessedData, pr
     return undefined
 }
 
-module.exports.getExAiCombinedDetailedProcessed = function(data, preProcessedData) {
+module.exports.getExAiDetailedProcessed = function(data, preProcessedData) {
     let processed = []
 
     processed.push({

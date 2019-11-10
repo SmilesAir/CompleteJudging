@@ -434,10 +434,10 @@ function getDiffDetailedResultsProcessed(pool, routineLengthSeconds) {
 }
 module.exports.getDiffDetailedResultsProcessed = getDiffDetailedResultsProcessed
 
-function getExAiCombinedDetailedResultsProcessed(pool, routineLengthSeconds) {
-    return getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getExAiCombinedDetailedResultsProcessed, createTeamDataArray)
+function getExAiDetailedResultsProcessed(pool, routineLengthSeconds) {
+    return getResultsProcessed(pool, routineLengthSeconds, DataStore.dataModel.getExAiDetailedResultsProcessed, createTeamDataArray)
 }
-module.exports.getExAiCombinedDetailedResultsProcessed = getExAiCombinedDetailedResultsProcessed
+module.exports.getExAiDetailedResultsProcessed = getExAiDetailedResultsProcessed
 
 function getHudProcessed(pool, routineLengthSeconds) {
     let processed = getResultsProcessed(

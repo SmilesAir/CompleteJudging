@@ -11,7 +11,7 @@ module.exports.EInterface = {
     rank: 6,
     variety: 7,
     diffInspector: 8,
-    exAiCombined: 9,
+    exAi: 9,
     announcer: 10,
     scoreboard: 11,
     oldEx: 12,

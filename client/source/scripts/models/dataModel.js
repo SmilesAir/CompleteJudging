@@ -7,7 +7,7 @@ module.exports = class {
     constructor() {
         const DiffData = require("scripts/interfaces/fpa/data/diffData.js")
         const VarietyData = require("scripts/interfaces/fpa/data/varietyData.js")
-        const ExAiCombinedData = require("scripts/interfaces/fpa/data/exAiCombinedData.js")
+        const ExAiData = require("scripts/interfaces/fpa/data/exAiData.js")
 
         const OldExData = require("scripts/interfaces/old/data/oldExData.js")
         const OldAiData = require("scripts/interfaces/old/data/oldAiData.js")
@@ -16,7 +16,7 @@ module.exports = class {
         this.dataModelList = [
             DiffData,
             VarietyData,
-            ExAiCombinedData,
+            ExAiData,
             OldExData,
             OldAiData,
             OldDiffData
@@ -206,11 +206,11 @@ module.exports = class {
         return undefined
     }
 
-    getExAiCombinedDetailedResultsProcessed(data, teamIndex, preProcessedData) {
+    getExAiDetailedResultsProcessed(data, teamIndex, preProcessedData) {
         let model = this.getModel(data)
         if (model !== undefined) {
-            if (model.getExAiCombinedDetailedProcessed !== undefined) {
-                return model.getExAiCombinedDetailedProcessed(data.teamScoreList[teamIndex], preProcessedData)
+            if (model.getExAiDetailedProcessed !== undefined) {
+                return model.getExAiDetailedProcessed(data.teamScoreList[teamIndex], preProcessedData)
             }
         }
 

@@ -8,7 +8,7 @@ const DiffModel = require("scripts/interfaces/fpa/diffModel.js")
 const VarietyModel = require("scripts/interfaces/fpa/varietyModel.js")
 const InterfaceModels = require("scripts/interfaces/interfaceModels.js")
 const DiffInspectorModel = require("scripts/interfaces/fpa/diffInspectorModel.js")
-const ExAiCombinedModel = require("scripts/interfaces/fpa/exAiCombinedModel.js")
+const ExAiModel = require("scripts/interfaces/fpa/exAiModel.js")
 const AnnouncerModel = require("scripts/interfaces/announcerModel.js")
 const ScoreboardModel = require("scripts/interfaces/scoreboardModel.js")
 const OldExModel = require("scripts/interfaces/old/oldExModel.js")
@@ -27,7 +27,7 @@ class Interfaces {
         this.rank = new RankModel()
         this.variety = new VarietyModel()
         this.diffInspector = new DiffInspectorModel()
-        this.exAiCombined = new ExAiCombinedModel()
+        this.exAi = new ExAiModel()
         this.announcer = new AnnouncerModel()
         this.scoreboard = new ScoreboardModel()
         this.oldEx = new OldExModel()
@@ -45,7 +45,7 @@ class Interfaces {
             this.rank,
             this.variety,
             this.diffInspector,
-            this.exAiCombined,
+            this.exAi,
             this.announcer,
             this.scoreboard,
             this.oldEx,
