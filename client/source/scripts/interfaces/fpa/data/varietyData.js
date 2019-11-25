@@ -81,23 +81,13 @@ function calcScore(data, preProcessedData) {
 }
 
 module.exports.getFullProcessed = function(data, preProcessedData) {
-    let processed = []
-
-    processed.push({
-        Quantity: data.quantityScore
-    })
-    processed.push({
-        Quality: data.qualityScore
-    })
-    processed.push({
-        G: data.general
-    })
-
-    processed.push({
-        Score: calcScore(data, preProcessedData)
-    })
-
-    return processed
+    return {
+        type: Enums.EInterface.variety,
+        quantity: data.quantityScore,
+        quality: data.qualityScore,
+        general: data.general,
+        score: calcScore(data, preProcessedData)
+    }
 }
 
 module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedData, processedData) {

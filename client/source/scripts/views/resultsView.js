@@ -2,151 +2,228 @@
 const React = require("react")
 const MobxReact = require("mobx-react")
 
+const Enums = require("scripts/stores/enumStore.js")
+
 require("./resultsView.less")
+
+function judgeSort(a, b) {
+    if (a.type === b.type) {
+        return a.judgeName > b.judgeName
+    } else if (a.type === Enums.EInterface.diff) {
+        return -1
+    } else if (b.type === Enums.EInterface.diff) {
+        return 1
+    } else if (a.type === Enums.EInterface.variety) {
+        return -1
+    } else if (b.type === Enums.EInterface.variety) {
+        return 1
+    }
+
+    return 0
+}
 
 module.exports = @MobxReact.observer class ResultsView extends React.Component {
     constructor(props) {
         super(props)
     }
 
-    getTeamResults() {
-        let results = this.props.resultsData
-        let teamNamesList = []
-        for (let team of results) {
-            if (!teamNamesList.includes(team.teamNames)) {
-                teamNamesList.push(team.teamNames)
-            }
-        }
-
-        let columns = []
-        let teamElements = [ <div key="header1" className="team">-</div>, <div key="header2" className="team">-</div> ]
-        for (let teamName of teamNamesList) {
-            teamElements.push(
-                <div key={teamName} className="team">
-                    {teamName}
+    getScoreDetails(judgeData) {
+        if (judgeData.type === Enums.EInterface.diff) {
+            return (
+                <div key={judgeData.judgeName} className="detailsContainer">
+                    <div className="detailSingle diff">
+                        {judgeData.printLabels === true ? `Diff ${judgeData.judgeNumber}` : judgeData.score.toFixed(1)}
+                    </div>
                 </div>
             )
-        }
-
-        columns.push(
-            <div key="teams" className="column">
-                {teamElements}
-            </div>
-        )
-
-        let judgeOutputList = []
-        let totalScoreList = undefined
-        let rankList = undefined
-        for (let teamData of results) {
-            let teamDataList = teamData.data
-            for (let data of teamDataList) {
-                if (data.judgeName === undefined) {
-                    if (data.TotalScore !== undefined) {
-                        if (totalScoreList === undefined) {
-                            totalScoreList = []
-
-                            judgeOutputList.push({
-                                judgeName: "----",
-                                descList: [ {
-                                    descName: "Total Score",
-                                    valueList: totalScoreList
-                                } ]
-                            })
-                        }
-                        
-                        totalScoreList.push(data.TotalScore.toFixed(2))
-                    } else if (data.Rank !== undefined) {
-                        if (rankList === undefined) {
-                            rankList = []
-
-                            judgeOutputList.push({
-                                judgeName: "---",
-                                descList: [ {
-                                    descName: "Rank",
-                                    valueList: rankList
-                                } ]
-                            })
-                        }
-                        
-                        rankList.push(data.Rank)
-                    }
-
-                } else if (judgeOutputList.findIndex((judgeOutput) => {
-                    return judgeOutput.judgeName === data.judgeName
-                }) === -1) {
-                    let descList = []
-                    for (let processedData of data.processed) {
-                        for (let descName in processedData) {
-                            descList.push({
-                                descName: descName,
-                                valueList: []
-                            })
-                        }
-                    }
-
-                    judgeOutputList.push({
-                        judgeName: data.judgeName,
-                        descList: descList
-                    })
-                }
-
-                if (data.processed !== undefined) {
-                    let judgeOutput = judgeOutputList.find((out) => {
-                        return data.judgeName === out.judgeName
-                    })
-
-                    for (let processedData of data.processed) {
-                        for (let descName in processedData) {
-                            let valueList = judgeOutput.descList.find((descOutput) => {
-                                return descOutput.descName === descName
-                            }).valueList
-
-                            let value = processedData[descName] || 0
-                            let outValue = undefined
-                            if (typeof value === "string") {
-                                outValue = value
-                            } else {
-                                value = Number.parseFloat(value)
-                                if (isNaN(value) || Number.isInteger(value)) {
-                                    outValue = value
-                                } else {
-                                    outValue = value.toFixed(2)
-                                }
-                            }
-                            valueList.push(outValue)
-                        }
-                    }
-                }
-            }
-        }
-
-        for (let judgeOutput of judgeOutputList) {
-            columns.push(
-                <div key={judgeOutput.judgeName} className="column">
-                    <div className="judge">{judgeOutput.judgeName}</div>
-                    <div className="descriptionContainer">
-                        {judgeOutput.descList.map((descOutput) => {
-                            let valueElements = descOutput.valueList.map((value) => {
-                                return <div key={value + Math.random()} className="value">{value}</div>
-                            })
-
-                            return (
-                                <div key={"container-" + descOutput.descName}>
-                                    <div key={descOutput.descName} className="description">{descOutput.descName}</div>
-                                    {valueElements}
-                                </div>
-                            )
-                        })}
+        } else if (judgeData.type === Enums.EInterface.variety) {
+            return (
+                <div key={judgeData.judgeName} className="detailsContainer">
+                    <div className="detailSingle variety">
+                        {judgeData.printLabels === true ? `Vty ${judgeData.judgeNumber}` : judgeData.score.toFixed(1)}
+                    </div>
+                </div>
+            )
+        } else if (judgeData.type === Enums.EInterface.exAi) {
+            return (
+                <div key={judgeData.judgeName} className="detailsContainer">
+                    <div className="detailSingle ai">
+                        {judgeData.printLabels === true ? `AI ${judgeData.judgeNumber}` : judgeData.score.toFixed(1)}
+                    </div>
+                    <div className="detailSingle ex">
+                        {judgeData.printLabels === true ? `Ex ${judgeData.judgeNumber}` : -judgeData.adjustedEx.toFixed(1)}
                     </div>
                 </div>
             )
         }
 
-        return columns
+        return null
+    }
+
+    getScoreDetailsContainer(data) {
+        let sortedJudgeData = []
+        for (let judgeName in data) {
+            sortedJudgeData.push(Object.assign({
+                judgeName: judgeName
+            }, data[judgeName]))
+        }
+
+        sortedJudgeData.sort(judgeSort)
+
+        let detailElements = []
+        for (let judgeData of sortedJudgeData) {
+            detailElements.push(this.getScoreDetails(judgeData))
+        }
+
+        if (this.labelData === undefined) {
+            this.labelData = {
+                data: {}
+            }
+
+            let typeCount = {}
+            for (let judgeData of sortedJudgeData) {
+                typeCount[judgeData.type] = (typeCount[judgeData.type] || 0) + 1
+                this.labelData.data[judgeData.judgeName] = {
+                    judgeName: judgeData.judgeName,
+                    type: judgeData.type,
+                    judgeNumber: typeCount[judgeData.type],
+                    printLabels: true
+                }
+            }
+        }
+
+        return (
+            <div className="allDetailsContainer">
+                {detailElements}
+                {this.getCategorySumsContainer(data)}
+            </div>
+        )
+    }
+
+    getCategorySumsContainer(data) {
+        let sums = {}
+        for (let judgeName in data) {
+            let judgeData = data[judgeName]
+            if (judgeData.score !== undefined) {
+                sums[judgeData.type] = (sums[judgeData.type] || 0) + judgeData.score
+            }
+            if (judgeData.adjustedEx !== undefined) {
+                sums.ex = (sums.ex || 0) - judgeData.adjustedEx
+            }
+        }
+
+        return (
+            <div className="categorySumsContainer">
+                <div className="categorySum diff">
+                    {sums[Enums.EInterface.diff] !== undefined ? sums[Enums.EInterface.diff].toFixed(2) : "Diff"}
+                </div>
+                <div className="categorySum variety">
+                    {sums[Enums.EInterface.variety] !== undefined ? sums[Enums.EInterface.variety].toFixed(2) : "Variety"}
+                </div>
+                <div className="categorySum ai">
+                    {sums[Enums.EInterface.exAi] !== undefined ? sums[Enums.EInterface.exAi].toFixed(2) : "AI"}
+                </div>
+                <div className="categorySum ex">
+                    {sums.ex !== undefined ? sums.ex.toFixed(2) : "Ex"}
+                </div>
+            </div>
+        )
+    }
+
+    getTeamRows(teamData) {
+        return (
+            <div key={teamData.teamNames} className="row">
+                <div className="divided">
+                    <div className="names">
+                        {teamData.teamNames}
+                    </div>
+                    {this.getScoreDetailsContainer(teamData.data)}
+                </div>
+                <div className="total">
+                    {typeof teamData.totalScore === "number" ? teamData.totalScore.toFixed(2) : teamData.totalScore}
+                </div>
+                <div className="rank">
+                    {teamData.rank}
+                </div>
+            </div>
+        )
+    }
+
+    getResults() {
+        let results = this.props.resultsData
+        let teamRows = []
+
+        // Fill out label row after data since we don't know the data yet
+        this.labelData = undefined
+        teamRows.push({})
+
+        for (let team of results) {
+            team.scoreDetails = "Score numbers"
+            teamRows.push(this.getTeamRows(team))
+        }
+
+        teamRows[0] = this.getTeamRows(Object.assign(this.labelData, {
+            teamNames: "Team",
+            scoreDetails: "Score Labels",
+            totalScore: "Total",
+            rank: "Rank"
+        }))
+
+        return teamRows
+    }
+
+    getJudgeTeamRows(judgeData) {
+        for (let team of this.props.resultsData) {
+            let teamData = judgeData[team.teamNames]
+        }
+    }
+
+    getJudgeResults(judgeData) {
+        return (
+            <div key={judgeData.judgeName}>
+                <div className="header">
+                    {judgeData.judgeName}
+                </div>
+                <div className="content">
+                    {this.getJudgeTeamRows(judgeData)}
+                </div>
+            </div>
+        )
+    }
+
+    getJudgeDetails() {
+        let judgeTableElements = []
+        let results = this.props.resultsData
+        let judgeDataArray = []
+        for (let team of results) {
+            for (let judgeName in team.data) {
+                let judgeData = judgeDataArray.find((data) => {
+                    return data.judgeName === judgeName
+                })
+
+                if (judgeData === undefined) {
+                    judgeData = {
+                        judgeName: judgeName,
+                        type: team.data[judgeName].type
+                    }
+                    judgeDataArray.push(judgeData)
+                }
+
+                judgeData[team.teamNames] = team.data[judgeName]
+            }
+        }
+
+        judgeDataArray.sort(judgeSort)
+
+        for (let judgeData of judgeDataArray) {
+            judgeTableElements.push(this.getJudgeResults(judgeData))
+        }
+
+        return judgeTableElements
     }
 
     render() {
-        if (this.props.title === undefined || this.props.resultsData === undefined) {
+        if (this.props.poolDesc === undefined || this.props.resultsData === undefined) {
             return (
                 <div>
                     Set results from Pools tab
@@ -157,11 +234,12 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         return (
             <div className="resultsContainer">
                 <div className="header">
-                    {this.props.title}
+                    {this.props.poolDesc}
                 </div>
                 <div className="content">
-                    {this.getTeamResults()}
+                    {this.getResults()}
                 </div>
+                {this.getJudgeDetails()}
             </div>
         )
     }

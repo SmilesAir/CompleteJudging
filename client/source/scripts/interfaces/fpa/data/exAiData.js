@@ -174,29 +174,14 @@ module.exports.getOverlaySummary = function(data) {
 }
 
 module.exports.getFullProcessed = function(data, preProcessedData) {
-    let processed = []
-
-    processed.push({
-        AI: calcAiScore(data)
-    })
-
-    processed.push({
-        Ex: calcDeductions(data)
-    })
-    let adjusted = calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds)
-    processed.push({
-        Adj: adjusted
-    })
-
-    processed.push({
-        G: data.general
-    })
-
-    processed.push({
-        Score: calcAiScore(data)
-    })
-
-    return processed
+    return {
+        type: Enums.EInterface.exAi,
+        aI: calcAiScore(data),
+        ex: calcDeductions(data),
+        adjustedEx: calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds),
+        general: data.general,
+        score: calcAiScore(data)
+    }
 }
 
 module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedData, processedData) {

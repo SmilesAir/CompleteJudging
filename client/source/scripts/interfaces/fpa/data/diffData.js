@@ -203,19 +203,12 @@ module.exports.getInspected = function(resultData, teamIndex) {
 }
 
 module.exports.getFullProcessed = function(data, preProcessedData) {
-    let processed = []
-
-    processed.push({
-        Phrases: getPhraseCount(data.scores)
-    })
-    processed.push({
-        G: data.general
-    })
-    processed.push({
-        Score: getGradientScore(data, true, preProcessedData.routineLengthSeconds)
-    })
-
-    return processed
+    return {
+        type: Enums.EInterface.diff,
+        phrases: getPhraseCount(data.scores),
+        general: data.general,
+        score: getGradientScore(data, true, preProcessedData.routineLengthSeconds)
+    }
 }
 
 module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedData, processedData) {

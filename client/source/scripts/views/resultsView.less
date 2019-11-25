@@ -22,45 +22,90 @@
 
     .content {
         display: flex;
+        flex-direction: column;
+
+        @border-value: 1px solid gray;
+        @border-value-thick: 3px solid gray;
+
+        border-top: @border-value-thick;
+        border-left: @border-value-thick;
 
         overflow: auto;
 
-        .cellBase {
-            white-space:nowrap;
-
-            border: solid;
-            border-color: gray;
-            border-width: 1px;
-        }
-
-        .team {
-            .cellBase;
-        }
-
-        .column {
-            .cellBase;
-        }
-
-        .description {
-            .cellBase;
-        }
-
-        .judge {
-            .cellBase;
-
-            text-align: center;
-        }
-
-        .descriptionContainer {
+        .row {
             display: flex;
-        }
+            border-right: @border-value-thick;
+            border-bottom: @border-value-thick;
+            box-sizing: border-box;
 
-        .valueContainer {
-            display: flex;
-        }
+            .divided
+            {
+                display: flex;
+                flex-grow: 1;
+                flex-direction: column;
 
-        .value {
-            .cellBase;
+                .diff {
+                    background: lightgreen;
+                }
+
+                .variety {
+                    background: lightskyblue;
+                }
+
+                .ai {
+                    background: lightyellow;
+                }
+
+                .ex {
+                    background: lightpink;
+                }
+
+                .names {
+                    font-weight: bold;
+                    border-bottom: @border-value;
+                }
+
+                .allDetailsContainer {
+                    display: flex;
+
+                    .detailsContainer {
+                        display: flex;
+
+                        .detailSingle {
+                            width: 3em;
+                            border-right: @border-value;
+                            text-align: center;
+                        }
+                    }
+                }
+
+                .categorySumsContainer {
+                    display: flex;
+
+                    .categorySum {
+                        font-weight: bold;
+                        width: 3em;
+                        border-right: @border-value;
+                        text-align: center;
+                    }
+                }
+            }
+
+            .total
+            {
+                width: 3em;
+                border-right: @border-value;
+                border-left: @border-value;
+                font-size: 2em;
+                text-align: center;
+            }
+
+            .rank
+            {
+                width: 2.5em;
+                font-size: 2em;
+                text-align: center;
+            }
         }
     }
 }

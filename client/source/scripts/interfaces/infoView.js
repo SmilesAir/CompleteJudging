@@ -4,6 +4,7 @@ const qrCode = require("qrcode")
 const JSZip = require("jszip")
 const saveAs = require("file-saver").saveAs
 const JSZipUtils = require("jszip-utils")
+const Markdown = require("react-markdown-it")
 
 const MainStore = require("scripts/stores/mainStore.js")
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
@@ -47,6 +48,25 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         }
 
         this.canvasRefs = []
+
+        let showResultsPool = MainStore.url.searchParams.get("results")
+        if (showResultsPool !== null) {
+            this.showResultsIntervalHandle = setInterval(() => {
+                if (MainStore.saveData !== undefined) {
+                    clearInterval(this.showResultsIntervalHandle)
+
+                    let pool = MainStore.saveData.poolList.find((inPool) => {
+                        return `${inPool.divisionIndex}_${inPool.roundIndex}_${inPool.poolIndex}` === showResultsPool
+                    })
+
+                    if (pool !== undefined) {
+                        DataAction.fillPoolResults(pool).then(() => {
+                            this.gotoResultsTabActive(pool)
+                        })
+                    }
+                }
+            }, 100)
+        }
     }
 
     gotoResultsTabActive(pool) {
@@ -82,18 +102,9 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             return (
                 <div>
                     <button id="noPrint" onClick={() => this.printResults()}>Print</button>
-                    <CategoryResultsView
-                        resultsData={DataAction.getCategoryResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}
-                        title={"Category Results for " + DataAction.getFullPoolDescription(this.state.resultsPool)}/>
                     <ResultsView
                         resultsData={DataAction.getFullResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}
-                        title={"Full Results for " + DataAction.getFullPoolDescription(this.state.resultsPool)}/>
-                    <ResultsView
-                        resultsData={DataAction.getDiffDetailedResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}
-                        title={"Diff Results for " + DataAction.getFullPoolDescription(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}/>
-                    <ResultsView
-                        resultsData={DataAction.getExAiDetailedResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}
-                        title={"Ex/Ai Results for " + DataAction.getFullPoolDescription(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}/>
+                        poolDesc={DataAction.getFullPoolDescription(this.state.resultsPool)}/>
                 </div>
             )
         }

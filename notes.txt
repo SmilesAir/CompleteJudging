@@ -26,3 +26,14 @@ rename data classes for more clarity between DataModel and the data inside it
 
 
 keep the active editing diff score hilighted when editing
+
+
+Hi Pri
+Warn went 2 devices are using the same judge
+
+
+Variety - Remove quality score. Add separate clock and counter increments
+AI - Convert to counting. All AI/Ex inputs are increments
+    3 buttons. Minor, Quality, OMG
+    Musicality, Teamwork, Form/Flow
+Remove .5
