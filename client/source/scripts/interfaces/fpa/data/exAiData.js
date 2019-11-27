@@ -180,6 +180,13 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
         ex: calcDeductions(data),
         adjustedEx: calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds),
         general: data.general,
+        music: getMusic(data),
+        teamwork: getTeamwork(data),
+        form: getForm(data),
+        point1Count: data.point1Count,
+        point2Count: data.point2Count,
+        point3Count: data.point3Count,
+        point5Count: data.point5Count,
         score: calcAiScore(data)
     }
 }

@@ -79,6 +79,42 @@
                     }
                 }
 
+                .judgeDetailsContainer {
+                    display: flex;
+                    flex-direction: column;
+
+                    .detailScoreLine {
+                        display: flex;
+                        flex-direction: row;
+
+                        .label {
+                            width: 4em;
+                            border-right: @border-value;
+                            background: lightgray;
+                        }
+
+                        @padding-value: 0 .5em 0 .5em;
+
+                        .detailSingle {
+                            width: auto;
+                            padding: @padding-value;
+                            border-right: @border-value;
+                            text-align: center;
+                        }
+
+                        .detailLong {
+                            width: auto;
+                            padding: @padding-value;
+                            border-right: @border-value;
+                            text-align: center;
+                        }
+                    }
+
+                    .bottomBorder {
+                        border-bottom: @border-value;
+                    }
+                }
+
                 .categorySumsContainer {
                     display: flex;
 
@@ -93,6 +129,10 @@
 
             .total
             {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+
                 width: 3em;
                 border-right: @border-value;
                 border-left: @border-value;
@@ -102,6 +142,10 @@
 
             .rank
             {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+
                 width: 2.5em;
                 font-size: 2em;
                 text-align: center;

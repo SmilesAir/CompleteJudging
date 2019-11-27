@@ -172,10 +172,123 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         return teamRows
     }
 
+    getJudgeTeamDetails(teamData) {
+        if (teamData.type === Enums.EInterface.diff) {
+            return (
+                <div className="judgeDetailsContainer">
+                    <div className="detailScoreLine bottomBorder">
+                        <div className="label">
+                            General
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.general}
+                        </div>
+                    </div>
+                    <div className="detailScoreLine bottomBorder">
+                        <div className="label">
+                            Phrases
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.phraseCount}
+                        </div>
+                    </div>
+                    <div className="detailScoreLine bottomBorder">
+                        <div className="label">
+                            Marks
+                        </div>
+                        <div className="detailLong">
+                            {teamData.marks}
+                        </div>
+                    </div>
+                </div>
+            )
+        } else if (teamData.type === Enums.EInterface.variety) {
+            return (
+                <div className="judgeDetailsContainer">
+                    <div className="detailScoreLine bottomBorder">
+                        <div className="label">
+                            General
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.general}
+                        </div>
+                    </div>
+                    <div className="detailScoreLine bottomBorder">
+                        <div className="label">
+                            Quantity
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.quantity}
+                        </div>
+                    </div>
+                    <div className="detailScoreLine bottomBorder">
+                        <div className="label">
+                            Quality
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.quality}
+                        </div>
+                    </div>
+                </div>
+            )
+        } else if (teamData.type === Enums.EInterface.exAi) {
+            return (
+                <div className="judgeDetailsContainer">
+                    <div className="detailScoreLine bottomBorder">
+                        <div className="label">
+                            General
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.general}
+                        </div>
+                    </div>
+                    <div className="detailScoreLine bottomBorder">
+                        <div className="label">
+                            AI
+                        </div>
+                        <div className="detailSingle">
+                            {`Music [${teamData.music}] Teamwork [${teamData.teamwork}] Form [${teamData.form}]`}
+                        </div>
+                    </div>
+                    <div className="detailScoreLine bottomBorder">
+                        <div className="label">
+                            Ex
+                        </div>
+                        <div className="detailSingle">
+                            {`Point1 [${teamData.point1Count}] Point2 [${teamData.point2Count}] Point3 [${teamData.point3Count}] Point5 [${teamData.point5Count}]`}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
+        return null
+    }
+
     getJudgeTeamRows(judgeData) {
+        let rows = []
         for (let team of this.props.resultsData) {
             let teamData = judgeData[team.teamNames]
+
+            rows.push(
+                <div key={team.teamNames} className="row">
+                    <div className="divided">
+                        <div className="names">
+                            {team.teamNames}
+                        </div>
+                        {this.getJudgeTeamDetails(teamData)}
+                    </div>
+                    <div className="total">
+                        {teamData.score.toFixed(2)}
+                    </div>
+                    <div className="rank">
+                        3
+                    </div>
+                </div>
+            )
         }
+
+        return rows
     }
 
     getJudgeResults(judgeData) {
