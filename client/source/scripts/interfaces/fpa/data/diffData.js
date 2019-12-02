@@ -8,19 +8,19 @@ const Enums = require("scripts/stores/enumStore.js")
 const DataBase = require("scripts/stores/dataBase.js")
 
 module.exports.getDefaultConstants = function() {
-    // https://www.wolframalpha.com/input/?i=y+%3D+((x)+%5E+1.5)+*+.45,+x+%3D+0+to+10
+    // https://www.desmos.com/calculator/j95pbtu7kt
     return {
         name: "diff",
         offset: 0,
         power: 1.5,
-        scale: .45,
+        scale: .675,
         topPerSecond: .066667,
         gradientLines: [
             {
                 sCountPerSecond: 0,
                 eCountPerSecond: 4 / 60,
                 sY: 1,
-                eY: .8
+                eY: 1
             },
             {
                 sCountPerSecond: 4 / 60,
@@ -165,7 +165,7 @@ function generateGradientArray(count, routineLengthSeconds) {
 function getGradientScore(data, adjusted, routineLengthSeconds) {
     let sortedScores = sortScores(data.scores)
 
-    let asdf = 0
+    let tail = 0
     let gradientArray = generateGradientArray(sortedScores.length, routineLengthSeconds)
     let totalScore = 0
     for (let i = 0; i < sortedScores.length; ++i) {
@@ -173,11 +173,11 @@ function getGradientScore(data, adjusted, routineLengthSeconds) {
         totalScore += (adjusted ? getAdjustedScore(score) : score) * gradientArray[i]
 
         if (i > 12) {
-            asdf += (adjusted ? getAdjustedScore(score) : score) * gradientArray[i]
+            tail += (adjusted ? getAdjustedScore(score) : score) * gradientArray[i]
         }
     }
 
-    //console.log(totalScore / (4 / 60 * routineLengthSeconds), asdf / (4 / 60 * routineLengthSeconds))
+    //console.log(totalScore / (4 / 60 * routineLengthSeconds), tail / (4 / 60 * routineLengthSeconds))
 
     return totalScore / (4 / 60 * routineLengthSeconds) + DataBase.calcCommonScore(data)
 }

@@ -11,6 +11,12 @@ Express handle spaces in tournament name
 Judge status is null if link opened before pool is set
 Add "Incremental" to scoreboard title
 Sort the summary results
+Fix css when width is too narrow on results page
+
+
+Option to sort by rank
+* or marker next to the team that won. In the score number block
+
 
 festival judging
 Scores don't reload properly after switching pools

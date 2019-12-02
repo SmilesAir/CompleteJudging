@@ -60,12 +60,12 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         return null
     }
 
-    getScoreDetailsContainer(data) {
+    getScoreDetailsContainer(teamData) {
         let sortedJudgeData = []
-        for (let judgeName in data) {
+        for (let judgeName in teamData.data) {
             sortedJudgeData.push(Object.assign({
                 judgeName: judgeName
-            }, data[judgeName]))
+            }, teamData.data[judgeName]))
         }
 
         sortedJudgeData.sort(judgeSort)
@@ -95,36 +95,39 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         return (
             <div className="allDetailsContainer">
                 {detailElements}
-                {this.getCategorySumsContainer(data)}
+                {this.getCategorySumsContainer(teamData.teamNames)}
             </div>
         )
     }
 
-    getCategorySumsContainer(data) {
-        let sums = {}
-        for (let judgeName in data) {
-            let judgeData = data[judgeName]
-            if (judgeData.score !== undefined) {
-                sums[judgeData.type] = (sums[judgeData.type] || 0) + judgeData.score
-            }
-            if (judgeData.adjustedEx !== undefined) {
-                sums.ex = (sums.ex || 0) - judgeData.adjustedEx
-            }
-        }
+    getCategorySumsContainer(teamNames) {
+        let sums = this.allTeamCategoryData[teamNames] || {}
+
+        let diff = sums[Enums.EInterface.diff]
+        diff = diff !== undefined ? diff.toFixed(2) + (diff === this.allTeamCategoryData.topDiff ? "*" : "") : "Diff"
+
+        let variety = sums[Enums.EInterface.variety]
+        variety = variety !== undefined ? variety.toFixed(2) + (variety === this.allTeamCategoryData.topVariety ? "*" : "") : "Variety"
+
+        let ai = sums[Enums.EInterface.exAi]
+        ai = ai !== undefined ? ai.toFixed(2) + (ai === this.allTeamCategoryData.topAi ? "*" : "") : "AI"
+
+        let ex = sums.ex
+        ex = ex !== undefined ? ex.toFixed(2) + (ex === this.allTeamCategoryData.topEx ? "*" : "") : "Ex"
 
         return (
             <div className="categorySumsContainer">
                 <div className="categorySum diff">
-                    {sums[Enums.EInterface.diff] !== undefined ? sums[Enums.EInterface.diff].toFixed(2) : "Diff"}
+                    {diff}
                 </div>
                 <div className="categorySum variety">
-                    {sums[Enums.EInterface.variety] !== undefined ? sums[Enums.EInterface.variety].toFixed(2) : "Variety"}
+                    {variety}
                 </div>
                 <div className="categorySum ai">
-                    {sums[Enums.EInterface.exAi] !== undefined ? sums[Enums.EInterface.exAi].toFixed(2) : "AI"}
+                    {ai}
                 </div>
                 <div className="categorySum ex">
-                    {sums.ex !== undefined ? sums.ex.toFixed(2) : "Ex"}
+                    {ex}
                 </div>
             </div>
         )
@@ -137,7 +140,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                     <div className="names">
                         {teamData.teamNames}
                     </div>
-                    {this.getScoreDetailsContainer(teamData.data)}
+                    {this.getScoreDetailsContainer(teamData)}
                 </div>
                 <div className="total">
                     {typeof teamData.totalScore === "number" ? teamData.totalScore.toFixed(2) : teamData.totalScore}
@@ -150,11 +153,31 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
     }
 
     getResults() {
+        // Precalc the category top scores
         let results = this.props.resultsData
-        let teamRows = []
+        this.allTeamCategoryData = {}
+        for (let teamData of results) {
+            let sums = {}
+            for (let judgeName in teamData.data) {
+                let judgeData = teamData.data[judgeName]
+                if (judgeData.score !== undefined) {
+                    sums[judgeData.type] = (sums[judgeData.type] || 0) + judgeData.score
+                }
+                if (judgeData.adjustedEx !== undefined) {
+                    sums.ex = (sums.ex || 0) - judgeData.adjustedEx
+                }
+            }
+
+            this.allTeamCategoryData[teamData.teamNames] = sums
+            this.allTeamCategoryData.topDiff = Math.max(this.allTeamCategoryData.topDiff || -1, sums[Enums.EInterface.diff] || -1)
+            this.allTeamCategoryData.topVariety = Math.max(this.allTeamCategoryData.topVariety || -1, sums[Enums.EInterface.variety] || -1)
+            this.allTeamCategoryData.topAi = Math.max(this.allTeamCategoryData.topAi || -1, sums[Enums.EInterface.exAi] || -1)
+            this.allTeamCategoryData.topEx = Math.max(this.allTeamCategoryData.topEx || -99, sums.ex || -99)
+        }
 
         // Fill out label row after data since we don't know the data yet
         this.labelData = undefined
+        let teamRows = []
         teamRows.push({})
 
         for (let team of results) {
