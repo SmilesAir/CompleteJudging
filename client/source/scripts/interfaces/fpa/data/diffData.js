@@ -120,13 +120,7 @@ function getAverage(scores, count, adjusted) {
 function sortScores(inScores) {
     let scores = inScores.slice(0)
     scores.sort((a, b) => {
-        if (a > b) {
-            return 1
-        }
-        if (b > a) {
-            return -1
-        }
-        return 0
+        return b - a
     })
 
     return scores
@@ -203,14 +197,32 @@ module.exports.getInspected = function(resultData, teamIndex) {
 }
 
 module.exports.getFullProcessed = function(data, preProcessedData) {
+    let markList = data.scores.slice(0)
+    while (markList.length < preProcessedData.routineLengthSeconds * MainStore.constants.diff.gradientLines[0].eCountPerSecond) {
+        markList.push(0)
+    }
+
+    let gradientArray = generateGradientArray(markList.length, preProcessedData.routineLengthSeconds)
+    let sortedMarks = sortScores(markList)
+
+    let markTierList = []
+    for (let mark of markList) {
+        let index = sortedMarks.findIndex((a) => {
+            return a === mark
+        })
+
+        sortedMarks[index] = undefined
+
+        markTierList.push(gradientArray[index] > .9 ? 0 : 1)
+    }
+
     return {
         type: Enums.EInterface.diff,
-        phrases: getPhraseCount(data.scores),
+        phrases: getPhraseCount(markList),
         general: data.general,
-        marks: data.scores,
-        sortedMarks: sortScores(data.scores),
-        gradientArray: generateGradientArray(data.scores.length, preProcessedData.routineLengthSeconds),
-        phraseCount: getPhraseCount(data.scores),
+        marks: markList,
+        markTierList: markTierList,
+        phraseCount: getPhraseCount(markList),
         score: getGradientScore(data, true, preProcessedData.routineLengthSeconds)
     }
 }

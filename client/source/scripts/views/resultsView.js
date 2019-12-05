@@ -197,18 +197,18 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         return teamRows
     }
 
-    getMarkElements(marks) {
+    getMarkElements(marks, markTierList) {
         let markElements = []
 
-        let key = 0
-        for (let mark of marks) {
+        for (let index = 0; index < marks.length; ++index) {
+            let mark = marks[index]
+            let tier = markTierList[index]
+
             markElements.push(
-                <div key={key} className="mark">
+                <div key={index} className={"mark" + (tier === 0 ? " bold" : "")}>
                     {mark}
                 </div>
             )
-
-            ++key
         }
 
         return markElements
@@ -239,7 +239,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                             Marks
                         </div>
                         <div className="detailLong">
-                            {this.getMarkElements(teamData.marks)}
+                            {this.getMarkElements(teamData.marks, teamData.markTierList)}
                         </div>
                     </div>
                 </div>
