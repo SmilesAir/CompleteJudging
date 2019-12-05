@@ -25,6 +25,8 @@ function judgeSort(a, b) {
 module.exports = @MobxReact.observer class ResultsView extends React.Component {
     constructor(props) {
         super(props)
+
+        this.sortByJudge = false
     }
 
     getScoreDetails(judgeData) {
@@ -195,6 +197,23 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         return teamRows
     }
 
+    getMarkElements(marks) {
+        let markElements = []
+
+        let key = 0
+        for (let mark of marks) {
+            markElements.push(
+                <div key={key} className="mark">
+                    {mark}
+                </div>
+            )
+
+            ++key
+        }
+
+        return markElements
+    }
+
     getJudgeTeamDetails(teamData) {
         if (teamData.type === Enums.EInterface.diff) {
             return (
@@ -220,7 +239,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                             Marks
                         </div>
                         <div className="detailLong">
-                            {teamData.marks}
+                            {this.getMarkElements(teamData.marks)}
                         </div>
                     </div>
                 </div>
@@ -358,6 +377,84 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         return judgeTableElements
     }
 
+    getJudgeTypeName(type) {
+        switch (type) {
+        case Enums.EInterface.diff:
+            return "AI"
+        case Enums.EInterface.variety:
+            return "Variety"
+        case Enums.EInterface.exAi:
+            return "Ex/AI"
+        }
+
+        return ""
+    }
+
+    getTeamDetailsRows(data) {
+        let rows = []
+        let judgeDataList = []
+        for (let judgeName in data) {
+            judgeDataList.push({
+                judgeName: judgeName,
+                judgeData: data[judgeName]
+            })
+        }
+
+        judgeDataList.sort((a, b) => {
+            return judgeSort(a.judgeData, b.judgeData)
+        })
+
+        for (let judge of judgeDataList) {
+            rows.push(
+                <div key={judge.judgeName} className="row">
+                    <div className="divided">
+                        <div className="names">
+                            {this.getJudgeTypeName(judge.judgeData.type) + " - " + judge.judgeName}
+                        </div>
+                        {this.getJudgeTeamDetails(judge.judgeData)}
+                    </div>
+                    <div className="total">
+                        {judge.judgeData .score.toFixed(2)}
+                    </div>
+                </div>
+            )
+        }
+
+        return rows
+    }
+
+    getTeamDetailedResults(teamData) {
+        return (
+            <div key={teamData.teamNames}>
+                <div className="header">
+                    {teamData.teamNames}
+                </div>
+                <div className="content">
+                    {this.getTeamDetailsRows(teamData.data)}
+                </div>
+            </div>
+        )
+    }
+
+    getTeamDetails() {
+        let teamTableElements = []
+        let results = this.props.resultsData
+        for (let teamData of results) {
+            teamTableElements.push(this.getTeamDetailedResults(teamData))
+        }
+
+        return teamTableElements
+    }
+
+    getDetailedResults() {
+        return this.sortByJudge ? this.getJudgeDetails() : this.getTeamDetails()
+    }
+
+    toggleSortMode() {
+        this.sortByJudge = !this.sortByJudge
+        this.forceUpdate()
+    }
+
     render() {
         if (this.props.poolDesc === undefined || this.props.resultsData === undefined) {
             return (
@@ -375,7 +472,10 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                 <div className="content">
                     {this.getResults()}
                 </div>
-                {this.getJudgeDetails()}
+                <button onClick={() => this.toggleSortMode() }>
+                    Toggle Results Sort: {this.sortByJudge ? "By Judge" : "By Team"}
+                </button>
+                {this.getDetailedResults()}
             </div>
         )
     }

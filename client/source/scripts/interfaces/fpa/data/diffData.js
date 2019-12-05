@@ -207,7 +207,9 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
         type: Enums.EInterface.diff,
         phrases: getPhraseCount(data.scores),
         general: data.general,
-        marks: data.scores.join(" "),
+        marks: data.scores,
+        sortedMarks: sortScores(data.scores),
+        gradientArray: generateGradientArray(data.scores.length, preProcessedData.routineLengthSeconds),
         phraseCount: getPhraseCount(data.scores),
         score: getGradientScore(data, true, preProcessedData.routineLengthSeconds)
     }
