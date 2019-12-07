@@ -242,6 +242,35 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                             {this.getMarkElements(teamData.marks, teamData.markTierList)}
                         </div>
                     </div>
+                    <div className="detailScoreLine bottomBorder">
+                        <div className="label">
+                            Average
+                        </div>
+                        <div className="subLabel">
+                            Normal
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.averageNormal.toFixed(2)}
+                        </div>
+                        <div className="subLabel">
+                            Tier 1
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.averageTier1.toFixed(2)}
+                        </div>
+                        <div className="subLabel">
+                            Scaled
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.averageTier1Adjusted.toFixed(2)}
+                        </div>
+                        <div className="subLabel">
+                            Tail
+                        </div>
+                        <div className="detailSingle">
+                            {(teamData.score - teamData.averageTier1Adjusted).toFixed(2)}
+                        </div>
+                    </div>
                 </div>
             )
         } else if (teamData.type === Enums.EInterface.variety) {
@@ -288,16 +317,52 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                         <div className="label">
                             AI
                         </div>
+                        <div className="subLabel">
+                            Music
+                        </div>
                         <div className="detailSingle">
-                            {`Music [${teamData.music}] Teamwork [${teamData.teamwork}] Form [${teamData.form}]`}
+                            {teamData.music}
+                        </div>
+                        <div className="subLabel">
+                            Teamwork
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.teamwork}
+                        </div>
+                        <div className="subLabel">
+                            Form
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.form}
                         </div>
                     </div>
                     <div className="detailScoreLine bottomBorder">
                         <div className="label">
                             Ex
                         </div>
+                        <div className="subLabel">
+                            .1
+                        </div>
                         <div className="detailSingle">
-                            {`Point1 [${teamData.point1Count}] Point2 [${teamData.point2Count}] Point3 [${teamData.point3Count}] Point5 [${teamData.point5Count}]`}
+                            {teamData.point1Count}
+                        </div>
+                        <div className="subLabel">
+                            .2
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.point2Count}
+                        </div>
+                        <div className="subLabel">
+                            .3
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.point3Count}
+                        </div>
+                        <div className="subLabel">
+                            .5
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.point5Count}
                         </div>
                     </div>
                 </div>
@@ -425,7 +490,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
 
     getTeamDetailedResults(teamData) {
         return (
-            <div key={teamData.teamNames}>
+            <div className="resultsTable" key={teamData.teamNames}>
                 <div className="header">
                     {teamData.teamNames}
                 </div>
@@ -472,7 +537,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                 <div className="content">
                     {this.getResults()}
                 </div>
-                <button onClick={() => this.toggleSortMode() }>
+                <button id="noPrint" onClick={() => this.toggleSortMode() }>
                     Toggle Results Sort: {this.sortByJudge ? "By Judge" : "By Team"}
                 </button>
                 {this.getDetailedResults()}

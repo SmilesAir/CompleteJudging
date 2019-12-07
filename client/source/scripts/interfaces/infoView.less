@@ -172,7 +172,7 @@
 
 @media print {
     @page {
-        size: landscape
+        size: portrait;
     }
 
     body * {
@@ -187,6 +187,10 @@
         position: absolute;
         left: 0;
         top: 0;
+
+        .resultsTable {
+            page-break-before: always;
+        }
     }
 
     #content5 * {

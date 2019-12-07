@@ -36,6 +36,12 @@ require("./index.less")
     constructor() {
         super()
 
+        console.log("")
+        console.log("")
+        console.log("##################################################")
+        console.log("Startup Finished. Ready to go!")
+        console.log("##################################################")
+
         MainStore.activeInterface = Enums.EInterface.default
 
         let startupParam = MainStore.url.searchParams.get("startup")

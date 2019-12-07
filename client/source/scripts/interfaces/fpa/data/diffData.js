@@ -13,7 +13,7 @@ module.exports.getDefaultConstants = function() {
         name: "diff",
         offset: 0,
         power: 1.5,
-        scale: .675,
+        scale: .45,
         topPerSecond: .066667,
         gradientLines: [
             {
@@ -205,6 +205,23 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
     let gradientArray = generateGradientArray(markList.length, preProcessedData.routineLengthSeconds)
     let sortedMarks = sortScores(markList)
 
+    let sumNormal = 0
+    let sumTier1 = 0
+    let sumTier1Adjusted = 0
+    let tier1Count = 0
+    for (let i = 0; i < sortedMarks.length; ++i) {
+        let mark = sortedMarks[i]
+        sumNormal += mark
+        if (gradientArray[i] > .9) {
+            sumTier1 += mark
+            sumTier1Adjusted += getAdjustedScore(mark)
+            ++tier1Count
+        }
+    }
+    let averageNormal = sumNormal /= sortedMarks.length
+    let averageTier1 = sumTier1 /= tier1Count
+    let averageTier1Adjusted = sumTier1Adjusted /= tier1Count
+
     let markTierList = []
     for (let mark of markList) {
         let index = sortedMarks.findIndex((a) => {
@@ -222,6 +239,9 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
         general: data.general,
         marks: markList,
         markTierList: markTierList,
+        averageNormal: averageNormal,
+        averageTier1: averageTier1,
+        averageTier1Adjusted: averageTier1Adjusted,
         phraseCount: getPhraseCount(markList),
         score: getGradientScore(data, true, preProcessedData.routineLengthSeconds)
     }

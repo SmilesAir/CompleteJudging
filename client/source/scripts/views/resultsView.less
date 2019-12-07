@@ -1,4 +1,5 @@
 
+
 .resultsContainer {
     display: flex;
 
@@ -87,19 +88,24 @@
                         display: flex;
                         flex-direction: row;
 
+                        @padding-value: 0 .5em 0 .5em;
+
                         .label {
                             width: 4em;
                             border-right: @border-value;
                             background: lightgray;
                         }
 
-                        @padding-value: 0 .5em 0 .5em;
-
                         .detailSingle {
                             width: auto;
                             padding: @padding-value;
                             border-right: @border-value;
                             text-align: center;
+                        }
+
+                        .subLabel {
+                            .detailSingle;
+                            background: rgb(236, 236, 236);
                         }
 
                         .detailLong {

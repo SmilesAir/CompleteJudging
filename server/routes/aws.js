@@ -4,6 +4,12 @@ const router = express.Router()
 const DataManager = require("../source/dataManager.js")
 const Common = require("complete-judging-common/source/backendCommon.js")
 
+console.log("")
+console.log("")
+console.log("##################################################")
+console.log("Startup Finished. Ready to go!")
+console.log("##################################################")
+
 let invokeCountHistory = []
 let historyCount = 10
 let historyIndex = 0
