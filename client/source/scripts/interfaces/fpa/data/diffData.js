@@ -7,6 +7,8 @@ const DataStore = require("scripts/stores/dataStore.js")
 const Enums = require("scripts/stores/enumStore.js")
 const DataBase = require("scripts/stores/dataBase.js")
 
+const epsilon = .01
+
 module.exports.getDefaultConstants = function() {
     // https://www.desmos.com/calculator/j95pbtu7kt
     return {
@@ -143,7 +145,7 @@ function generateGradientArray(count, routineLengthSeconds) {
     for (let i = 0; i < count; ++i) {
         for (let line of MainStore.constants.diff.gradientLines) {
             let sX = line.sCountPerSecond * routineLengthSeconds
-            let eX = line.eCountPerSecond * routineLengthSeconds
+            let eX = line.eCountPerSecond * routineLengthSeconds - epsilon
             if (i >= sX && i <= eX) {
                 let dx = i - sX
                 let slope = (line.eY - line.sY) / (eX - sX)
@@ -158,20 +160,12 @@ function generateGradientArray(count, routineLengthSeconds) {
 
 function getGradientScore(data, adjusted, routineLengthSeconds) {
     let sortedScores = sortScores(data.scores)
-
-    let tail = 0
     let gradientArray = generateGradientArray(sortedScores.length, routineLengthSeconds)
     let totalScore = 0
     for (let i = 0; i < sortedScores.length; ++i) {
         let score = sortedScores[i]
         totalScore += (adjusted ? getAdjustedScore(score) : score) * gradientArray[i]
-
-        if (i > 12) {
-            tail += (adjusted ? getAdjustedScore(score) : score) * gradientArray[i]
-        }
     }
-
-    //console.log(totalScore / (4 / 60 * routineLengthSeconds), tail / (4 / 60 * routineLengthSeconds))
 
     return totalScore / (4 / 60 * routineLengthSeconds) + DataBase.calcCommonScore(data)
 }
@@ -198,7 +192,7 @@ module.exports.getInspected = function(resultData, teamIndex) {
 
 module.exports.getFullProcessed = function(data, preProcessedData) {
     let markList = data.scores.slice(0)
-    while (markList.length < preProcessedData.routineLengthSeconds * MainStore.constants.diff.gradientLines[0].eCountPerSecond) {
+    while (markList.length < preProcessedData.routineLengthSeconds * MainStore.constants.diff.gradientLines[0].eCountPerSecond - epsilon) {
         markList.push(0)
     }
 
