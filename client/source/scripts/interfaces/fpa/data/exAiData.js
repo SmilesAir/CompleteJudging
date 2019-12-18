@@ -191,18 +191,18 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
     }
 }
 
-module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedData, processedData) {
-    processedData.rawEx = (processedData.rawEx || 0) + calcDeductions(data)
-    processedData.ex = (processedData.ex || 0) + calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds)
-
-    return undefined
+module.exports.getIncrementalScoreboardProcessed = function(data, preProcessedData) {
+    return {
+        rawEx: calcDeductions(data),
+        ex: calcDeductions(data)
+    }
 }
 
-module.exports.getScoreboardProcessed = function(data, preProcessedData, processedData) {
-    processedData.ai = (processedData.ai || 0) + calcAiScore(data)
-    processedData.ex = (processedData.ex || 0) + calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds)
-
-    return undefined
+module.exports.getScoreboardProcessed = function(data, preProcessedData) {
+    return {
+        rawEx: calcDeductions(data),
+        ex: calcDeductions(data)
+    }
 }
 
 module.exports.getCategoryResultsProcessed = function(data, preProcessedData, processedData) {
