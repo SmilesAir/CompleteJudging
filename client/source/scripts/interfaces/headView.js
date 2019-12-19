@@ -181,11 +181,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                         Head Judge
                     </div>
                     <button className="passiveButton" onClick={() => this.onPassiveButtonClick()}>{this.obs.passiveMode ? "Disable Passive Mode" : "Enable Passive Mode"}</button>
-                    <button className="uploadScoreboardButton" onClick={() => this.interface.uploadIncrementalScoreboardData()}>Update Incremental Scoreboard</button>
-                    <button className="uploadScoreboardButton" onClick={() => this.interface.toggleAutoUpdateScoreboard()}>
-                        {this.obs.autoUpdateScoreboard ? `Disable Auto Update (${Math.round(this.obs.autoUpdateTimeRemaining / 1000)})` : "Enable Auto Update"}
-                    </button>
-                    <button className="uploadScoreboardButton" onClick={() => this.interface.finalizeScoreboardData()}>Finalize Scoreboard</button>
+                    <button className="uploadScoreboardButton" onClick={() => this.interface.toggleScoreboardIncremental()}>Toggle Scoreboard Finalized</button>
                 </div>
                 <div className="poolDetailsContainer">{DataAction.getFullPoolDescription(this.interface.getPool(false))}{altPoolName}</div>
                 {this.getTimeElement()}

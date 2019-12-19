@@ -37,6 +37,7 @@ module.exports = class extends InterfaceModelBase {
 
     updateFromAws(awsData) {
         this.obs.pool = new DataStore.PoolData(awsData.pool)
+        this.obs.incremental = awsData.observable.isScoreboardIncremental || false
 
         return super.updateFromAws(awsData)
     }

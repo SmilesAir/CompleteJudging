@@ -28,11 +28,6 @@ module.exports = class extends InterfaceModelBase {
         this.obs.playingAlt = false
         this.obs.adjustedPlayingIndex = undefined
 
-        this.obs.autoUpdateScoreboard = false
-        this.obs.autoUpdateTimeRemaining = 0
-        this.autoUpdateScoreboardHandle = undefined
-        this.autoUpdateTimeRemainingHandle = undefined
-
         this.awsData = new Array(2)
         this.obs.poolState = new Array(2)
     }
@@ -142,6 +137,20 @@ module.exports = class extends InterfaceModelBase {
         this.sendDataToAWS()
 
         this.obs.playingAlt = isAlt
+    }
+
+    toggleScoreboardIncremental() {
+        let newIncremental = this.awsData[0].observable.isScoreboardIncremental !== undefined ? !this.awsData[0].observable.isScoreboardIncremental : false
+        this.awsData[0].observable.isScoreboardIncremental = newIncremental
+
+        if (this.awsData[1] !== undefined) {
+            this.awsData[1].observable.isScoreboardIncremental = newIncremental
+            this.dirtyObs(true)
+        }
+
+        this.dirtyObs(false)
+
+        this.sendDataToAWS()
     }
 
     getAdjustPlayingIndex() {
@@ -306,7 +315,6 @@ module.exports = class extends InterfaceModelBase {
     }
 
     finalizeScoreboardData() {
-        this.setEnabledAutoUpdateScoreboard(false)
         let playingPool = this.getPool(this.obs.playingAlt)
 
         DataAction.fillPoolResults(playingPool).then(() => {
@@ -328,29 +336,5 @@ module.exports = class extends InterfaceModelBase {
                 console.error(`Can't update scoreboard data. ${error}`)
             })
         })
-    }
-
-    toggleAutoUpdateScoreboard() {
-        this.setEnabledAutoUpdateScoreboard(!this.obs.autoUpdateScoreboard)
-    }
-
-    setEnabledAutoUpdateScoreboard(enabled) {
-        this.obs.autoUpdateScoreboard = enabled
-
-        if (enabled) {
-            const updateIntervalMs = 9 * 1000
-            this.obs.autoUpdateTimeRemaining = updateIntervalMs
-            this.autoUpdateScoreboardHandle = setInterval(() => {
-                this.obs.autoUpdateTimeRemaining = updateIntervalMs
-                this.uploadIncrementalScoreboardData()
-            }, updateIntervalMs)
-
-            this.autoUpdateTimeRemainingHandle = setInterval(() => {
-                this.obs.autoUpdateTimeRemaining -= 100
-            }, 100)
-        } else {
-            clearInterval(this.autoUpdateScoreboardHandle)
-            clearInterval(this.autoUpdateTimeRemainingHandle)
-        }
     }
 }
