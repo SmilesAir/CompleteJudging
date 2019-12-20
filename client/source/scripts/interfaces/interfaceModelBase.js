@@ -252,7 +252,14 @@ class InterfaceModelBase {
         if (this.fillWithResultsFunc !== undefined) {
             this.fillWithResultsFunc()
         } else {
-            console.error(`${this.name} view missing fillWithResultsFunc`)
+            // Try again since view can still be starting up
+            setTimeout(() => {
+                if (this.fillWithResultsFunc !== undefined) {
+                    this.fillWithResultsFunc()
+                } else {
+                    console.error(`${this.name} view missing fillWithResultsFunc`)
+                }
+            }, 100)
         }
     }
 
