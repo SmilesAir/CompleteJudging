@@ -59,7 +59,7 @@ module.exports.getActivePool = async function(tournamentName, isAlt) {
         pool.serverTime = Date.now()
         return pool
     } else {
-        console.log("getactivepool error")
+        console.log(`Warning: [getActivePool]: Can't find pool for ${tournamentName} isAlt: ${isAlt}`)
     }
 }
 

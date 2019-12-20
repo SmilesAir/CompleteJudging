@@ -170,7 +170,7 @@ module.exports.getSummary = function(resultsData, teamIndex) {
 }
 
 module.exports.getOverlaySummary = function(data) {
-    return ` [M: ${getMusic(data)}, T: ${getTeamwork(data)}, F: ${getForm(data)}, Ex: ${calcDeductions(data).toFixed(2)}, G: ${data.general}]`
+    return ` [M: ${getMusic(data)}, T: ${getTeamwork(data)}, F: ${getForm(data)}, G: ${data.general}, Total: ${calcAiScore(data).toFixed(1)}, Ex: ${calcDeductions(data).toFixed(1)}]`
 }
 
 module.exports.getFullProcessed = function(data, preProcessedData) {

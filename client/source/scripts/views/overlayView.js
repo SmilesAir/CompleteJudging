@@ -118,6 +118,9 @@ require("./overlayView.less")
     }
 
     render() {
+        // Little hacky, but disable when routine starts
+        this.state.enabled &= MainStore.interfaceObs.startTime === undefined
+
         if (this.state.enabled) {
             return (
                 <div className="overlayContainer">

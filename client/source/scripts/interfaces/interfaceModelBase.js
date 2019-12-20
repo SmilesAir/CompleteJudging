@@ -193,7 +193,9 @@ class InterfaceModelBase {
         }
 
         this.needShowFinishView = true
+        MainStore.interfaceObs.editTeamIndex = undefined
         MainStore.isRoutineTimeElapsed = false
+        MainStore.isFinishViewShowing = false
 
         this.sendState(Enums.EStatus.ready)
 
@@ -214,6 +216,7 @@ class InterfaceModelBase {
         this.onRoutineUpdate()
 
         MainStore.isRoutineTimeElapsed = false
+        this.needShowFinishView = false
     }
 
     hasRoutineTimeElapsed() {
