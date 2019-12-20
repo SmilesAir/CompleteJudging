@@ -422,7 +422,7 @@ function isSamePool(a, b) {
     if (a.divisionIndex === b.divisionIndex &&
         a.roundIndex === b.roundIndex &&
         a.poolIndex === b.poolIndex) {
-        
+
         return true
     }
 
@@ -435,7 +435,7 @@ function verifyDataModel(model) {
         model.verify === undefined ||
         model.getSummary === undefined ||
         model.getDefaultConstants === undefined) {
-        
+
         return false
     }
 
@@ -445,7 +445,6 @@ module.exports.verifyDataModel = verifyDataModel
 
 function verifyDataConstants(constants) {
     if (constants.name === undefined) {
-        
         return false
     }
 

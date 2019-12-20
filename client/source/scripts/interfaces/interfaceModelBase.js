@@ -55,6 +55,10 @@ class InterfaceModelBase {
     }
 
     updateFromAws(awsData) {
+        if (DataAction.isSamePool(this.obs.playingPool, awsData.pool) === false) {
+            location.reload(false)
+        }
+
         let poolDirty = this.playPoolHash !== awsData.poolHash
         let obsDirty = this.observableHash !== awsData.observableHash
         if (poolDirty) {
