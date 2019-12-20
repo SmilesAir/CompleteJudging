@@ -119,7 +119,7 @@ require("./overlayView.less")
 
     render() {
         // Little hacky, but disable when routine starts
-        this.state.enabled &= MainStore.interfaceObs.startTime === undefined
+        this.state.enabled &= MainStore.interfaceObs && MainStore.interfaceObs.startTime === undefined
 
         if (this.state.enabled) {
             return (
