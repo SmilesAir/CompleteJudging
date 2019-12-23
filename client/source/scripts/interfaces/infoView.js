@@ -362,7 +362,6 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 <div>
                     {"Results Summary   "}
                     <button onClick={() => this.onFullResultsClick(pool)}>Full Results</button>
-                    <button onClick={() => this.onDownloadFpaResultsSheet(pool)}>FPA Result Sheet</button>
                     <button className="clearResultsButton" onClick={() => this.onClearResultsClick(pool)}>Clear Results</button>
                 </div>
                 {DataAction.getResultsSummary(pool.results)}
