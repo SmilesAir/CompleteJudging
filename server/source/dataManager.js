@@ -3,6 +3,7 @@ const fetch = require("node-fetch")
 const fs = require("file-system")
 
 const EndpointStore = require("complete-judging-common/source/endpoints.js")
+const Common = require("complete-judging-common/source/common.js")
 
 
 class DataManager {
@@ -90,6 +91,31 @@ class DataManager {
         })
     }
 
+    getExportData() {
+        let data = {}
+        data.tournamentKey = this.tournamentData.tournamentKey
+        data.poolMap = {}
+        data.resultsMap = {}
+
+        for (let key in data.tournamentKey) {
+            if (key.startsWith(Common.getPoolNamePrefix())) {
+                let poolKey = data.tournamentKey[key]
+                let poolData = this.tournamentData.poolMap[poolKey]
+                data.poolMap[key] = poolData
+
+                for (let poolDataKey in poolData) {
+                    if (poolDataKey.startsWith(Common.getResultsKeyPrefix())) {
+                        let resultsKey = poolData[poolDataKey]
+                        data.resultsMap[resultsKey.judgeName] = data.resultsMap[resultsKey.judgeName] || {}
+                        data.resultsMap[resultsKey.judgeName][resultsKey.time] = this.tournamentData.resultsMap[resultsKey.judgeName][resultsKey.time]
+                    }
+                }
+            }
+        }
+
+        return data
+    }
+
     exportTournamentDataToAWS(tournamentName) {
         return fetch(EndpointStore.buildUrl(false, "EXPORT_TOURNAMENT_DATA", {
             tournamentName: tournamentName
@@ -98,7 +124,7 @@ class DataManager {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(this.tournamentData)
+            body: JSON.stringify(this.getExportData())
         }).catch((error) => {
             console.log("Export Tournament Data Error", error)
         })

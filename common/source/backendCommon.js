@@ -1,4 +1,6 @@
 
+module.exports = require("./common.js")
+
 // Load specific platforms data harness
 let DataHarness = undefined
 try {
@@ -66,14 +68,6 @@ module.exports.getActivePool = async function(tournamentName, isAlt) {
 module.exports.getPoolData = async function(poolKey) {
     let poolItem = await DataHarness.getPoolItem(poolKey)
     return poolItem.data
-}
-
-module.exports.getPoolNamePrefix = function() {
-    return "pool-"
-}
-
-module.exports.getResultsKeyPrefix = function() {
-    return "resultsKey-"
 }
 
 module.exports.getPoolNameFromData = function(poolData) {
