@@ -4,7 +4,6 @@ const qrCode = require("qrcode")
 const JSZip = require("jszip")
 const saveAs = require("file-saver").saveAs
 const JSZipUtils = require("jszip-utils")
-const Markdown = require("react-markdown-it")
 
 const MainStore = require("scripts/stores/mainStore.js")
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
@@ -497,7 +496,7 @@ class PlayerAndTeams extends React.Component {
     render() {
         return (
             <div id="content1" className="infoTabContent">
-                <button onClick={() => Interfaces.info.exportTournamentData()}>Export Tournament Data to AWS</button>
+                <button onClick={() => DataAction.exportTournamentData()}>Export Tournament Data to AWS</button>
                 <form onSubmit={(event) => this.onSubmit(event)}>
                     <label>
                         New Tournament Name:

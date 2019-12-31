@@ -41,6 +41,20 @@ module.exports = class extends InterfaceModelBase {
                 this.update()
             }, 1000)
         }
+
+        this.syncLanModeAndSetInterval()
+    }
+
+    syncLanModeAndSetInterval() {
+        if (MainStore.lanMode) {
+            DataAction.exportTournamentData()
+
+            clearInterval(this.lanModeSyncIntervalHandle)
+
+            this.lanModeSyncIntervalHandle = setInterval(() => {
+                DataAction.exportTournamentData()
+            }, 1000 * 60 * 5)
+        }
     }
 
     getPoolDataForAWS(isAlt) {
@@ -265,6 +279,8 @@ module.exports = class extends InterfaceModelBase {
             this.onStopClick(true)
 
             this.moveToNextTeam()
+
+            this.syncLanModeAndSetInterval()
         }
     }
 

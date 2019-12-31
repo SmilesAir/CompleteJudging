@@ -39,6 +39,8 @@ class DataManager {
                 this.saveTournamentDataToDisk()
             }, this.saveFrequencyMs - timeSinceLastSaveMs)
         }
+
+        this.dirtySinceLastAwsSync = true
     }
 
     saveTournamentDataToDisk() {
@@ -82,6 +84,7 @@ class DataManager {
             return response.json()
         }).then((response) => {
             this.tournamentData = response
+            this.tournamentData.lastAwsSyncTime = Date.now()
 
             this.onDataChanged()
 
@@ -101,13 +104,19 @@ class DataManager {
             if (key.startsWith(Common.getPoolNamePrefix())) {
                 let poolKey = data.tournamentKey[key]
                 let poolData = this.tournamentData.poolMap[poolKey]
-                data.poolMap[key] = poolData
+                data.poolMap[poolKey] = poolData
 
                 for (let poolDataKey in poolData) {
                     if (poolDataKey.startsWith(Common.getResultsKeyPrefix())) {
                         let resultsKey = poolData[poolDataKey]
                         data.resultsMap[resultsKey.judgeName] = data.resultsMap[resultsKey.judgeName] || {}
                         data.resultsMap[resultsKey.judgeName][resultsKey.time] = this.tournamentData.resultsMap[resultsKey.judgeName][resultsKey.time]
+
+                        for (let timeKey in this.tournamentData.resultsMap[resultsKey.judgeName]) {
+                            if (timeKey >= this.tournamentData.lastAwsSyncTime) {
+                                data.resultsMap[resultsKey.judgeName][timeKey] = this.tournamentData.resultsMap[resultsKey.judgeName][timeKey]
+                            }
+                        }
                     }
                 }
             }
@@ -117,6 +126,14 @@ class DataManager {
     }
 
     exportTournamentDataToAWS(tournamentName) {
+        if (this.dirtySinceLastAwsSync !== true) {
+            return
+        }
+
+        let data = this.getExportData()
+
+        this.tournamentData.lastAwsSyncTime = Date.now()
+
         return fetch(EndpointStore.buildUrl(false, "EXPORT_TOURNAMENT_DATA", {
             tournamentName: tournamentName
         }), {
@@ -124,7 +141,7 @@ class DataManager {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(this.getExportData())
+            body: JSON.stringify(data)
         }).catch((error) => {
             console.log("Export Tournament Data Error", error)
         })

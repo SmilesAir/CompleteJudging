@@ -521,3 +521,17 @@ function getResultsFilename(pool) {
     return `${getDivisionNameFromIndex(pool.divisionIndex)} ${getRoundNameFromIndex(pool.roundIndex)} ${getPoolNameFromIndex(pool.poolIndex)}`
 }
 module.exports.getResultsFilename = getResultsFilename
+
+function exportTournamentData() {
+    return CommonAction.fetchEx("REQUEST_EXPORT_TOURNAMENT_DATA", {
+        tournamentName: MainStore.tournamentName
+    }, undefined, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }).catch((error) => {
+        console.log("Export Tournament Data Error", error)
+    })
+}
+module.exports.exportTournamentData = exportTournamentData
