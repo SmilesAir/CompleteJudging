@@ -161,8 +161,8 @@ function calcDeductions(data, phraseCount, routineLengthSeconds) {
 module.exports.getSummary = function(resultsData, teamIndex) {
     if (module.exports.verify(resultsData)) {
         let team = resultsData.teamScoreList[teamIndex]
-        let ai = calcAiScore(team).toFixed(2)
-        let ex = module.exports.getTotalDeductions(resultsData, teamIndex).toFixed(2)
+        let ai = calcAiScore(team).toFixed(1)
+        let ex = module.exports.getTotalDeductions(resultsData, teamIndex).toFixed(1)
         return `A: ${ai} E: ${ex}`
     }
 
@@ -171,6 +171,10 @@ module.exports.getSummary = function(resultsData, teamIndex) {
 
 module.exports.getOverlaySummary = function(data) {
     return ` [M: ${getMusic(data)}, T: ${getTeamwork(data)}, F: ${getForm(data)}, G: ${data.general}, Total: ${calcAiScore(data).toFixed(1)}, Ex: ${calcDeductions(data).toFixed(1)}]`
+}
+
+module.exports.getHeaderSummary = function(data) {
+    return `[${calcDeductions(data).toFixed(1)}/${calcAiScore(data).toFixed(1)}]`
 }
 
 module.exports.getFullProcessed = function(data, preProcessedData) {

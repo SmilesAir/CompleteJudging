@@ -107,7 +107,11 @@ module.exports.getSummary = function(resultsData, teamIndex) {
 }
 
 module.exports.getOverlaySummary = function(data) {
-    return ` [Phrases: ${getPhraseCount(data.scores)}, Raw: ${getAverage(data.scores, data.scores.length, false).toFixed(2)}, G: ${data.general}]`
+    return ` [Phrases: ${getPhraseCount(data.scores)}, Raw: ${getAverage(data.scores, data.scores.length, false).toFixed(1)}, G: ${data.general}]`
+}
+
+module.exports.getHeaderSummary = function(data) {
+    return `[${getAverage(data.scores, data.scores.length, false).toFixed(1)}]`
 }
 
 function getAverage(scores, count, adjusted) {

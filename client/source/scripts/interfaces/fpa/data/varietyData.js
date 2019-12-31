@@ -74,6 +74,12 @@ module.exports.getOverlaySummary = function(data) {
     return ` [Quantity: ${data.quantityScore}, Quality: ${data.qualityScore}, G: ${data.general}]`
 }
 
+module.exports.getHeaderSummary = function(data) {
+    return `[${calcScore(data, {
+        routineLengthSeconds: MainStore.interfaceObs.routineLengthSeconds
+    }).toFixed(1)}]`
+}
+
 function calcScore(data, preProcessedData) {
     let constants = MainStore.constants.variety
     let base = preProcessedData.routineLengthSeconds * constants.basePerSecond

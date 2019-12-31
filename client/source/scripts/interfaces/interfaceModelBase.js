@@ -21,8 +21,7 @@ class InterfaceModelBase {
             playingTeamIndex: undefined,
             editTeamIndex: undefined,
             backupModeEnabled: false,
-            results: undefined,
-            currentTeamScore: 0
+            results: undefined
         })
     }
 
@@ -242,10 +241,6 @@ class InterfaceModelBase {
         }
 
         return undefined
-    }
-
-    getCurrentTeamScore() {
-        return this.obs.currentTeamScore
     }
 
     fillWithResults() {
