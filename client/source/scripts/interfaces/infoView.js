@@ -12,6 +12,7 @@ const DataAction = require("scripts/actions/dataAction.js")
 const ResultsView = require("scripts/views/resultsView.js")
 const CommonAction = require("scripts/actions/commonAction.js")
 const EndpointStore = require("complete-judging-common/source/endpoints.js")
+const StarterListView = require("scripts/views/starterListView.js")
 
 require("./infoView.less")
 
@@ -43,7 +44,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         super()
 
         this.state = {
-            resultsPool: undefined
+            resultsPool: undefined,
+            starterListPool: undefined
         }
 
         this.canvasRefs = []
@@ -66,6 +68,13 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 }
             }, 100)
         }
+    }
+
+    gotoStarterListTabActive(pool) {
+        this.starterListTabRef.checked = true
+
+        this.state.starterListPool = pool
+        this.setState(this.state)
     }
 
     gotoResultsTabActive(pool) {
@@ -94,10 +103,23 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         window.print()
     }
 
+    getStarterListElements() {
+        if (this.state.starterListPool !== undefined) {
+            return (
+                <div>
+                    <button id="noPrint" onClick={() => this.printResults()}>Print</button>
+                    <StarterListView
+                        poolData={this.state.starterListPool}
+                        poolDesc={DataAction.getFullPoolDescription(this.state.starterListPool)}/>
+                </div>
+            )
+        }
+
+        return null
+    }
+
     getFullResultsElements() {
         if (this.state.resultsPool !== undefined && this.state.resultsPool.results !== undefined) {
-            console.log(DataAction.getFullPoolDescription(this.state.resultsPool))
-
             return (
                 <div>
                     <button id="noPrint" onClick={() => this.printResults()}>Print</button>
@@ -174,93 +196,24 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                 <label className="infoLabel" htmlFor="tab2">Players and Teams</label>
                 <input className="infoTab" id="tab3" type="radio" name="tabs" defaultChecked />
                 <label className="infoLabel" htmlFor="tab3">Pools</label>
-                <input ref={ (ref) => this.resultsTabRef = ref } className="infoTab" id="tab4" type="radio" name="tabs" />
-                <label className="infoLabel" htmlFor="tab4">Results</label>
-                <input ref={ (ref) => this.qrCodesTabRef = ref } className="infoTab" id="tab5" type="radio" name="tabs" />
-                <label className="infoLabel" htmlFor="tab5">QR Codes</label>
+                <input ref={ (ref) => this.starterListTabRef = ref } className="infoTab" id="tab4" type="radio" name="tabs" />
+                <label className="infoLabel" htmlFor="tab4">Starter List</label>
+                <input ref={ (ref) => this.resultsTabRef = ref } className="infoTab" id="tab5" type="radio" name="tabs" />
+                <label className="infoLabel" htmlFor="tab5">Results</label>
+                <input ref={ (ref) => this.qrCodesTabRef = ref } className="infoTab" id="tab6" type="radio" name="tabs" />
+                <label className="infoLabel" htmlFor="tab6">QR Codes</label>
                 <TournamentSelection/>
                 <PlayerAndTeams/>
-                <PoolsView gotoResultsTabActive={(pool) => this.gotoResultsTabActive(pool)} gotoQRCodesTabActive={(pool, isAlt) => this.gotoQRCodesTabActive(pool, isAlt)} />
+                <PoolsView gotoStarterListTabActive={(pool) => this.gotoStarterListTabActive(pool)} gotoResultsTabActive={(pool) => this.gotoResultsTabActive(pool)} gotoQRCodesTabActive={(pool, isAlt) => this.gotoQRCodesTabActive(pool, isAlt)} />
                 <div id="content4" className="infoTabContent">
-                    {this.getFullResultsElements()}
+                    {this.getStarterListElements()}
                 </div>
                 <div id="content5" className="infoTabContent">
+                    {this.getFullResultsElements()}
+                </div>
+                <div id="content6" className="infoTabContent">
                     {this.getQRCodesView()}
                 </div>
-            </div>
-        )
-    }
-}
-
-@MobxReact.observer class CategoryResultsView extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-
-    getHeaderRow() {
-        return (
-            <div key={0} className="rowContainer headerRow">
-                <div>{"Team"}</div>
-                <div>{"Diff"}</div>
-                <div>{"Variety"}</div>
-                <div>{"AI"}</div>
-                <div>{"Ex"}</div>
-                <div>{"Score"}</div>
-                <div>{"Rank"}</div>
-            </div>
-        )
-    }
-
-    getRow(teamNames, diff, variety, ai, ex, totalScore, rank) {
-        return (
-            <div key={teamNames} className="rowContainer">
-                <div className="teamNames">{teamNames}</div>
-                <div className="diff">{diff}</div>
-                <div className="variety">{variety}</div>
-                <div className="ai">{ai}</div>
-                <div className="ex">{ex}</div>
-                <div className="score">{totalScore}</div>
-                <div className="rank">{rank}</div>
-            </div>
-        )
-    }
-
-    getPrettyDecimalValue(value, negative) {
-        return value !== undefined && value !== 0 ? (negative ? "-" : "") + value.toFixed(2) : ""
-    }
-
-    getBoard(data) {
-        let rowList = []
-
-        rowList.push(this.getHeaderRow())
-
-        for (let rowData of data) {
-            let teamData = rowData.data
-            rowList.push(this.getRow(rowData.teamNames,
-                this.getPrettyDecimalValue(teamData.diff),
-                this.getPrettyDecimalValue(teamData.variety),
-                this.getPrettyDecimalValue(teamData.ai),
-                this.getPrettyDecimalValue(teamData.ex, true),
-                this.getPrettyDecimalValue(teamData.totalScore),
-                teamData.rank))
-        }
-
-        return rowList
-    }
-
-    render() {
-        if (this.props.resultsData === undefined) {
-            return <div>No Data</div>
-        }
-
-        return (
-            <div className="categoryResultsContainer">
-                <div className="header">
-                    <div className="title">
-                        {this.props.title}
-                    </div>
-                </div>
-                {this.getBoard(this.props.resultsData)}
             </div>
         )
     }
@@ -313,6 +266,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         })
     }
 
+    onStarterListClick(pool) {
+        this.props.gotoStarterListTabActive(pool)
+    }
+
     onClearResultsClick(pool) {
         if (window.confirm(`Attention!\nDo you really want to delete results for ${DataAction.getFullPoolDescription(pool)}?`)) {
             DataAction.clearPoolResults(pool)
@@ -360,6 +317,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             <div className="results">
                 <div>
                     {"Results Summary   "}
+                    <button onClick={() => this.onStarterListClick(pool)}>Starter List</button>
                     <button onClick={() => this.onFullResultsClick(pool)}>Full Results</button>
                     <button className="clearResultsButton" onClick={() => this.onClearResultsClick(pool)}>Clear Results</button>
                 </div>
