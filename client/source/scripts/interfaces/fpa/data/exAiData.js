@@ -12,7 +12,7 @@ module.exports.getDefaultConstants = function() {
         startCountPerSecond: 0.08,
         endCountPerSecond: 0.333,
         xScaler: 0.5,
-        baseScaler: 2
+        baseScaler: 1.5
     }
 }
 
