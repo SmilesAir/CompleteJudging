@@ -53,7 +53,7 @@ module.exports = class extends InterfaceModelBase {
 
             this.lanModeSyncIntervalHandle = setInterval(() => {
                 DataAction.exportTournamentData()
-            }, 1000 * 60 * 5)
+            }, 1000 * 60 * 2)
         }
     }
 
