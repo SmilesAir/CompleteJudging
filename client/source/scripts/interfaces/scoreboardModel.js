@@ -11,6 +11,7 @@ module.exports = class extends InterfaceModelBase {
 
         this.name = "Scoreboard"
         this.type = Enums.EInterface.scoreboard
+        this.showFinishOverlay = false
     }
 
     init() {

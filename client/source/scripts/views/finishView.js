@@ -124,6 +124,10 @@ require("./finishView.less")
     }
 
     render() {
+        if (Interfaces.activeInterface.showFinishOverlay !== true) {
+            return null
+        }
+
         if (MainStore.isFinishViewShowing) {
             return (
                 <div className="finishContainer">
