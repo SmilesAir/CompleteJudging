@@ -40,6 +40,11 @@ module.exports = class extends InterfaceModelBase {
             setInterval(() => {
                 this.update()
             }, 1000)
+
+            setInterval(() => {
+                let playingPool = this.getPool(this.obs.playingAlt)
+                DataAction.fillPoolResults(playingPool)
+            }, 3000)
         }
 
         this.syncLanModeAndSetInterval()
