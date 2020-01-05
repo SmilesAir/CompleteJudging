@@ -6,6 +6,7 @@ const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
 const Enums = require("scripts/stores/enumStore.js")
 const ResultsView = require("scripts/views/resultsView.js")
+const MainStore = require("scripts/stores/mainStore.js")
 
 require("./headView.less")
 
@@ -168,7 +169,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     getResultsElement(pool) {
-        if (pool === undefined || pool.results === undefined) {
+        if (pool === undefined || pool.results === undefined || !MainStore.lanMode) {
             return null
         }
 
