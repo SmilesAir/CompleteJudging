@@ -312,18 +312,32 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         })
     }
 
-    getResults(pool) {
+    getOptions(pool) {
+        let errorStr = this.getPoolErrors(pool)
+        let errorClassname = `${errorStr !== undefined ? "error" : ""}`
+
         return (
             <div className="results">
                 <div>
-                    {"Results Summary   "}
+                    {"Pool Options   "}
                     <button onClick={() => this.onStarterListClick(pool)}>Starter List</button>
                     <button onClick={() => this.onFullResultsClick(pool)}>Full Results</button>
                     <button className="clearResultsButton" onClick={() => this.onClearResultsClick(pool)}>Clear Results</button>
                 </div>
-                {DataAction.getResultsSummary(pool.results)}
+                <div className={errorClassname}>
+                    {errorStr}
+                </div>
             </div>
         )
+    }
+
+    getPoolErrors(pool) {
+        let retStr = ""
+        if (pool.routineLengthSeconds === 0) {
+            retStr += "Routine Length is 0 minutes. Please set the routine length time in the PoolCreator and re upload.\r\n"
+        }
+
+        return retStr.length > 0 ? "Error!\r\n" + retStr : undefined
     }
 
     setLinksInClipboard(pool) {
@@ -355,14 +369,15 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         if (MainStore.saveData !== undefined) {
             return MainStore.saveData.poolList.map((pool) => {
                 let key = `${pool.divisionIndex}${pool.roundIndex}${pool.poolIndex}`
+                let setPoolClassname = this.getPoolErrors(pool) !== undefined ? "error" : ""
                 return (
                     <div key={key} className="poolContainer">
                         <div className="description">
                             {DataAction.getFullPoolDescription(pool)}
                         </div>
                         <div className="controls">
-                            <button onClick={() => this.onSetPool(pool)}>Set Pool</button>
-                            <button onClick={() => this.onSetPool(pool, true)}>Set Pool Alt</button>
+                            <button className={setPoolClassname} onClick={() => this.onSetPool(pool)}>Set Pool</button>
+                            <button className={setPoolClassname} onClick={() => this.onSetPool(pool, true)}>Set Pool Alt</button>
                             <button onClick={() => this.setLinksInClipboard(pool)}>Copy Links</button>
                             <button onClick={() => this.generateQRCodes(pool, false)}>QR Codes</button>
                             <button onClick={() => this.generateQRCodes(pool, true)}>QR Codes Alt</button>
@@ -370,7 +385,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                         <div className="teams">
                             {this.getTeamComponents(pool)}
                         </div>
-                        {this.getResults(pool)}
+                        {this.getOptions(pool)}
                         <textarea className="copyArea" ref={(ref) => this.copyArea = ref} />
                     </div>
                 )
