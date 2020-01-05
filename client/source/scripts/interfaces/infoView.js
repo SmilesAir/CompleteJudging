@@ -399,7 +399,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return (
             <div id="content3" className="infoTabContent">
                 <div className="poolsContainer">
-                    <button onClick={() => Interfaces.info.stopPlayingPools()}>Stop Playing Pools</button>
+                    <button onClick={() => Interfaces.info.stopPlayingPools()}>STOP Playing Pools</button>
                     {this.getPoolComponents()}
                 </div>
             </div>
