@@ -47,7 +47,10 @@ module.exports = class extends InterfaceModelBase {
             }, 3000)
         }
 
-        this.syncLanModeAndSetInterval()
+        let autoBackup = MainStore.url.searchParams.get("disableAutoBackup") === true
+        if (!autoBackup) {
+            this.syncLanModeAndSetInterval()
+        }
     }
 
     syncLanModeAndSetInterval() {
