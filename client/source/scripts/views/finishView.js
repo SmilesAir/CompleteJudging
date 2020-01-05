@@ -55,7 +55,11 @@ require("./finishView.less")
     }
 
     getInputIndex() {
-        return this.state.editTeamIndex || MainStore.interfaceObs.playingTeamIndex
+        if (this.state.editTeamIndex !== undefined) {
+            return this.state.editTeamIndex
+        } else {
+            return MainStore.interfaceObs.playingTeamIndex
+        }
     }
 
     getInfo() {
