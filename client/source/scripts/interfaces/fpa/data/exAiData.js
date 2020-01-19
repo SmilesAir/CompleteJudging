@@ -9,6 +9,8 @@ const DataBase = require("scripts/stores/dataBase.js")
 module.exports.getDefaultConstants = function() {
     return {
         name: "exAi",
+        exScaler: 3,
+        aiScaler: 2,
         startCountPerSecond: 0.08,
         endCountPerSecond: 0.333,
         xScaler: 0.5,
@@ -131,7 +133,7 @@ function getForm(data) {
 }
 
 function calcAiScore(data) {
-    return (getMusic(data) + getTeamwork(data) + getForm(data)) / 4 + DataBase.calcCommonScore(data)
+    return (getMusic(data) + getTeamwork(data) + getForm(data)) / 4 * MainStore.constants.exAi.aiScaler + DataBase.calcCommonScore(data)
 }
 
 // https://www.wolframalpha.com/input/?i=y+%3D+(((50+-+x+%2F+2)+%2F+50)+%5E+2),+x+from+0+to+50
@@ -153,9 +155,7 @@ function getExScaler(phraseCount, routineLengthSeconds) {
 function calcDeductions(data, phraseCount, routineLengthSeconds) {
     let raw = data.point1Count * .1 + data.point2Count * .2 + data.point3Count * .3 + data.point5Count * .5
 
-    raw *= MainStore.constants.exAi.scaler
-
-    return raw * getExScaler(phraseCount, routineLengthSeconds)
+    return raw * getExScaler(phraseCount, routineLengthSeconds) * MainStore.constants.exAi.exScaler
 }
 
 module.exports.getSummary = function(resultsData, teamIndex) {

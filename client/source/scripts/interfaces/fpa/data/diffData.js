@@ -13,6 +13,7 @@ module.exports.getDefaultConstants = function() {
     // https://www.desmos.com/calculator/fcipcuyc8f
     return {
         name: "diff",
+        diffScaler: 2,
         offset: 0,
         power: 1.5,
         scale: .5,
@@ -171,7 +172,7 @@ function getGradientScore(data, adjusted, routineLengthSeconds) {
         totalScore += (adjusted ? getAdjustedScore(score) : score) * gradientArray[i]
     }
 
-    return totalScore / (4 / 60 * routineLengthSeconds) + DataBase.calcCommonScore(data)
+    return totalScore / (4 / 60 * routineLengthSeconds) * MainStore.constants.diff.diffScaler + DataBase.calcCommonScore(data)
 }
 
 module.exports.getInspected = function(resultData, teamIndex) {

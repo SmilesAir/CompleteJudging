@@ -1,9 +1,10 @@
 
 {
     "base": {
-        "generalScaler": 0.25
+        "generalScaler": 0.5
     },
     "diff": {
+        "diffScaler": 2,
         "offset": 0,
         "power": 1.5,
         "scale": 0.5,
@@ -36,13 +37,14 @@
         ]
     },
     "variety": {
+        "varietyScaler": 2,
         "basePerSecond": 0.5
     },
     "exAi": {
+        "exScaler": 3,
+        "aiScaler": 2,
         "startCountPerSecond": 0.08,
         "endCountPerSecond": 0.333,
-        "xScaler": 0.75,
-        "exScaler": 1.5,
-        "aiScaler": 2
+        "xScaler": 0.75
     }
 }

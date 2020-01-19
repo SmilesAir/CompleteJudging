@@ -9,6 +9,7 @@ const DataBase = require("scripts/stores/dataBase.js")
 module.exports.getDefaultConstants = function() {
     return {
         name: "variety",
+        varietyScaler: 2,
         basePerSecond: 0.25
     }
 }
@@ -16,7 +17,7 @@ module.exports.getDefaultConstants = function() {
 class TeamVarietyScores extends DataBase.class {
     constructor() {
         super()
-        
+
         this.quantityScore = 0
         this.qualityScore = 0
     }
@@ -83,7 +84,7 @@ module.exports.getHeaderSummary = function(data) {
 function calcScore(data, preProcessedData) {
     let constants = MainStore.constants.variety
     let base = preProcessedData.routineLengthSeconds * constants.basePerSecond
-    return data.qualityScore * data.quantityScore / base + DataBase.calcCommonScore(data)
+    return data.qualityScore * data.quantityScore / base * MainStore.constants.variety.varietyScaler + DataBase.calcCommonScore(data)
 }
 
 module.exports.getFullProcessed = function(data, preProcessedData) {

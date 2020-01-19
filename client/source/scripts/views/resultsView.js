@@ -3,6 +3,7 @@ const React = require("react")
 const MobxReact = require("mobx-react")
 
 const Enums = require("scripts/stores/enumStore.js")
+const MainStore = require("scripts/stores/mainStore.js")
 
 require("./resultsView.less")
 
@@ -107,19 +108,19 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         let sums = this.allTeamCategoryData[teamNames] || {}
 
         let diff = sums[Enums.EInterface.diff]
-        diff = diff !== undefined ? diff.toFixed(1) + (diff === this.allTeamCategoryData.topDiff ? "*" : "") : "Diff"
+        diff = diff !== undefined ? diff.toFixed(1) + (diff === this.allTeamCategoryData.topDiff ? "*" : "") : `D (${MainStore.constants.diff.diffScaler})`
 
         let variety = sums[Enums.EInterface.variety]
-        variety = variety !== undefined ? variety.toFixed(1) + (variety === this.allTeamCategoryData.topVariety ? "*" : "") : "Variety"
+        variety = variety !== undefined ? variety.toFixed(1) + (variety === this.allTeamCategoryData.topVariety ? "*" : "") : `V (${MainStore.constants.variety.varietyScaler})`
 
         let ai = sums[Enums.EInterface.exAi]
-        ai = ai !== undefined ? ai.toFixed(1) + (ai === this.allTeamCategoryData.topAi ? "*" : "") : "AI"
+        ai = ai !== undefined ? ai.toFixed(1) + (ai === this.allTeamCategoryData.topAi ? "*" : "") : `AI (${MainStore.constants.exAi.aiScaler})`
 
         let ex = sums.ex
-        ex = ex !== undefined ? ex.toFixed(1) + (ex === this.allTeamCategoryData.topEx ? "*" : "") : "Ex"
+        ex = ex !== undefined ? ex.toFixed(1) + (ex === this.allTeamCategoryData.topEx ? "*" : "") : `Ex (${MainStore.constants.exAi.exScaler})`
 
         let general = sums.general
-        general = general !== undefined ? general.toFixed(1) + (general === this.allTeamCategoryData.topGeneral ? "*" : "") : "GI"
+        general = general !== undefined ? general.toFixed(1) + (general === this.allTeamCategoryData.topGeneral ? "*" : "") : `G (${MainStore.constants.base.generalScaler.toString().replace(/^[0]*/, "")})`
 
         return (
             <div className="categorySumsContainer">
