@@ -45,7 +45,9 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onTeamClick(teamData) {
-        Interfaces.head.setPlayingTeam(teamData)
+        if (!this.obs.isJudging) {
+            Interfaces.head.setPlayingTeam(teamData)
+        }
     }
 
     getTeamsElement() {
@@ -54,7 +56,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         let teamListElements = teamList.map((teamData) => {
             ++teamIndex
             let playingIndex = this.interface.getAdjustPlayingIndex()
-            let className = `teamContainer ${playingIndex === teamIndex ? "playing" : ""}`
+            let className = `teamContainer ${playingIndex === teamIndex ? "playing" : ""} ${this.obs.isJudging ? "normalCursor" : ""}`
             return <div key={teamIndex} className={className}
                 onClick={() => this.onTeamClick(teamData)}>{teamData.getPlayerNamesString()}</div>
         })
