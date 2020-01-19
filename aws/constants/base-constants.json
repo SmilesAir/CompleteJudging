@@ -1,5 +1,8 @@
 
 {
+    "base": {
+        "generalScaler": 0.25
+    },
     "diff": {
         "offset": 0,
         "power": 1.5,
@@ -39,6 +42,7 @@
         "startCountPerSecond": 0.08,
         "endCountPerSecond": 0.333,
         "xScaler": 0.75,
-        "baseScaler": 1.5
+        "exScaler": 1.5,
+        "aiScaler": 2
     }
 }

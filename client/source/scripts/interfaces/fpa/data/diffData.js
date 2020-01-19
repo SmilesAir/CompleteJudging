@@ -235,6 +235,7 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
         type: Enums.EInterface.diff,
         phrases: getPhraseCount(markList),
         general: data.general,
+        generalPoints: DataBase.calcCommonScore(data),
         marks: markList,
         markTierList: markTierList,
         averageNormal: averageNormal,

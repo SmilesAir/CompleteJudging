@@ -12,7 +12,7 @@ module.exports.getDefaultConstants = function() {
         startCountPerSecond: 0.08,
         endCountPerSecond: 0.333,
         xScaler: 0.5,
-        baseScaler: 1.5
+        scaler: 1.5
     }
 }
 
@@ -153,7 +153,7 @@ function getExScaler(phraseCount, routineLengthSeconds) {
 function calcDeductions(data, phraseCount, routineLengthSeconds) {
     let raw = data.point1Count * .1 + data.point2Count * .2 + data.point3Count * .3 + data.point5Count * .5
 
-    raw *= MainStore.constants.exAi.baseScaler
+    raw *= MainStore.constants.exAi.scaler
 
     return raw * getExScaler(phraseCount, routineLengthSeconds)
 }
@@ -184,6 +184,7 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
         ex: calcDeductions(data),
         adjustedEx: calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds),
         general: data.general,
+        generalPoints: DataBase.calcCommonScore(data),
         music: getMusic(data),
         teamwork: getTeamwork(data),
         form: getForm(data),

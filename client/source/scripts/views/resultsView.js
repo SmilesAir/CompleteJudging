@@ -118,6 +118,9 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         let ex = sums.ex
         ex = ex !== undefined ? ex.toFixed(1) + (ex === this.allTeamCategoryData.topEx ? "*" : "") : "Ex"
 
+        let general = sums.general
+        general = general !== undefined ? general.toFixed(1) + (general === this.allTeamCategoryData.topGeneral ? "*" : "") : "GI"
+
         return (
             <div className="categorySumsContainer">
                 <div className="categorySum diff">
@@ -132,11 +135,14 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                 <div className="categorySum ex">
                     {ex}
                 </div>
+                <div className="categorySum general">
+                    {general}
+                </div>
             </div>
         )
     }
 
-    getTeamRows(teamData) {
+    getSummaryTeamRows(teamData) {
         return (
             <div key={teamData.teamNames} className="row">
                 <div className="divided">
@@ -164,10 +170,14 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
             for (let judgeName in teamData.data) {
                 let judgeData = teamData.data[judgeName]
                 if (judgeData.score !== undefined) {
-                    sums[judgeData.type] = (sums[judgeData.type] || 0) + judgeData.score
+                    // Don't include the general impression. That is a separate category in the summary table
+                    sums[judgeData.type] = (sums[judgeData.type] || 0) + (judgeData.score - judgeData.generalPoints)
                 }
                 if (judgeData.adjustedEx !== undefined) {
                     sums.ex = (sums.ex || 0) - judgeData.adjustedEx
+                }
+                if (judgeData.generalPoints !== undefined) {
+                    sums.general = (sums.general || 0) + judgeData.generalPoints
                 }
             }
 
@@ -176,6 +186,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
             this.allTeamCategoryData.topVariety = Math.max(this.allTeamCategoryData.topVariety || -1, sums[Enums.EInterface.variety] || -1)
             this.allTeamCategoryData.topAi = Math.max(this.allTeamCategoryData.topAi || -1, sums[Enums.EInterface.exAi] || -1)
             this.allTeamCategoryData.topEx = Math.max(this.allTeamCategoryData.topEx || -99, sums.ex || -99)
+            this.allTeamCategoryData.topGeneral = Math.max(this.allTeamCategoryData.topGeneral || -1, sums.general || -1)
         }
 
         // Fill out label row after data since we don't know the data yet
@@ -192,10 +203,10 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
 
         for (let team of results) {
             team.scoreDetails = "Score numbers"
-            teamRows.push(this.getTeamRows(team))
+            teamRows.push(this.getSummaryTeamRows(team))
         }
 
-        teamRows[0] = this.getTeamRows(Object.assign(this.labelData, {
+        teamRows[0] = this.getSummaryTeamRows(Object.assign(this.labelData, {
             teamNames: "Team",
             scoreDetails: "Score Labels",
             totalScore: "Total",

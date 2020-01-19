@@ -8,6 +8,7 @@ module.exports = class {
         const DiffData = require("scripts/interfaces/fpa/data/diffData.js")
         const VarietyData = require("scripts/interfaces/fpa/data/varietyData.js")
         const ExAiData = require("scripts/interfaces/fpa/data/exAiData.js")
+        const BaseData = require("scripts/stores/dataBase.js")
 
         const OldExData = require("scripts/interfaces/old/data/oldExData.js")
         const OldAiData = require("scripts/interfaces/old/data/oldAiData.js")
@@ -34,6 +35,8 @@ module.exports = class {
                 }
             }
         }
+
+        MainStore.constants.base = BaseData.getDefaultConstants()
 
         this.getConstantsFromCloud()
     }

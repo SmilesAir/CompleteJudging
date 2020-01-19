@@ -92,6 +92,7 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
         quantity: data.quantityScore,
         quality: data.qualityScore,
         general: data.general,
+        generalPoints: DataBase.calcCommonScore(data),
         score: calcScore(data, preProcessedData)
     }
 }
