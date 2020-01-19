@@ -27,6 +27,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         super(props)
 
         this.sortByJudge = false
+        this.sortByRank = false
     }
 
     getScoreDetails(judgeData) {
@@ -154,7 +155,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         )
     }
 
-    getResults() {
+    getSummaryResults() {
         // Precalc the category top scores
         let results = this.props.resultsData
         this.allTeamCategoryData = {}
@@ -181,6 +182,13 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         this.labelData = undefined
         let teamRows = []
         teamRows.push({})
+
+        if (this.sortByRank) {
+            results = results.slice(0)
+            results.sort((a, b) => {
+                return b.rank - a.rank
+            })
+        }
 
         for (let team of results) {
             team.scoreDetails = "Score numbers"
@@ -515,8 +523,13 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         return this.sortByJudge ? this.getJudgeDetails() : this.getTeamDetails()
     }
 
-    toggleSortMode() {
+    toggleDetailedSortMode() {
         this.sortByJudge = !this.sortByJudge
+        this.forceUpdate()
+    }
+
+    toggleSummarySortMode() {
+        this.sortByRank = !this.sortByRank
         this.forceUpdate()
     }
 
@@ -531,13 +544,16 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
 
         return (
             <div className="resultsContainer">
+                <button id="noPrint" className="toggleButton" onClick={() => this.toggleSummarySortMode() }>
+                    Toggle Results Sorted: {this.sortByRank ? "By Rank" : "In Play Order"}
+                </button>
                 <div className="header">
                     {this.props.poolDesc}
                 </div>
                 <div className="content">
-                    {this.getResults()}
+                    {this.getSummaryResults()}
                 </div>
-                <button id="noPrint" onClick={() => this.toggleSortMode() }>
+                <button id="noPrint" className="toggleButton" onClick={() => this.toggleDetailedSortMode() }>
                     Toggle Results Sort: {this.sortByJudge ? "By Judge" : "By Team"}
                 </button>
                 {this.getDetailedResults()}
