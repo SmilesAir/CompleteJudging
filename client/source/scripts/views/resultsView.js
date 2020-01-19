@@ -267,7 +267,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                             Average
                         </div>
                         <div className="subLabel">
-                            Normal
+                            Raw
                         </div>
                         <div className="detailSingle">
                             {teamData.averageNormal.toFixed(2)}
@@ -384,6 +384,18 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                         <div className="detailSingle">
                             {teamData.point5Count}
                         </div>
+                        <div className="subLabel">
+                            Raw
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.ex.toFixed(1)}
+                        </div>
+                        <div className="subLabel">
+                            Adjusted
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.adjustedEx.toFixed(1)}
+                        </div>
                     </div>
                 </div>
             )
@@ -422,7 +434,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         return (
             <div key={judgeData.judgeName}>
                 <div className="header">
-                    {judgeData.judgeName}
+                    {this.getJudgeTypeName(judgeData.type)}: {judgeData.judgeName}
                 </div>
                 <div className="content">
                     {this.getJudgeTeamRows(judgeData)}
@@ -508,11 +520,11 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         return rows
     }
 
-    getTeamDetailedResults(teamData) {
+    getTeamDetailedResults(teamData, playOrderNumber) {
         return (
             <div className="resultsTable" key={teamData.teamNames}>
                 <div className="header">
-                    {teamData.teamNames}
+                    Team {playOrderNumber}: {teamData.teamNames}
                 </div>
                 <div className="content">
                     {this.getTeamDetailsRows(teamData.data)}
@@ -524,8 +536,10 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
     getTeamDetails() {
         let teamTableElements = []
         let results = this.props.resultsData
+        let playOrderNumber = 1
         for (let teamData of results) {
-            teamTableElements.push(this.getTeamDetailedResults(teamData))
+            teamTableElements.push(this.getTeamDetailedResults(teamData, playOrderNumber))
+            ++playOrderNumber
         }
 
         return teamTableElements
@@ -560,7 +574,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                     Toggle Results Sorted: {this.sortByRank ? "By Rank" : "In Play Order"}
                 </button>
                 <div className="header">
-                    {this.props.poolDesc}
+                    {this.props.poolDesc} (Summary)
                 </div>
                 <div className="content">
                     {this.getSummaryResults()}
