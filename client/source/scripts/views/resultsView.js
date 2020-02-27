@@ -379,12 +379,6 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                             {teamData.point3Count}
                         </div>
                         <div className="subLabel">
-                            .5
-                        </div>
-                        <div className="detailSingle">
-                            {teamData.point5Count}
-                        </div>
-                        <div className="subLabel">
                             Raw
                         </div>
                         <div className="detailSingle">

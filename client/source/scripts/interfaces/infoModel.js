@@ -208,7 +208,6 @@ module.exports = class extends InterfaceModelBase {
             this.appendChildValue(parent, `ns2:Team${teamNumber}Point1`, teamData.point1Count || 0)
             this.appendChildValue(parent, `ns2:Team${teamNumber}Point2`, teamData.point2Count || 0)
             this.appendChildValue(parent, `ns2:Team${teamNumber}Point3`, teamData.point3Count || 0)
-            this.appendChildValue(parent, `ns2:Team${teamNumber}Point5`, teamData.point5Count || 0)
 
             ++teamNumber
         }

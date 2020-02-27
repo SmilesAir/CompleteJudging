@@ -140,7 +140,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     getExElements() {
-        let pointDeductions = [ 1, 2, 3, 5 ]
+        let pointDeductions = [ 1, 2, 3 ]
         let exElements = pointDeductions.map((point) => {
             let pointName = `.${point}`
             return (

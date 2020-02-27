@@ -34,7 +34,6 @@ class TeamExAiScores extends DataBase.class {
         this.point1Count = 0
         this.point2Count = 0
         this.point3Count = 0
-        this.point5Count = 0
     }
 
     getAiData(key) {
@@ -53,8 +52,6 @@ class TeamExAiScores extends DataBase.class {
             return this.point2Count
         case 3:
             return this.point3Count
-        case 5:
-            return this.point5Count
         }
 
         return undefined
@@ -70,9 +67,6 @@ class TeamExAiScores extends DataBase.class {
             break
         case 3:
             this.point3Count = count
-            break
-        case 5:
-            this.point5Count = count
             break
         }
     }
@@ -94,7 +88,7 @@ module.exports.DataClass = class extends DataStore.ResultsDataBase {
                 let data = results.teamScoreList[i]
 
                 this.setGeneral(i, data.general)
-                this.setScores(i, data.music, data.teamwork, data.form, data.point1Count, data.point2Count, data.point3Count, data.point5Count)
+                this.setScores(i, data.music, data.teamwork, data.form, data.point1Count, data.point2Count, data.point3Count)
             }
         }
     }
@@ -107,7 +101,6 @@ module.exports.DataClass = class extends DataStore.ResultsDataBase {
         team.point1Count = p1
         team.point2Count = p2
         team.point3Count = p3
-        team.point5Count = p5
     }
 }
 
@@ -153,7 +146,7 @@ function getExScaler(phraseCount, routineLengthSeconds) {
 }
 
 function calcDeductions(data, phraseCount, routineLengthSeconds) {
-    let raw = data.point1Count * .1 + data.point2Count * .2 + data.point3Count * .3 + data.point5Count * .5
+    let raw = data.point1Count * .1 + data.point2Count * .2 + data.point3Count * .3
 
     return raw * getExScaler(phraseCount, routineLengthSeconds) * MainStore.constants.exAi.exScaler
 }
@@ -191,7 +184,6 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
         point1Count: data.point1Count,
         point2Count: data.point2Count,
         point3Count: data.point3Count,
-        point5Count: data.point5Count,
         score: calcAiScore(data)
     }
 }
@@ -244,9 +236,6 @@ module.exports.getExAiDetailedProcessed = function(data, preProcessedData) {
     })
     processed.push({
         ".3": data.point3Count
-    })
-    processed.push({
-        ".5": data.point5Count
     })
 
     let phraseCount = preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount)
