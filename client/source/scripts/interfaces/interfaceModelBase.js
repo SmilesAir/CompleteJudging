@@ -31,6 +31,8 @@ class InterfaceModelBase {
         if (this.obs !== undefined) {
             this.setObs(this.obs)
         }
+
+        document.title = this.name
     }
 
     setObs(obs) {

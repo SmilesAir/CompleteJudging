@@ -23,6 +23,8 @@ module.exports = class extends InterfaceModelBase {
     }
 
     async init() {
+        super.init()
+
         if (!MainStore.lanMode) {
             this.refreshTournamentInfoList().then(() => {
                 if (MainStore.startupTournamentName !== undefined) {
