@@ -9,6 +9,7 @@
     "syncSpreadsheets:production": "aws s3 sync ./spreadsheets/ s3://completejudging-production --acl public-read"
   },
   "dependencies": {
-    "complete-judging-common": "../common"
+    "complete-judging-common": "../common",
+    "serverless-plugin-dynamo-autoscaling": "^1.0.1"
   }
 }

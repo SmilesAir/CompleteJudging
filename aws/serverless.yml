@@ -1,6 +1,9 @@
 # serverless.yml
 service: CompleteJudging
 
+plugins:
+  - serverless-plugin-dynamo-autoscaling
+
 provider:
   name: aws
   runtime: nodejs8.10
@@ -250,3 +253,42 @@ resources:
                 - '*'
               AllowedMethods:
                 - GET
+
+custom:
+  autoscaling:
+    - table: activeResults
+      read:
+        minimum: 1
+        maximum: 100
+        usage: .75
+      write:
+        minimum: 1
+        maximum: 100
+        usage: .75
+    - table: activePools
+      read:
+        minimum: 1
+        maximum: 50
+        usage: .75
+      write:
+        minimum: 1
+        maximum: 50
+        usage: .75
+    - table: tournamentInfo
+      read:
+        minimum: 1
+        maximum: 50
+        usage: .75
+      write:
+        minimum: 1
+        maximum: 50
+        usage: .75
+    - table: activeTournamentKeys
+      read:
+        minimum: 1
+        maximum: 50
+        usage: .75
+      write:
+        minimum: 1
+        maximum: 50
+        usage: .75
