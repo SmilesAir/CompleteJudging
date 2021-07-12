@@ -7,6 +7,7 @@ require("favicon.ico")
 //const fpaLogo = require("images/fpa_logo.png")
 
 const MainStore = require("scripts/stores/mainStore.js")
+const LocStore = require("scripts/stores/locStore.js")
 MainStore.url = new URL(window.location.href)
 
 const Enums = require("scripts/stores/enumStore.js")
@@ -36,6 +37,8 @@ require("./index.less")
     constructor() {
         super()
 
+        this.initLoc()
+
         MainStore.activeInterface = Enums.EInterface.default
 
         let startupParam = MainStore.url.searchParams.get("startup")
@@ -61,6 +64,45 @@ require("./index.less")
 
         this.state = {
             showFullscreenPrompt: CommonAction.isMobile() && !CommonAction.isiOS()
+        }
+    }
+
+    initLoc() {
+        this.loadAndSetLanguage("English")
+
+        let highlightLocStrings = false
+        if (highlightLocStrings) {
+            for (let key in LocStore) {
+                if (key !== "language") {
+                    let strLen = LocStore[key].length
+                    if (strLen >= 2) {
+                        LocStore[key] = `*${LocStore[key]}*`
+                    }
+                }
+            }
+        }
+    }
+
+    loadAndSetLanguage(language) {
+        LocStore.language = language
+
+        let locFile = require(`loc/${language}.json`)
+
+        if (!Array.isArray(locFile)) {
+            console.error("Loc file is not a json array", locFile)
+        }
+
+        for (let i = 1; i < locFile.length; ++i) {
+            let rowData = locFile[i].c
+            if (rowData !== undefined) {
+                if (rowData[2] === null) {
+                    if (rowData[1] !== null) {
+                        LocStore[rowData[0].v] = rowData[1].v
+                    }
+                } else {
+                    LocStore[rowData[0].v] = rowData[2].v
+                }
+            }
         }
     }
 
