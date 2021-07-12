@@ -6,6 +6,7 @@ const saveAs = require("file-saver").saveAs
 const JSZipUtils = require("jszip-utils")
 
 const MainStore = require("scripts/stores/mainStore.js")
+const LocStore = require("scripts/stores/locStore.js")
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
@@ -399,7 +400,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return (
             <div id="content3" className="infoTabContent">
                 <div className="poolsContainer">
-                    <button onClick={() => Interfaces.info.stopPlayingPools()}>Stop Playing Pools</button>
+                    <button onClick={() => Interfaces.info.stopPlayingPools()}>{LocStore.StopPlayingPools}</button>
                     {this.getPoolComponents()}
                 </div>
             </div>
@@ -469,7 +470,7 @@ class PlayerAndTeams extends React.Component {
     render() {
         return (
             <div id="content1" className="infoTabContent">
-                <button onClick={() => DataAction.exportTournamentData()}>Export Tournament Data to AWS</button>
+                <button onClick={() => DataAction.exportTournamentData()}>{LocStore.ExportTournamentToAws}</button>
                 <form onSubmit={(event) => this.onSubmit(event)}>
                     <label>
                         New Tournament Name:
