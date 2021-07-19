@@ -6,6 +6,7 @@ const Interfaces = require("scripts/interfaces/interfaces.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const CommonAction = require("scripts/actions/commonAction.js")
 const DataAction = require("scripts/actions/dataAction.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 
 require("./streamView.less")
@@ -132,12 +133,12 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return (
             <div key={0} className="rowContainer headerRow rowContainerIncremental">
                 <div>{"#"}</div>
-                <div>{"Team"}</div>
-                <div>{"Phrases"}</div>
-                <div>{"Unique"}</div>
-                <div>{"Diff"}</div>
-                <div>{"Ex"}</div>
-                <div>{"Score"}</div>
+                <div>{LocStore.Team}</div>
+                <div>{LocStore.Phrases}</div>
+                <div>{LocStore.Unique}</div>
+                <div>{LocStore.Diff}</div>
+                <div>{LocStore.Ex}</div>
+                <div>{LocStore.Score}</div>
             </div>
         )
     }
@@ -146,14 +147,14 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return (
             <div key={0} className="rowContainer headerRow">
                 <div>{"#"}</div>
-                <div>{"Team"}</div>
-                <div>{"Phrases"}</div>
-                <div>{"Unique"}</div>
-                <div>{"Diff"}</div>
-                <div>{"Variety"}</div>
-                <div>{"AI"}</div>
-                <div>{"Ex"}</div>
-                <div>{"Score"}</div>
+                <div>{LocStore.Team}</div>
+                <div>{LocStore.Phrases}</div>
+                <div>{LocStore.Unique}</div>
+                <div>{LocStore.Diff}</div>
+                <div>{LocStore.Variety}</div>
+                <div>{LocStore.AI}</div>
+                <div>{LocStore.Ex}</div>
+                <div>{LocStore.Score}</div>
             </div>
         )
     }
@@ -192,8 +193,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return (
             <div key={0} className="rowOldContainer headerRow rowContainerOldIncremental">
                 <div>{"#"}</div>
-                <div>{"Team"}</div>
-                <div>{"Ex"}</div>
+                <div>{LocStore.Team}</div>
+                <div>{LocStore.Ex}</div>
             </div>
         )
     }
@@ -202,11 +203,11 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return (
             <div key={0} className="rowOldContainer headerRow">
                 <div>{"#"}</div>
-                <div>{"Team"}</div>
-                <div>{"Diff"}</div>
-                <div>{"AI"}</div>
-                <div>{"Ex"}</div>
-                <div>{"Score"}</div>
+                <div>{LocStore.Team}</div>
+                <div>{LocStore.Diff}</div>
+                <div>{LocStore.AI}</div>
+                <div>{LocStore.Ex}</div>
+                <div>{LocStore.Score}</div>
             </div>
         )
     }
@@ -330,7 +331,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                         </div>
                         <div>
                             <div className="timeTitle">
-                                Local Time
+                                {LocStore.LocalTime}
                             </div>
                             <div className="time">
                                 {this.getTimeString()}

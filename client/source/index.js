@@ -70,7 +70,7 @@ require("./index.less")
     initLoc() {
         this.loadAndSetLanguage("English")
 
-        let highlightLocStrings = false
+        let highlightLocStrings = true
         if (highlightLocStrings) {
             for (let key in LocStore) {
                 if (key !== "language") {
@@ -81,6 +81,10 @@ require("./index.less")
                 }
             }
         }
+    }
+
+    preprocessLocString(str) {
+        return str.replace("\\n", "\n")
     }
 
     loadAndSetLanguage(language) {
@@ -97,10 +101,10 @@ require("./index.less")
             if (rowData !== undefined) {
                 if (rowData[2] === null) {
                     if (rowData[1] !== null) {
-                        LocStore[rowData[0].v] = rowData[1].v
+                        LocStore[rowData[0].v] = this.preprocessLocString(rowData[1].v)
                     }
                 } else {
-                    LocStore[rowData[0].v] = rowData[2].v
+                    LocStore[rowData[0].v] = this.preprocessLocString(rowData[2].v)
                 }
             }
         }
@@ -123,7 +127,7 @@ require("./index.less")
                     <OverlayView />
                     <FinishView />
                     {
-                        this.state.showFullscreenPrompt ? <BlockPromptView promptText="Go Fullscreen" onClick={() => {
+                        this.state.showFullscreenPrompt ? <BlockPromptView promptText={LocStore.GoFullscreen} onClick={() => {
                             document.body.requestFullscreen()
                             this.state.showFullscreenPrompt = false
                             this.setState(this.state)
@@ -153,7 +157,7 @@ require("./index.less")
     }
 
     render() {
-        let title = MainStore.tournamentName !== undefined ? MainStore.tournamentName : "Freestyle Players Association Judging System"
+        let title = MainStore.tournamentName !== undefined ? MainStore.tournamentName : LocStore.DefaultTitle
         if (MainStore.showControlsHeader) {
             return (
                 <div className="headerContainer">
@@ -248,12 +252,12 @@ class AiJudgeInterface extends React.Component {
     constructor() {
         super()
 
-        this.name = "Artistic Impression Judge"
+        this.name = LocStore.AiJudge
         this.type = Enums.EInterface.head
     }
 
     render() {
-        return <div>Artistic Impression Judge</div>
+        return <div>{LocStore.AiJudge}</div>
     }
 }
 
@@ -261,12 +265,12 @@ class ExJudgeInterface extends React.Component {
     constructor() {
         super()
 
-        this.name = "Execution Judge"
+        this.name = LocStore.ExJudge
         this.type = Enums.EInterface.head
     }
 
     render() {
-        return <div>Execution Judge</div>
+        return <div>{LocStore.ExJudge}</div>
     }
 }
 

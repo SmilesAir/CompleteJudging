@@ -108,7 +108,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         if (this.state.starterListPool !== undefined) {
             return (
                 <div>
-                    <button id="noPrint" onClick={() => this.printResults()}>Print</button>
+                    <button id="noPrint" onClick={() => this.printResults()}>{LocStore.Print}</button>
                     <StarterListView
                         poolData={this.state.starterListPool}
                         poolDesc={DataAction.getFullPoolDescription(this.state.starterListPool)}/>
@@ -123,7 +123,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         if (this.state.resultsPool !== undefined && this.state.resultsPool.results !== undefined) {
             return (
                 <div>
-                    <button id="noPrint" onClick={() => this.printResults()}>Print</button>
+                    <button id="noPrint" onClick={() => this.printResults()}>{LocStore.Print}</button>
                     <ResultsView
                         resultsData={DataAction.getFullResultsProcessed(this.state.resultsPool, this.state.resultsPool.routineLengthSeconds)}
                         poolDesc={DataAction.getFullPoolDescription(this.state.resultsPool)}/>
@@ -272,7 +272,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     onClearResultsClick(pool) {
-        if (window.confirm(`Attention!\nDo you really want to delete results for ${DataAction.getFullPoolDescription(pool)}?`)) {
+        if (window.confirm(`${LocStore.DeleteResults} ${DataAction.getFullPoolDescription(pool)}?`)) {
             DataAction.clearPoolResults(pool)
         }
     }
@@ -320,10 +320,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return (
             <div className="results">
                 <div>
-                    {"Pool Options   "}
-                    <button onClick={() => this.onStarterListClick(pool)}>Starter List</button>
-                    <button onClick={() => this.onFullResultsClick(pool)}>Full Results</button>
-                    <button className="clearResultsButton" onClick={() => this.onClearResultsClick(pool)}>Clear Results</button>
+                    {LocStore.PoolOptions + "   "}
+                    <button onClick={() => this.onStarterListClick(pool)}>{LocStore.StarterList}</button>
+                    <button onClick={() => this.onFullResultsClick(pool)}>{LocStore.FullResults}</button>
+                    <button className="clearResultsButton" onClick={() => this.onClearResultsClick(pool)}>{LocStore.ClearResults}</button>
                 </div>
                 <div className={errorClassname}>
                     {errorStr}
@@ -335,10 +335,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     getPoolErrors(pool) {
         let retStr = ""
         if (pool.routineLengthSeconds === 0) {
-            retStr += "Routine Length is 0 minutes. Please set the routine length time in the PoolCreator and re upload.\r\n"
+            retStr += LocStore.RoutineLengthZeroError
         }
 
-        return retStr.length > 0 ? "Error!\r\n" + retStr : undefined
+        return retStr.length > 0 ? LocStore.ErrorNewLine + retStr : undefined
     }
 
     setLinksInClipboard(pool) {
@@ -377,11 +377,11 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                             {DataAction.getFullPoolDescription(pool)}
                         </div>
                         <div className="controls">
-                            <button className={setPoolClassname} onClick={() => this.onSetPool(pool)}>Set Pool</button>
-                            <button className={setPoolClassname} onClick={() => this.onSetPool(pool, true)}>Set Pool Alt</button>
-                            <button onClick={() => this.setLinksInClipboard(pool)}>Copy Links</button>
-                            <button onClick={() => this.generateQRCodes(pool, false)}>QR Codes</button>
-                            <button onClick={() => this.generateQRCodes(pool, true)}>QR Codes Alt</button>
+                            <button className={setPoolClassname} onClick={() => this.onSetPool(pool)}>{LocStore.SetPool}</button>
+                            <button className={setPoolClassname} onClick={() => this.onSetPool(pool, true)}>{LocStore.SetPoolAlt}</button>
+                            <button onClick={() => this.setLinksInClipboard(pool)}>{LocStore.CopyLinks}</button>
+                            <button onClick={() => this.generateQRCodes(pool, false)}>{LocStore.QRCodes}</button>
+                            <button onClick={() => this.generateQRCodes(pool, true)}>{LocStore.QRCodesAlt}</button>
                         </div>
                         <div className="teams">
                             {this.getTeamComponents(pool)}
@@ -439,7 +439,7 @@ class PlayerAndTeams extends React.Component {
                 <label className="infoSummary" key={info.tournamentName} onClick={() => {
                     Interfaces.info.importTournamentDataFromAWS(info)
                 }}>
-                    Name: {info.tournamentName} Created: {dateString}
+                    {LocStore.Name}: {info.tournamentName} {LocStore.Created}: {dateString}
                 </label>
             )
         })
@@ -473,12 +473,12 @@ class PlayerAndTeams extends React.Component {
                 <button onClick={() => DataAction.exportTournamentData()}>{LocStore.ExportTournamentToAws}</button>
                 <form onSubmit={(event) => this.onSubmit(event)}>
                     <label>
-                        New Tournament Name:
+                        {LocStore.NewTournamentName}:
                         <input type="text" value={this.state.value} onChange={(event) => {this.onChange(event)}}/>
                     </label>
-                    <input type="submit" value="Submit" />
+                    <input type="submit" value={LocStore.Submit} />
                 </form>
-                <button onClick={() => {Interfaces.info.refreshTournamentInfoList()}}>Refresh Active Tournament List</button>
+                <button onClick={() => {Interfaces.info.refreshTournamentInfoList()}}>{LocStore.RefreshTournamentList}</button>
                 {this.getActiveTournamentInfoComponents()}
             </div>
         )

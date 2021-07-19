@@ -3,6 +3,7 @@ const MobxReact = require("mobx-react")
 
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 require("./exAiView.less")
 
@@ -10,24 +11,24 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     constructor() {
         super()
 
-        this.name = "Ex/Ai Judge"
+        this.name = LocStore.ExAiJudge
         this.interface = Interfaces.exAi
         this.state = {
             aiCounters: {
                 music: {
-                    name: "Music",
+                    name: LocStore.Music,
                     minorCount: 0,
                     majorCount: 0,
                     score: 0
                 },
                 teamwork: {
-                    name: "Teamwork",
+                    name: LocStore.Teamwork,
                     minorCount: 0,
                     majorCount: 0,
                     score: 0
                 },
                 form: {
-                    name: "Form",
+                    name: LocStore.Form,
                     minorCount: 0,
                     majorCount: 0,
                     score: 0
@@ -161,7 +162,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     render() {
         if (this.interface.obs.playingPool === undefined || this.interface.obs.results === undefined) {
-            return <div className="exAiContainer">Waiting for Head Judge</div>
+            return <div className="exAiContainer">{LocStore.WaitingHeadJudge}</div>
         }
 
         return (
