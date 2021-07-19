@@ -7,6 +7,7 @@ const DataAction = require("scripts/actions/dataAction.js")
 const Enums = require("scripts/stores/enumStore.js")
 const ResultsView = require("scripts/views/resultsView.js")
 const MainStore = require("scripts/stores/mainStore.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 require("./headView.less")
 
@@ -25,9 +26,9 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
         return (
             <div>
-                Time judging: {judgingTime}
+                {LocStore.TimeJudging}: {judgingTime}
                 {"   /   "}
-                Remaining Time: {remainingTime}
+                {LocStore.RemainingTime}: {remainingTime}
             </div>
         )
     }
@@ -41,7 +42,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             teamName = teamList[teamIndex].getPlayerNamesString()
         }
 
-        return <div>Playing Team: {teamName}</div>
+        return <div>{LocStore.PlayingTeam}: {teamName}</div>
     }
 
     onTeamClick(teamData) {
@@ -63,7 +64,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
         return (
             <div className="teamListContainer">
-                Teams:
+                {LocStore.Teams}:
                 {teamListElements}
             </div>
         )
@@ -79,15 +80,15 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     getStartButtonText() {
         if (this.obs.playingTeamIndex === undefined) {
-            return "Set Playing Team"
+            return LocStore.SetPlayingTeam
         } else if (this.obs.isJudging) {
             if (Interfaces.head.hasRoutineTimeElapsed()) {
-                return "Judging Finished. Select Next Team."
+                return LocStore.HeadJudgingFinished
             } else {
-                return "Judging Active"
+                return LocStore.HeadJudgingActive
             }
         } else {
-            return "Click on First Throw"
+            return LocStore.HeadClickFirstThrow
         }
     }
 
@@ -98,16 +99,16 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     getJudgeStatusString(status) {
         switch (status) {
         case Enums.EStatus.none:
-            return "Unknown"
+            return LocStore.Unknown
         case Enums.EStatus.ready:
-            return "Ready"
+            return LocStore.Ready
         case Enums.EStatus.finished:
-            return "Finished"
+            return LocStore.Finished
         case Enums.EStatus.opened:
-            return "Opened"
+            return LocStore.Opened
         }
 
-        return "Unknown"
+        return LocStore.Unknown
     }
 
     getJudgeStatus(judge) {
@@ -128,13 +129,13 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     parseJudgeElements(judgeData) {
         let exElements = judgeData.judgesEx.map((judge) => {
-            return this.getJudgeStatusElement("Ex/Ai", judge)
+            return this.getJudgeStatusElement(LocStore.ExAi, judge)
         })
         let aiElements = judgeData.judgesAi.map((judge) => {
-            return this.getJudgeStatusElement("Variety", judge)
+            return this.getJudgeStatusElement(LocStore.Variety, judge)
         })
         let diffElements = judgeData.judgesDiff.map((judge) => {
-            return this.getJudgeStatusElement("Diff", judge)
+            return this.getJudgeStatusElement(LocStore.Diff, judge)
         })
 
         return {
@@ -159,7 +160,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     {parsedData.ex}
                     {parsedData.ai}
                     {parsedData.diff}
-                    {parsedDataAlt !== undefined ? "Alt Pool Judges:" : ""}
+                    {parsedDataAlt !== undefined ? LocStore.AltPoolJudges + ":" : ""}
                     {parsedDataAlt !== undefined ? parsedDataAlt.ex : null}
                     {parsedDataAlt !== undefined ? parsedDataAlt.ai : null}
                     {parsedDataAlt !== undefined ? parsedDataAlt.diff : null}
@@ -183,7 +184,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     render() {
         let pool = this.interface.getPool(false)
         if (pool === undefined) {
-            return <div className="headTopContainer">Set playing pool for Head Judge to function</div>
+            return <div className="headTopContainer">{LocStore.SetPlayingPoolReq}</div>
         }
 
         let altPool = this.interface.getPool(true)
@@ -193,10 +194,10 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             <div className="headTopContainer">
                 <div className="header">
                     <div>
-                        Head Judge
+                        {LocStore.HeadJudge}
                     </div>
-                    <button className="passiveButton" onClick={() => this.onPassiveButtonClick()}>{this.obs.passiveMode ? "Disable Passive Mode" : "Enable Passive Mode"}</button>
-                    <button className="uploadScoreboardButton" onClick={() => this.interface.toggleScoreboardIncremental()}>Toggle Scoreboard Finalized</button>
+                    <button className="passiveButton" onClick={() => this.onPassiveButtonClick()}>{this.obs.passiveMode ? LocStore.DisablePassiveMode : LocStore.EnablePassiveMode}</button>
+                    <button className="uploadScoreboardButton" onClick={() => this.interface.toggleScoreboardIncremental()}>{LocStore.ToggleScoreboardFinalized}</button>
                 </div>
                 <div className="poolDetailsContainer">{DataAction.getFullPoolDescription(pool)}{altPoolName}</div>
                 {this.getTimeElement()}
@@ -205,7 +206,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     {this.getStartButtonText()}
                 </button>
                 <button disabled={!this.obs.isJudging} className="startButton" onClick={() => this.onStopButtonClick()}>
-                    Stop
+                    {LocStore.Stop}
                 </button>
                 <div className="poolInfoContainer">
                     {this.getTeamsElement()}

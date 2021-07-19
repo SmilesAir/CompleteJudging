@@ -6,6 +6,7 @@ const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const NumberLinePickerView = require("scripts/views/numberLinePickerView.js")
 const CommonAction = require("scripts/actions/commonAction.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 require("./varietyView.less")
 
@@ -13,7 +14,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     constructor() {
         super()
 
-        this.name = "Variety Judge"
+        this.name = LocStore.VarietyJudge
         this.interface = Interfaces.variety
         this.state = {
             moveCount: 0
@@ -84,19 +85,19 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     render() {
         if (this.interface.obs.playingPool === undefined) {
-            return <div className="varietyContainer">Waiting for Head Judge</div>
+            return <div className="varietyContainer">{LocStore.WaitingHeadJudge}</div>
         }
 
         return (
             <div className="varietyContainer" tabIndex="0" onKeyDown={(event) => this.onKeyDown(event)}>
                 {this.getJudgeHeaderElement()}
                 <div className="scoresContainer">
-                    <div>Unique Move Count: {this.state.moveCount}</div>
-                    <div>Quality Score: {this.state.qualityScore}</div>
+                    <div>{LocStore.UniqueMoveCount}: {this.state.moveCount}</div>
+                    <div>{LocStore.QualityScore}: {this.state.qualityScore}</div>
                 </div>
                 <div className="quantityContainer">
-                    <button className="quantityButton" onClick={() => this.decrementMoveCount()} onKeyDown={(event) => this.onDecrementButtonKeyDown(event)}>Decrement</button>
-                    <button className="quantityButton" onClick={() => this.incrementMoveCount()} onKeyDown={(event) => this.onIncrementButtonKeyDown(event)}>Increment</button>
+                    <button className="quantityButton" onClick={() => this.decrementMoveCount()} onKeyDown={(event) => this.onDecrementButtonKeyDown(event)}>{LocStore.Decrement}</button>
+                    <button className="quantityButton" onClick={() => this.incrementMoveCount()} onKeyDown={(event) => this.onIncrementButtonKeyDown(event)}>{LocStore.Increment}</button>
                 </div>
                 <NumberLinePickerView onInputEnd={(event) => this.onInputEnd(event)}/>
             </div>

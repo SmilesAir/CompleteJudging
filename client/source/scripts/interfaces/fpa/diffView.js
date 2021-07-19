@@ -4,6 +4,7 @@ const MobxReact = require("mobx-react")
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const CommonAction = require("scripts/actions/commonAction.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 require("./diffView.less")
 
@@ -14,7 +15,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         this.startTime = undefined
         this.state = {}
         this.touchAreaRef = React.createRef()
-        this.name = "Difficulty Judge"
+        this.name = LocStore.DifficultyJudge
         this.interface = Interfaces.diff
     }
 

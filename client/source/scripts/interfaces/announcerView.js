@@ -5,6 +5,7 @@ const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
 const CommonAction = require("scripts/actions/commonAction.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 require("./announcerView.less")
 
@@ -31,9 +32,9 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
         return (
             <div>
-                Time judging: {judgingTime}
+                {LocStore.TimeJudging}: {judgingTime}
                 {"   /   "}
-                Remaining Time: {remainingTime}
+                {LocStore.RemainingTime}: {remainingTime}
             </div>
         )
     }
@@ -43,13 +44,13 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             return null
         }
 
-        let teamName = "No Playing Team Set"
+        let teamName = LocStore.NoPlayingTeamSet
         let teamIndex = this.obs.playingTeamIndex
         if (teamIndex !== undefined && teamIndex < this.obs.playingPool.teamList.length) {
             teamName = this.obs.playingPool.teamList[teamIndex].getPlayerNamesString()
         }
 
-        return <div>Playing Team: {teamName}</div>
+        return <div>{LocStore.PlayingTeam}: {teamName}</div>
     }
 
     onTeamClick(teamData) {
@@ -68,7 +69,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
         return (
             <div>
-                Teams:
+                {LocStore.Teams}:
                 {teamList}
             </div>
         )
@@ -84,17 +85,17 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     getButtonText() {
         if (this.obs.playingTeamIndex === undefined) {
-            return "Set Playing Team"
+            return LocStore.SetPlayingTeam
         } else if (this.obs.isJudging) {
             if (this.interface.hasRoutineTimeElapsed()) {
-                return "Judging Finished. Wait for Judges, then TAP to READY"
+                return LocStore.AnnouncerJudgingFinished
             } else {
-                return "Judging Active. TAP repeatedly to STOP"
+                return LocStore.AnnouncerJudgingActive
             }
         } else if (this.isButtonReady()) {
-            return "READY. Release on First Throw"
+            return LocStore.AnnouncerReadyFirstThrow
         } else {
-            return "HOLD to READY"
+            return LocStore.AnnouncerHoldToReady
         }
     }
 
@@ -206,7 +207,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     Stream Overlay Controls:
                 </div>
                 <div>
-                    <button onClick={() => this.interface.toggleShowScoreboard()}>{this.obs.showScoreboard ? "Hide Scoreboard" : "Show Scoreboard"}</button>
+                    <button onClick={() => this.interface.toggleShowScoreboard()}>{this.obs.showScoreboard ? LocStore.HideScoreboard : LocStore.ShowScoreboard}</button>
                 </div>
             </div>
         )
@@ -214,7 +215,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     render() {
         if (this.obs.playingPool === undefined) {
-            return <div className="headTopContainer">Set playing pool for Head Judge to function</div>
+            return <div className="headTopContainer">{LocStore.SetPlayingPool}</div>
         }
 
         return (
@@ -223,7 +224,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     <div>
                         Announcer
                     </div>
-                    <button className="passiveButton" onClick={() => this.onPassiveButtonClick()}>{this.obs.passiveMode ? "Enable Active Mode" : "Disable Active Mode"}</button>
+                    <button className="passiveButton" onClick={() => this.onPassiveButtonClick()}>{this.obs.passiveMode ? LocStore.EnableActiveMode : LocStore.DisableActiveMode}</button>
                 </div>
                 <div className="poolDetailsContainer">{DataAction.getFullPoolDescription(this.obs.playingPool)}</div>
                 {this.getTimeElement()}

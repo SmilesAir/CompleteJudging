@@ -6,6 +6,7 @@ const Interfaces = require("scripts/interfaces/interfaces.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const CommonAction = require("scripts/actions/commonAction.js")
 const Enums = require("scripts/stores/enumStore.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 require("./scoreboardView.less")
 
@@ -53,11 +54,11 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return (
             <div key={0} className="rowContainer headerRow rowContainerIncremental">
                 <div className="center">{"#"}</div>
-                <div>{"Team"}</div>
-                <div className="center">{"Phrases"}</div>
-                <div className="center">{"Unique"}</div>
-                <div className="center">{"Diff"}</div>
-                <div className="center">{"Ex"}</div>
+                <div>{LocStore.Team}</div>
+                <div className="center">{LocStore.Phrases}</div>
+                <div className="center">{LocStore.Unique}</div>
+                <div className="center">{LocStore.Diff}</div>
+                <div className="center">{LocStore.Ex}</div>
             </div>
         )
     }
@@ -66,12 +67,12 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return (
             <div key={0} className="rowContainer headerRow">
                 <div className="center">{"#"}</div>
-                <div>{"Team"}</div>
-                <div className="center">{"Diff"}</div>
-                <div className="center">{"Variety"}</div>
-                <div className="center">{"AI"}</div>
-                <div className="center">{"Ex"}</div>
-                <div className="center">{"Score"}</div>
+                <div>{LocStore.Team}</div>
+                <div className="center">{LocStore.Diff}</div>
+                <div className="center">{LocStore.Variety}</div>
+                <div className="center">{LocStore.AI}</div>
+                <div className="center">{LocStore.Ex}</div>
+                <div className="center">{LocStore.Score}</div>
             </div>
         )
     }
@@ -173,12 +174,12 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             routineTimeStr = ` [${Math.floor(secondsRemaining / 60)}:${`${secondsRemaining % 60}`.padStart(2, "0")}]`
         }
 
-        return (this.obs.incremental ? "[Partial] " : "") + this.obs.title + routineTimeStr
+        return (this.obs.incremental ? `[${LocStore.Partial}] ` : "") + this.obs.title + routineTimeStr
     }
 
     render() {
         if (this.obs.resultsData === undefined) {
-            return <div>No Scoreboard Data</div>
+            return <div>${LocStore.NoScoreboardData}</div>
         }
 
         return (

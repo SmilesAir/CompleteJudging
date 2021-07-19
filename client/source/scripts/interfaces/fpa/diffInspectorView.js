@@ -7,6 +7,7 @@ const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataAction = require("scripts/actions/dataAction.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DiffData = require("scripts/interfaces/fpa/data/diffData.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 require("./diffInspectorView.less")
 
@@ -95,12 +96,12 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         return (
             <div className="controls">
                 <div>
-                    Top # of scores:
+                    {LocStore.TopScores}:
                     <input className={`numberInput ${this.state.topCountValid ? "" : "invalid"}`}
                         type="text" value={this.state.topCount} onChange={(event) => this.topCountChanged(event)} />
                 </div>
                 <div>
-                    Non-linear equation
+                    {LocStore.NonLinearEquation}
                 </div>
                 <div>
                     {"Output = ((score + "}

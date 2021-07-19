@@ -6,6 +6,7 @@ const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
 const Enums = require("scripts/stores/enumStore.js")
 const DataBase = require("scripts/stores/dataBase.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 const epsilon = .01
 
@@ -183,9 +184,9 @@ module.exports.getInspected = function(resultData, teamIndex) {
         str += scores.join(" ")
 
         let top = Math.round(constants.topPerSecond * 180)
-        str += ` Raw: ${getAverage(scores, top, false).toFixed(2)} Top (${top}): ${getTopAverage(scores, false).toFixed(2)}`
-        str += ` Adj Raw: ${getAverage(scores, top, true).toFixed(2)} Adj Top (${top}): ${getTopAverage(scores, true).toFixed(2)}`
-        str += ` Adj Sum Raw: ${getAdjustedScore(getAverage(scores, top, false)).toFixed(2)} Adj Sum Top (${top}): ${getAdjustedScore(getTopAverage(scores, false)).toFixed(2)}`
+        str += ` ${LocStore.Raw}: ${getAverage(scores, top, false).toFixed(2)} ${LocStore.Top} (${top}): ${getTopAverage(scores, false).toFixed(2)}`
+        str += ` ${LocStore.AdjustedRaw}: ${getAverage(scores, top, true).toFixed(2)} ${LocStore.AdjustedTop} (${top}): ${getTopAverage(scores, true).toFixed(2)}`
+        str += ` ${LocStore.AdjustedSumRaw}: ${getAdjustedScore(getAverage(scores, top, false)).toFixed(2)} ${LocStore.AdjustedSumTop} (${top}): ${getAdjustedScore(getTopAverage(scores, false)).toFixed(2)}`
 
         return (
             <div className="inspectedResults" key={teamIndex}>{str}</div>
