@@ -3,6 +3,7 @@ const MobxReact = require("mobx-react")
 
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 require("./oldExView.less")
 
@@ -85,8 +86,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             let pointName = `.${point}`
             return (
                 <div key={point} className="exElementContainer">
-                    <button className="removeButton" onClick={() => this.onRemoveClick(point)}>Decrement</button>
-                    <button className="addButton" onClick={() => this.onAddClick(point)}>{pointName} Deduction</button>
+                    <button className="removeButton" onClick={() => this.onRemoveClick(point)}>{LocStore.Decrement}</button>
+                    <button className="addButton" onClick={() => this.onAddClick(point)}>{pointName} {LocStore.Deduction}</button>
                     <div className="countText">{this.state[point]}</div>
                 </div>
             )
@@ -101,7 +102,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     render() {
         if (this.interface.obs.playingPool === undefined || this.interface.obs.results === undefined) {
-            return <div className="exAiContainer">Waiting for Head Judge</div>
+            return <div className="exAiContainer">{LocStore.WaitingHeadJudge}</div>
         }
 
         return (

@@ -147,7 +147,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             return (
                 <div key={point} className="exElementContainer">
                     <button className="removeButton" onClick={() => this.onRemoveClick(point)}>Decrement</button>
-                    <button className="addButton" onClick={() => this.onAddClick(point)}>{pointName} Deduction</button>
+                    <button className="addButton" onClick={() => this.onAddClick(point)}>{pointName} {LocStore.Deduction}</button>
                     <div className="countText">{this.state.pointDeductions[point]}</div>
                 </div>
             )

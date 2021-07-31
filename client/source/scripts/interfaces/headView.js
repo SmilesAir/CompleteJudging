@@ -34,7 +34,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     }
 
     getPlayingTeamElement() {
-        let teamName = "No Playing Team Set"
+        let teamName = LocStore.NoPlayingTeamSet
         let teamIndex = this.obs.playingTeamIndex
         let teamList = this.interface.calcTeamList()
 
@@ -156,7 +156,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
             return (
                 <div>
-                    Judges:
+                    {LocStore.Judges}:
                     {parsedData.ex}
                     {parsedData.ai}
                     {parsedData.diff}

@@ -109,11 +109,11 @@ module.exports = @MobxReact.observer class StarterListView extends React.Compone
         return (
             <div className="content">
                 <div className="teamsHeader">
-                    Player Order
+                    {LocStore.PlayerOrder}
                 </div>
                 <div className="spacer"/>
                 <div className="judgesHeader">
-                    Judges
+                    {LocStore.Judges}
                 </div>
                 {this.getTeamsElement()}
                 <div className="spacer"/>

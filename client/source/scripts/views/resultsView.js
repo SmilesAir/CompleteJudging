@@ -4,6 +4,7 @@ const MobxReact = require("mobx-react")
 
 const Enums = require("scripts/stores/enumStore.js")
 const MainStore = require("scripts/stores/mainStore.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 require("./resultsView.less")
 
@@ -36,7 +37,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
             return (
                 <div key={judgeData.judgeName} className="detailsContainer">
                     <div className="detailSingle diff">
-                        {judgeData.printLabels === true ? `Diff ${judgeData.judgeNumber}` : judgeData.score.toFixed(1)}
+                        {judgeData.printLabels === true ? `${LocStore.Diff} ${judgeData.judgeNumber}` : judgeData.score.toFixed(1)}
                     </div>
                 </div>
             )
@@ -44,7 +45,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
             return (
                 <div key={judgeData.judgeName} className="detailsContainer">
                     <div className="detailSingle variety">
-                        {judgeData.printLabels === true ? `Vty ${judgeData.judgeNumber}` : judgeData.score.toFixed(1)}
+                        {judgeData.printLabels === true ? `${LocStore.Vty} ${judgeData.judgeNumber}` : judgeData.score.toFixed(1)}
                     </div>
                 </div>
             )
@@ -52,10 +53,10 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
             return (
                 <div key={judgeData.judgeName} className="detailsContainer">
                     <div className="detailSingle ai">
-                        {judgeData.printLabels === true ? `AI ${judgeData.judgeNumber}` : judgeData.score.toFixed(1)}
+                        {judgeData.printLabels === true ? `${LocStore.AI} ${judgeData.judgeNumber}` : judgeData.score.toFixed(1)}
                     </div>
                     <div className="detailSingle ex">
-                        {judgeData.printLabels === true ? `Ex ${judgeData.judgeNumber}` : -judgeData.adjustedEx.toFixed(1)}
+                        {judgeData.printLabels === true ? `${LocStore.Ex} ${judgeData.judgeNumber}` : -judgeData.adjustedEx.toFixed(1)}
                     </div>
                 </div>
             )
@@ -108,19 +109,19 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         let sums = this.allTeamCategoryData[teamNames] || {}
 
         let diff = sums[Enums.EInterface.diff]
-        diff = diff !== undefined ? diff.toFixed(1) + (diff === this.allTeamCategoryData.topDiff ? "*" : "") : `D (${MainStore.constants.diff.diffScaler})`
+        diff = diff !== undefined ? diff.toFixed(1) + (diff === this.allTeamCategoryData.topDiff ? "*" : "") : `${LocStore.DiffAbbreviationSingleChar} (${MainStore.constants.diff.diffScaler})`
 
         let variety = sums[Enums.EInterface.variety]
-        variety = variety !== undefined ? variety.toFixed(1) + (variety === this.allTeamCategoryData.topVariety ? "*" : "") : `V (${MainStore.constants.variety.varietyScaler})`
+        variety = variety !== undefined ? variety.toFixed(1) + (variety === this.allTeamCategoryData.topVariety ? "*" : "") : `${LocStore.VarietyAbbreviationSingleChar} (${MainStore.constants.variety.varietyScaler})`
 
         let ai = sums[Enums.EInterface.exAi]
-        ai = ai !== undefined ? ai.toFixed(1) + (ai === this.allTeamCategoryData.topAi ? "*" : "") : `AI (${MainStore.constants.exAi.aiScaler})`
+        ai = ai !== undefined ? ai.toFixed(1) + (ai === this.allTeamCategoryData.topAi ? "*" : "") : `${LocStore.AI} (${MainStore.constants.exAi.aiScaler})`
 
         let ex = sums.ex
-        ex = ex !== undefined ? ex.toFixed(1) + (ex === this.allTeamCategoryData.topEx ? "*" : "") : `Ex (${MainStore.constants.exAi.exScaler})`
+        ex = ex !== undefined ? ex.toFixed(1) + (ex === this.allTeamCategoryData.topEx ? "*" : "") : `${LocStore.Ex} (${MainStore.constants.exAi.exScaler})`
 
         let general = sums.general
-        general = general !== undefined ? general.toFixed(1) + (general === this.allTeamCategoryData.topGeneral ? "*" : "") : `G (${MainStore.constants.base.generalScaler.toString().replace(/^[0]*/, "")})`
+        general = general !== undefined ? general.toFixed(1) + (general === this.allTeamCategoryData.topGeneral ? "*" : "") : `${LocStore.GeneralAbbreviationSingleChar} (${MainStore.constants.base.generalScaler.toString().replace(/^[0]*/, "")})`
 
         return (
             <div className="categorySumsContainer">
@@ -208,10 +209,10 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         }
 
         teamRows[0] = this.getSummaryTeamRows(Object.assign(this.labelData, {
-            teamNames: "Team",
-            scoreDetails: "Score Labels",
-            totalScore: "Total",
-            rank: "Rank"
+            teamNames: LocStore.Team,
+            scoreDetails: LocStore.ScoreLabels,
+            totalScore: LocStore.Total,
+            rank: LocStore.Rank
         }))
 
         return teamRows
@@ -240,7 +241,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                 <div className="judgeDetailsContainer">
                     <div className="detailScoreLine bottomBorder">
                         <div className="label">
-                            General
+                            {LocStore.General}
                         </div>
                         <div className="detailSingle">
                             {teamData.general}
@@ -248,7 +249,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                     </div>
                     <div className="detailScoreLine bottomBorder">
                         <div className="label">
-                            Phrases
+                            {LocStore.Phrases}
                         </div>
                         <div className="detailSingle">
                             {teamData.phraseCount}
@@ -256,7 +257,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                     </div>
                     <div className="detailScoreLine bottomBorder">
                         <div className="label">
-                            Marks
+                            {LocStore.Marks}
                         </div>
                         <div className="detailLong">
                             {this.getMarkElements(teamData.marks, teamData.markTierList)}
@@ -264,28 +265,28 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                     </div>
                     <div className="detailScoreLine bottomBorder">
                         <div className="label">
-                            Average
+                            {LocStore.Average}
                         </div>
                         <div className="subLabel">
-                            Raw
+                            {LocStore.Raw}
                         </div>
                         <div className="detailSingle">
                             {teamData.averageNormal.toFixed(2)}
                         </div>
                         <div className="subLabel">
-                            Tier 1
+                            {LocStore.Tier1}
                         </div>
                         <div className="detailSingle">
                             {teamData.averageTier1.toFixed(2)}
                         </div>
                         <div className="subLabel">
-                            Scaled
+                            {LocStore.Scaled}
                         </div>
                         <div className="detailSingle">
                             {teamData.averageTier1Adjusted.toFixed(2)}
                         </div>
                         <div className="subLabel">
-                            Tail
+                            {LocStore.Tail}
                         </div>
                         <div className="detailSingle">
                             {(teamData.score - teamData.averageTier1Adjusted).toFixed(2)}
@@ -298,7 +299,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                 <div className="judgeDetailsContainer">
                     <div className="detailScoreLine bottomBorder">
                         <div className="label">
-                            General
+                            {LocStore.General}
                         </div>
                         <div className="detailSingle">
                             {teamData.general}
@@ -306,7 +307,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                     </div>
                     <div className="detailScoreLine bottomBorder">
                         <div className="label">
-                            Quantity
+                            {LocStore.Quantity}
                         </div>
                         <div className="detailSingle">
                             {teamData.quantity}
@@ -314,7 +315,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                     </div>
                     <div className="detailScoreLine bottomBorder">
                         <div className="label">
-                            Quality
+                            {LocStore.Quality}
                         </div>
                         <div className="detailSingle">
                             {teamData.quality}
@@ -327,7 +328,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                 <div className="judgeDetailsContainer">
                     <div className="detailScoreLine bottomBorder">
                         <div className="label">
-                            General
+                            {LocStore.General}
                         </div>
                         <div className="detailSingle">
                             {teamData.general}
@@ -335,22 +336,22 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                     </div>
                     <div className="detailScoreLine bottomBorder">
                         <div className="label">
-                            AI
+                            {LocStore.AI}
                         </div>
                         <div className="subLabel">
-                            Music
+                            {LocStore.Music}
                         </div>
                         <div className="detailSingle">
                             {teamData.music}
                         </div>
                         <div className="subLabel">
-                            Teamwork
+                            {LocStore.Teamwork}
                         </div>
                         <div className="detailSingle">
                             {teamData.teamwork}
                         </div>
                         <div className="subLabel">
-                            Form
+                            {LocStore.Form}
                         </div>
                         <div className="detailSingle">
                             {teamData.form}
@@ -358,7 +359,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                     </div>
                     <div className="detailScoreLine bottomBorder">
                         <div className="label">
-                            Ex
+                            {LocStore.Ex}
                         </div>
                         <div className="subLabel">
                             .1
@@ -379,13 +380,13 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                             {teamData.point3Count}
                         </div>
                         <div className="subLabel">
-                            Raw
+                            {LocStore.Raw}
                         </div>
                         <div className="detailSingle">
                             {teamData.ex.toFixed(1)}
                         </div>
                         <div className="subLabel">
-                            Adjusted
+                            {LocStore.Adjusted}
                         </div>
                         <div className="detailSingle">
                             {teamData.adjustedEx.toFixed(1)}
@@ -471,11 +472,11 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
     getJudgeTypeName(type) {
         switch (type) {
         case Enums.EInterface.diff:
-            return "Diff"
+            return LocStore.Diff
         case Enums.EInterface.variety:
-            return "Variety"
+            return LocStore.Variety
         case Enums.EInterface.exAi:
-            return "Ex/AI"
+            return LocStore.ExAi
         }
 
         return ""
@@ -518,7 +519,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         return (
             <div className="resultsTable" key={teamData.teamNames}>
                 <div className="header">
-                    Team {playOrderNumber}: {teamData.teamNames}
+                    {LocStore.Team} {playOrderNumber}: {teamData.teamNames}
                 </div>
                 <div className="content">
                     {this.getTeamDetailsRows(teamData.data)}
@@ -557,7 +558,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         if (this.props.poolDesc === undefined || this.props.resultsData === undefined) {
             return (
                 <div>
-                    Set results from Pools tab
+                    {LocStore.SetResultsFromPoolsTab}
                 </div>
             )
         }
@@ -565,16 +566,16 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
         return (
             <div className="resultsContainer">
                 <button id="noPrint" className="toggleButton" onClick={() => this.toggleSummarySortMode() }>
-                    Toggle Results Sorted: {this.sortByRank ? "By Rank" : "In Play Order"}
+                    {LocStore.ToggleResultsSorted}: {this.sortByRank ? LocStore.ByRank : LocStore.InPlayOrder}
                 </button>
                 <div className="header">
-                    {this.props.poolDesc} (Summary)
+                    {this.props.poolDesc} ({LocStore.Summary})
                 </div>
                 <div className="content">
                     {this.getSummaryResults()}
                 </div>
                 <button id="noPrint" className="toggleButton" onClick={() => this.toggleDetailedSortMode() }>
-                    Toggle Results Sort: {this.sortByJudge ? "By Judge" : "By Team"}
+                    {LocStore.ToggleResultsSorted}: {this.sortByJudge ? LocStore.ByJudge : LocStore.ByTeam}
                 </button>
                 {this.getDetailedResults()}
             </div>
