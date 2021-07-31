@@ -4,6 +4,7 @@ const MobxReact = require("mobx-react")
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const CommonAction = require("scripts/actions/commonAction.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 require("./oldDiffView.less")
 
@@ -178,7 +179,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     render() {
         if (this.interface.obs.playingPool === undefined) {
-            return <div className="diffTopContainer">Waiting for Head Judge</div>
+            return <div className="diffTopContainer">{LocStore.WaitingHeadJudge}</div>
         }
 
         let inputClassName = `numberInputContainer ${this.interface.obs.activeInputIndex !== undefined ? "outlineActive" : ""}`

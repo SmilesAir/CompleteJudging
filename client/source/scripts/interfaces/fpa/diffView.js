@@ -137,7 +137,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     render() {
         if (this.interface.obs.playingPool === undefined) {
-            return <div className="diffTopContainer">Waiting for Head Judge</div>
+            return <div className="diffTopContainer">{LocStore.WaitingHeadJudge}</div>
         }
 
         return (

@@ -3,6 +3,7 @@ const MobxReact = require("mobx-react")
 
 const InterfaceViewBase = require("scripts/interfaces/interfaceViewBase.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 require("./oldAiView.less")
 
@@ -113,7 +114,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     render() {
         if (this.interface.obs.playingPool === undefined || this.interface.obs.results === undefined) {
-            return <div className="oldAiContainer">Waiting for Head Judge</div>
+            return <div className="oldAiContainer">{LocStore.WaitingHeadJudge}</div>
         }
 
         return (

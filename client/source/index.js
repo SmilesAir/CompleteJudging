@@ -75,8 +75,10 @@ require("./index.less")
             for (let key in LocStore) {
                 if (key !== "language") {
                     let strLen = LocStore[key].length
-                    if (strLen >= 2) {
+                    if (strLen > 0) {
                         LocStore[key] = `*${LocStore[key]}*`
+                    } else {
+                        LocStore[key] = "*MISSING*"
                     }
                 }
             }
