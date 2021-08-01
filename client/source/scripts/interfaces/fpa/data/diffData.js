@@ -77,8 +77,10 @@ module.exports.DataClass = class extends DataStore.ResultsDataBase {
 
                 this.setGeneral(resultIndex, data.general)
 
-                for (let score of data.scores) {
-                    this.addScore(resultIndex, score)
+                if (data.scores !== undefined) {
+                    for (let score of data.scores) {
+                        this.addScore(resultIndex, score)
+                    }
                 }
             }
         }
