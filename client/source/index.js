@@ -70,7 +70,7 @@ require("./index.less")
     initLoc() {
         this.loadAndSetLanguage("English")
 
-        let highlightLocStrings = true
+        let highlightLocStrings = false
         if (highlightLocStrings) {
             for (let key in LocStore) {
                 if (key !== "language") {
