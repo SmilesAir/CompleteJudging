@@ -92,8 +92,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
             <div className="varietyContainer" tabIndex="0" onKeyDown={(event) => this.onKeyDown(event)}>
                 {this.getJudgeHeaderElement()}
                 <div className="scoresContainer">
-                    <div>{LocStore.UniqueMoveCount}: {this.state.moveCount}</div>
-                    <div>{LocStore.QualityScore}: {this.state.qualityScore}</div>
+                    <div className="counters">{LocStore.UniqueMoveCount}: {this.state.moveCount}</div>
+                    <div className="counters">{LocStore.QualityScore}: {this.state.qualityScore}</div>
                 </div>
                 <div className="quantityContainer">
                     <button className="quantityButton" onClick={() => this.decrementMoveCount()} onKeyDown={(event) => this.onDecrementButtonKeyDown(event)}>{LocStore.Decrement}</button>
