@@ -68,7 +68,7 @@ require("./index.less")
     }
 
     initLoc() {
-        this.loadAndSetLanguage("English")
+        CommonAction.loadAndSetLanguage("English")
 
         let highlightLocStrings = false
         if (highlightLocStrings) {
@@ -80,33 +80,6 @@ require("./index.less")
                     } else {
                         LocStore[key] = "*MISSING*"
                     }
-                }
-            }
-        }
-    }
-
-    preprocessLocString(str) {
-        return str.replace("\\n", "\n")
-    }
-
-    loadAndSetLanguage(language) {
-        LocStore.language = language
-
-        let locFile = require(`loc/${language}.json`)
-
-        if (!Array.isArray(locFile)) {
-            console.error("Loc file is not a json array", locFile)
-        }
-
-        for (let i = 1; i < locFile.length; ++i) {
-            let rowData = locFile[i].c
-            if (rowData !== undefined) {
-                if (rowData[2] === null) {
-                    if (rowData[1] !== null) {
-                        LocStore[rowData[0].v] = this.preprocessLocString(rowData[1].v)
-                    }
-                } else {
-                    LocStore[rowData[0].v] = this.preprocessLocString(rowData[2].v)
                 }
             }
         }

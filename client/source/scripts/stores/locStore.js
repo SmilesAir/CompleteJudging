@@ -3,5 +3,6 @@
 const Mobx = require("mobx")
 
 module.exports = Mobx.observable({
-    language: "English"
+    language: "English",
+    languageChoices: [ "English", "Spanish" ]
 })

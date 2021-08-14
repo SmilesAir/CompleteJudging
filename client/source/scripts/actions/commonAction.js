@@ -1,6 +1,7 @@
 
 const MainStore = require("scripts/stores/mainStore.js")
 const EndpointStore = require("complete-judging-common/source/endpoints.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 function vibrate(param) {
     if (!module.exports.isiOS()) {
@@ -43,4 +44,31 @@ module.exports.isiOS = function() {
 
 module.exports.fetchEx = function(key, pathParams, queryParams, options) {
     return fetch(EndpointStore.buildUrl(MainStore.lanMode, key, pathParams, queryParams), options)
+}
+
+module.exports.loadAndSetLanguage = function(language) {
+    LocStore.language = language
+
+    let locFile = require(`loc/${language}.json`)
+
+    if (!Array.isArray(locFile)) {
+        console.error("Loc file is not a json array", locFile)
+    }
+
+    for (let i = 1; i < locFile.length; ++i) {
+        let rowData = locFile[i].c
+        if (rowData !== undefined) {
+            if (rowData[2] === null) {
+                if (rowData[1] !== null) {
+                    LocStore[rowData[0].v] = preprocessLocString(rowData[1].v)
+                }
+            } else {
+                LocStore[rowData[0].v] = preprocessLocString(rowData[2].v)
+            }
+        }
+    }
+}
+
+function preprocessLocString(str) {
+    return str.replace("\\n", "\n")
 }

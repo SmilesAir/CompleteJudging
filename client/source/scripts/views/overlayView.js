@@ -7,6 +7,9 @@ const DataAction = require("scripts/actions/dataAction.js")
 const Interfaces = require("scripts/interfaces/interfaces.js")
 const DataStore = require("scripts/stores/dataStore.js")
 const Enums = require("scripts/stores/enumStore.js")
+const LocStore = require("scripts/stores/locStore.js")
+const CommonAction = require("scripts/actions/commonAction.js")
+
 
 require("./overlayView.less")
 
@@ -27,15 +30,28 @@ require("./overlayView.less")
                 </div>
                 <div>
                     {MainStore.userId}
-                    <button onClick={() => this.onOpenGeneralClick()}>Open General Impression</button>
+                    <button onClick={() => this.onOpenGeneralClick()}>{LocStore.OpenGeneralImpression}</button>
                 </div>
                 <div className="headerControlsContainer">
-                    <button onClick={() => this.onBackupModeEnableClick()}>{MainStore.interfaceObs.backupModeEnabled ? "Disable Backup Mode" : "Enabled Backup Mode"}</button>
-                    <button disabled={!MainStore.interfaceObs.backupModeEnabled} onClick={() => Interfaces.activeInterface.moveToNewerBackup()}>Newer</button>
-                    <button disabled={!MainStore.interfaceObs.backupModeEnabled} onClick={() => Interfaces.activeInterface.moveToOlderBackup()}>Older</button>
+                    <button onClick={() => this.onBackupModeEnableClick()}>{MainStore.interfaceObs.backupModeEnabled ? LocStore.DisableBackupMode : LocStore.EnabledBackupMode}</button>
+                    <button disabled={!MainStore.interfaceObs.backupModeEnabled} onClick={() => Interfaces.activeInterface.moveToNewerBackup()}>{LocStore.Newer}</button>
+                    <button disabled={!MainStore.interfaceObs.backupModeEnabled} onClick={() => Interfaces.activeInterface.moveToOlderBackup()}>{LocStore.Older}</button>
+                    <select value={LocStore.language} onChange={(event) => this.onLanguageChanged(event)}>
+                        {
+                            LocStore.languageChoices.map((language) => {
+                                return <option key={language} value={language}>{language}</option>
+                            })
+                        }
+                    </select>
                 </div>
             </div>
         )
+    }
+
+    onLanguageChanged(event) {
+        if (LocStore.language !== event.target.value) {
+            CommonAction.loadAndSetLanguage(event.target.value)
+        }
     }
 
     onOpenGeneralClick() {
@@ -75,7 +91,9 @@ require("./overlayView.less")
 
     getInfo() {
         let teamViews = []
-        if (MainStore.interfaceObs !== undefined && MainStore.interfaceObs.playingPool !== undefined) {
+        if (MainStore.interfaceObs !== undefined &&
+            MainStore.interfaceObs.playingPool !== undefined &&
+            MainStore.interfaceObs.playingPool.teamList !== undefined) {
             let key = 0
             teamViews = MainStore.interfaceObs.playingPool.teamList.map((playersList) => {
                 let isEditing = MainStore.interfaceObs.editTeamIndex === key
