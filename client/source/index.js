@@ -37,8 +37,6 @@ require("./index.less")
     constructor() {
         super()
 
-        this.initLoc()
-
         MainStore.activeInterface = Enums.EInterface.default
 
         let startupParam = MainStore.url.searchParams.get("startup")
@@ -58,7 +56,10 @@ require("./index.less")
         MainStore.showControlsHeader = headerParam !== null && headerParam === "true"
         let lanModeParam = MainStore.url.searchParams.get("lanMode")
         MainStore.lanMode = MainStore.forceLanMode || lanModeParam !== null && lanModeParam === "true"
+        let language = MainStore.url.searchParams.get("lang")
+        LocStore.language = language !== null ? language : "English"
 
+        this.initLoc()
         DataAction.init()
         Interfaces.init()
 
@@ -68,7 +69,7 @@ require("./index.less")
     }
 
     initLoc() {
-        CommonAction.loadAndSetLanguage("English")
+        CommonAction.loadAndSetLanguage(LocStore.language)
 
         let highlightLocStrings = false
         if (highlightLocStrings) {
