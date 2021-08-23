@@ -12,6 +12,9 @@ Judge status is null if link opened before pool is set
 Add "Incremental" to scoreboard title
 Sort the summary results
 Fix css when width is too narrow on results page
+Update pool creator judges with new category names on selection buttons
+Pool creator rename Prod to Production
+Can't download code rigth after installing git
 
 
 Option to sort by rank
