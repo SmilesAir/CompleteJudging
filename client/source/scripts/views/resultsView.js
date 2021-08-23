@@ -506,7 +506,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                         {this.getJudgeTeamDetails(judge.judgeData)}
                     </div>
                     <div className="total">
-                        {judge.judgeData .score.toFixed(2)}
+                        {judge.judgeData.score.toFixed(2)}
                     </div>
                 </div>
             )

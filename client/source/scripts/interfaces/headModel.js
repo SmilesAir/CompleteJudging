@@ -7,6 +7,7 @@ const MainStore = require("scripts/stores/mainStore.js")
 const DataStore = require("scripts/stores/dataStore.js")
 const DataAction = require("scripts/actions/dataAction.js")
 const CommonAction = require("scripts/actions/commonAction.js")
+const LocStore = require("scripts/stores/locStore")
 
 module.exports = class extends InterfaceModelBase {
     constructor() {
@@ -97,6 +98,11 @@ module.exports = class extends InterfaceModelBase {
 
     setupPlayingPool(pool, isAlt) {
         if (this.getPool(isAlt) !== pool) {
+            if (this.getPool(!isAlt) === pool) {
+                alert(LocStore.PrimaryandAlternateError)
+                return
+            }
+
             this.setPool(pool, isAlt)
             this.setPlayingIndex(pool.teamList.length > 0 ? 0 : undefined, isAlt)
 
