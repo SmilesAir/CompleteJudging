@@ -3,6 +3,7 @@ const DataStore = require("scripts/stores/dataStore.js")
 const MainStore = require("scripts/stores/mainStore.js")
 const DataModel = require("scripts/models/dataModel.js")
 const CommonAction = require("scripts/actions/commonAction.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 function init() {
     DataStore.dataModel = new DataModel()
@@ -452,6 +453,36 @@ function verifyDataConstants(constants) {
 }
 module.exports.verifyDataConstants = verifyDataConstants
 
+function isJudging(pool, fullname) {
+    if (pool.judgeData.judgesAi.find((judge) => judge.FullName === fullname) !== undefined) {
+        return true
+    }
+
+    if (pool.judgeData.judgesDiff.find((judge) => judge.FullName === fullname) !== undefined) {
+        return true
+    }
+
+    if (pool.judgeData.judgesEx.find((judge) => judge.FullName === fullname) !== undefined) {
+        return true
+    }
+
+    return false
+}
+
+function verifyResultsData(pool, results) {
+    if (pool.judgeData === undefined) {
+        return false
+    }
+
+    for (let judge of results) {
+        if (!isJudging(pool, judge.judgeName)) {
+            return confirm(LocStore.BadResultsData)
+        }
+    }
+
+    return true
+}
+
 function fillPoolResults(poolData) {
     return CommonAction.fetchEx("GET_POOL_RESULTS", {
         tournamentName: MainStore.tournamentName,
@@ -466,7 +497,9 @@ function fillPoolResults(poolData) {
     }).then((response) => {
         return response.json()
     }).then((response) => {
-        poolData.results = response
+        if (verifyResultsData(poolData, response)) {
+            poolData.results = response
+        }
     }).catch((error) => {
         console.log("Fill Pool Results Error", error)
     })
