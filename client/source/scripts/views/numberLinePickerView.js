@@ -40,7 +40,7 @@ require("./numberLinePickerView.less")
         let numberList = []
         for (let i = 0; i <= 10; ++i) {
             numberList.push(
-                <div key={i} className="number">
+                <div key={i} className="numberLinePickerNumber">
                     {i}
                 </div>
             )
@@ -96,10 +96,10 @@ require("./numberLinePickerView.less")
     onMouseUp(event) {
         this.onInputEnd(event)
     }
-    
+
     render() {
         return <div className="numberLinePickerContainer">
-            <div id="inputContainer" className="inputContainer"
+            <div className="numberLinePickerInputContainer"
                 onTouchStart={(event) => this.onTouchStart(event)}
                 onTouchMove={(event) => this.onTouchMove(event)}
                 onTouchEnd={(event) => this.onTouchEnd(event)}
@@ -107,7 +107,7 @@ require("./numberLinePickerView.less")
                 onMouseMove={(event) => this.onMouseMove(event)}
                 onMouseUp={(event) => this.onMouseUp(event)}
                 onMouseLeave={(event) => this.onMouseUp(event)}>
-                <div className="touchArea" ref={this.touchAreaRef}>
+                <div className="numberLinePickerTouchArea" ref={this.touchAreaRef}>
                     {this.getNumbers()}
                 </div>
             </div>
