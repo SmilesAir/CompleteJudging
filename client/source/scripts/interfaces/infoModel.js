@@ -116,6 +116,8 @@ module.exports = class extends InterfaceModelBase {
             headers: {
                 "Content-Type": "application/json"
             }
+        }).then(() => {
+            location.reload()
         }).catch((error) => {
             console.log("Stop Playing Pools Error", error)
         })

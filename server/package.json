@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "cleanServerData": "removeServerData.bat",
+    "cleanAndStart": "npm run cleanServerData && npm start",
     "start": "npm i && nodemon ./bin/www -- --stage=development",
     "start:production": "npm i && nodemon ./bin/www -- --stage=production"
   },
