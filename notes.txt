@@ -15,6 +15,7 @@ Fix css when width is too narrow on results page
 Update pool creator judges with new category names on selection buttons
 Pool creator rename Prod to Production
 Can't download code rigtht after installing git
+Blue info doesn't grow vertically when text wraps causing time to be hidden under green
 
 
 Option to sort by rank
