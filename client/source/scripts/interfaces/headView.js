@@ -206,7 +206,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     {this.getStartButtonText()}
                 </button>
                 <button disabled={!this.obs.isJudging} className="startButton" onClick={() => this.onStopButtonClick()}>
-                    {LocStore.Stop}
+                    {LocStore.CancelJudging}
                 </button>
                 <div className="poolInfoContainer">
                     {this.getTeamsElement()}
