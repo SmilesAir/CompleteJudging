@@ -16,6 +16,7 @@
     "scripts": {
         "loc": "npm i node-fetch && node loc.js",
         "start": "npm run loc && npm i && codeglue --mode=server --stage=development",
+        "start:fast": "npm run loc && codeglue --mode=server --stage=development",
         "start:production": "npm run loc && npm i && codeglue --mode=server --stage=production",
         "start:only": "codeglue --mode=server --stage=development",
         "build:production": "npm run loc && codeglue --stage=production",
@@ -30,7 +31,7 @@
         "jszip-utils": "0.0.2",
         "mobx": "^5.1.2",
         "mobx-react": "^5.2.8",
-        "node-fetch": "^2.6.6",
+        "node-fetch": "^2.6.7",
         "qrcode": "^1.3.3",
         "react": "^16.5.2",
         "react-dom": "^16.5.2",
