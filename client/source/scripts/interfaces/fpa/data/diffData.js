@@ -152,9 +152,9 @@ function generateGradientArray(count, routineLengthSeconds) {
     let gradientArray = []
     for (let i = 0; i < count; ++i) {
         for (let line of MainStore.constants.diff.gradientLines) {
-            let sX = line.sCountPerSecond * routineLengthSeconds
-            let eX = line.eCountPerSecond * routineLengthSeconds - epsilon
-            if (i >= sX && i <= eX) {
+            let sX = line.sCountPerSecond * routineLengthSeconds - epsilon
+            let eX = line.eCountPerSecond * routineLengthSeconds + epsilon
+            if (i >= sX && i < eX) {
                 let dx = i - sX
                 let slope = (line.eY - line.sY) / (eX - sX)
                 gradientArray.push(line.sY + slope * dx)
@@ -166,16 +166,18 @@ function generateGradientArray(count, routineLengthSeconds) {
     return gradientArray
 }
 
-function getGradientScore(data, adjusted, routineLengthSeconds) {
+function getGradientScore(data, adjusted, routineLengthSeconds, reportTier1Only) {
     let sortedScores = sortScores(data.scores)
     let gradientArray = generateGradientArray(sortedScores.length, routineLengthSeconds)
     let totalScore = 0
     for (let i = 0; i < sortedScores.length; ++i) {
-        let score = sortedScores[i]
-        totalScore += (adjusted ? getAdjustedScore(score) : score) * gradientArray[i]
+        if (reportTier1Only !== true || gradientArray[i] > .9) {
+            let score = sortedScores[i]
+            totalScore += (adjusted ? getAdjustedScore(score) : score) * gradientArray[i]
+        }
     }
 
-    return totalScore / (4 / 60 * routineLengthSeconds) * MainStore.constants.diff.diffScaler + DataBase.calcCommonScore(data)
+    return totalScore / (4 / 60 * routineLengthSeconds) * MainStore.constants.diff.diffScaler
 }
 
 module.exports.getInspected = function(resultData, teamIndex) {
@@ -222,7 +224,7 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
     }
     let averageNormal = sumNormal /= sortedMarks.length
     let averageTier1 = sumTier1 /= tier1Count
-    let averageTier1Adjusted = sumTier1Adjusted /= tier1Count
+    let averageTier1Adjusted = getGradientScore(data, true, preProcessedData.routineLengthSeconds, true)
 
     let markTierList = []
     for (let mark of markList) {
@@ -235,18 +237,22 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
         markTierList.push(gradientArray[index] > .9 ? 0 : 1)
     }
 
+    let generalPoints = DataBase.calcCommonScore(data)
+    let score = getGradientScore(data, true, preProcessedData.routineLengthSeconds) + generalPoints
+
     return {
         type: Enums.EInterface.diff,
         phrases: getPhraseCount(markList),
         general: data.general,
-        generalPoints: DataBase.calcCommonScore(data),
+        generalPoints: generalPoints,
         marks: markList,
         markTierList: markTierList,
         averageNormal: averageNormal,
         averageTier1: averageTier1,
         averageTier1Adjusted: averageTier1Adjusted,
         phraseCount: getPhraseCount(markList),
-        score: getGradientScore(data, true, preProcessedData.routineLengthSeconds)
+        score: score,
+        tail: score - averageTier1Adjusted
     }
 }
 

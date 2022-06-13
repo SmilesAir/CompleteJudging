@@ -1,3 +1,9 @@
+constants system
+client on cloudfront
+Festival judging works
+clean old stacks/metrics
+
+
 Only init interfaces that are open
 Don't ping backend when not an active interfaces
 Sometimes the scores don't report. Repo: variety quantity increment quickly

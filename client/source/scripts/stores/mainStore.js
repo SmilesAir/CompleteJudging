@@ -22,5 +22,6 @@ module.exports = Mobx.observable({
     forceLanMode: false,
     isFinishViewShowing: false,
     isRoutineTimeElapsed: false,
-    overrideServerIp: undefined
+    overrideServerIp: undefined,
+    constantsEditorJson: {}
 })

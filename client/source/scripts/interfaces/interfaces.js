@@ -15,6 +15,7 @@ const OldExModel = require("scripts/interfaces/old/oldExModel.js")
 const OldAiModel = require("scripts/interfaces/old/oldAiModel.js")
 const OldDiffModel = require("scripts/interfaces/old/oldDiffModel.js")
 const StreamModel = require("scripts/interfaces/streamModel.js")
+const ConstantsEditorModel = require("scripts/interfaces/constantsEditorModel.js")
 
 class Interfaces {
     constructor() {
@@ -34,6 +35,7 @@ class Interfaces {
         this.oldAi = new OldAiModel()
         this.oldDiff = new OldDiffModel()
         this.stream = new StreamModel()
+        this.constantsEditor = new ConstantsEditorModel()
 
         this.list = [
             this.default,
@@ -51,7 +53,8 @@ class Interfaces {
             this.oldEx,
             this.oldAi,
             this.oldDiff,
-            this.stream
+            this.stream,
+            this.constantsEditor
         ]
     }
 

@@ -56,3 +56,4 @@ client/builds
 
 serverData/
 *.orig
+serverData*/

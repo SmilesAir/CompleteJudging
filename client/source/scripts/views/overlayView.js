@@ -138,7 +138,8 @@ require("./overlayView.less")
 
     render() {
         if (MainStore.activeInterface === Enums.EInterface.info ||
-            MainStore.activeInterface === Enums.EInterface.head) {
+            MainStore.activeInterface === Enums.EInterface.head ||
+            MainStore.activeInterface === Enums.EInterface.constantsEditor) {
             return null
         }
 

@@ -23,6 +23,8 @@ module.exports = class {
             OldDiffData
         ]
 
+        MainStore.constantsId = MainStore.url.searchParams.get("constantsId")
+
         for (let dataModel of this.dataModelList) {
             if (!DataAction.verifyDataModel(dataModel)) {
                 console.error("Failed to verify data model")
@@ -42,21 +44,16 @@ module.exports = class {
     }
 
     async getConstantsFromCloud() {
-        await CommonAction.fetchEx("GET_CONSTANTS", undefined, undefined, {
-            method: "GET",
-            headers: {
-                "Pragma": "no-cache",
-                "Cache-Control": "no-cache",
-                "Content-Type": "application/json"
-            }
+        await CommonAction.fetchEx("GET_CONSTANTS", {
+            constantsId: MainStore.constantsId || "default"
+        }, undefined, {
+            method: "GET"
         }).then((response) => {
             return response.json()
         }).then((response) => {
-            for (let key in response) {
-                MainStore.constants[key] = Object.assign(MainStore.constants[key], response[key])
-            }
-        }).catch(() => {
-            console.error("Can't query constants from s3")
+            MainStore.constants = response.constants
+        }).catch((error) => {
+            console.error("Error: Can't query constants", error)
         })
     }
 

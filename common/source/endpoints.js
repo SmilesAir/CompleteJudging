@@ -10,7 +10,6 @@ module.exports.overrideServerPath = function(newPath) {
         EXPORT_TOURNAMENT_DATA: "<path>/tournamentName/<tournamentName>/importTournamentData",
         GET_ACTIVE_TOURNAMENTS: "<path>/getActiveTournaments",
         GET_BACKUP_RESULTS: "<path>/judge/<judge>/time/<time>/getBackupResults",
-        GET_CONSTANTS: "https://s3-us-west-2.amazonaws.com/<stage>-completejudging-constants/base-constants.json",
         GET_FPA_SPREADSHEET: "https://s3-us-west-2.amazonaws.com/completejudging-<stage>/AutoImportScoresheets.xlsm",
         GET_PLAYING_POOL: "<path>/tournamentName/<tournamentName>/getPlayingPool",
         GET_POOL_RESULTS: "<path>/tournamentName/<tournamentName>/divisionIndex/<divisionIndex>/roundIndex/<roundIndex>/poolIndex/<poolIndex>/getPoolResults",
@@ -23,7 +22,10 @@ module.exports.overrideServerPath = function(newPath) {
         SET_JUDGE_STATE: "<path>/tournamentName/<tournamentName>/setJudgeState",
         SET_PLAYING_POOL: "<path>/tournamentName/<tournamentName>/setPlayingPool",
         SET_SCOREBOARD_DATA: "<pathAws>/tournamentName/<tournamentName>/setScoreboardData",
-        STOP_PLAYING_POOLS: "<path>/tournamentName/<tournamentName>/stopPlayingPools"
+        STOP_PLAYING_POOLS: "<path>/tournamentName/<tournamentName>/stopPlayingPools",
+        UPLOAD_CONSTANTS: "<pathAws>/constantsId/<constantsId>/uploadConstants",
+        GET_CONSTANTS: "<pathAws>/constantsId/<constantsId>/getConstants",
+        GET_CONSTANTS_LIST: "<pathAws>/getConstantsList"
     }
 
     serverPath = newPath

@@ -17,7 +17,8 @@ module.exports.EInterface = {
     oldEx: 12,
     oldAi: 13,
     oldDiff: 14,
-    stream: 15
+    stream: 15,
+    constantsEditor: 16
 }
 
 module.exports.EStatus = {

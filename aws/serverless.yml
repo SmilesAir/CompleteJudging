@@ -6,7 +6,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs16.x
   region: us-west-2
   stage: ${opt:stage, "development"}
 
@@ -15,6 +15,7 @@ provider:
     TOURNAMENT_INFO: ${self:provider.stage}-tournamentInfo
     ACTIVE_POOLS: ${self:provider.stage}-activePools
     ACTIVE_RESULTS: ${self:provider.stage}-activeResults
+    CONSTANTS_TABLE: ${self:provider.stage}-constantsTable
     RESULTS_BUCKET: ${self:provider.stage}-completejudging-results
     CONSTANTS_BUCKET: ${self:provider.stage}-completejudging-constants
 
@@ -49,6 +50,11 @@ provider:
         - dynamodb:PutItem
         - dynamodb:BatchWriteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ACTIVE_RESULTS}"
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.CONSTANTS_TABLE}"
     - Effect: Allow
       Action:
         - s3:GetObject
@@ -168,6 +174,27 @@ functions:
           path: tournamentName/{tournamentName}/stopPlayingPools
           method: post
           cors: true
+  uploadConstants:
+    handler: source/constants.uploadConstants
+    events:
+      - http:
+          path: constantsId/{constantsId}/uploadConstants
+          method: post
+          cors: true
+  getConstants:
+    handler: source/constants.getConstants
+    events:
+      - http:
+          path: constantsId/{constantsId}/getConstants
+          method: get
+          cors: true
+  getConstantsList:
+    handler: source/constants.getConstantsList
+    events:
+      - http:
+          path: getConstantsList
+          method: get
+          cors: true
 
 resources:
   Resources:
@@ -227,6 +254,17 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+    constantsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.CONSTANTS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: key
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
     resultsBucket:
       Type: AWS::S3::Bucket
       Properties:

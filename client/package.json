@@ -26,6 +26,8 @@
         "aws-sdk": "^2.316.0",
         "complete-judging-common": "../common",
         "file-saver": "^2.0.2",
+        "jsoneditor": "^9.8.0",
+        "jsoneditor-react": "^3.1.2",
         "jszip": "^3.2.1",
         "jszip-utils": "0.0.2",
         "mobx": "^5.1.2",

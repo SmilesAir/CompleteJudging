@@ -289,7 +289,7 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                             {LocStore.Tail}
                         </div>
                         <div className="detailSingle">
-                            {(teamData.score - teamData.averageTier1Adjusted).toFixed(2)}
+                            {(teamData.tail).toFixed(2)}
                         </div>
                     </div>
                 </div>
