@@ -3,6 +3,7 @@ const React = require("react")
 const MobxReact = require("mobx-react")
 
 const DataAction = require("scripts/actions/dataAction.js")
+const LocStore = require("scripts/stores/locStore.js")
 
 require("./starterListView.less")
 

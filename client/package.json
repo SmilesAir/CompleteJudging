@@ -16,6 +16,7 @@
     "scripts": {
         "loc": "npm i node-fetch && node loc.js",
         "start": "npm run loc && npm i && codeglue --mode=server --stage=development",
+        "start:fast": "npm run loc && codeglue --mode=server --stage=development",
         "start:production": "npm run loc && npm i && codeglue --mode=server --stage=production",
         "start:only": "codeglue --mode=server --stage=development",
         "build:production": "npm run loc && codeglue --stage=production",
