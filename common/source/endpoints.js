@@ -13,7 +13,7 @@ module.exports.overrideServerPath = function(newPath) {
         GET_FPA_SPREADSHEET: "https://s3-us-west-2.amazonaws.com/completejudging-<stage>/AutoImportScoresheets.xlsm",
         GET_PLAYING_POOL: "<path>/tournamentName/<tournamentName>/getPlayingPool",
         GET_POOL_RESULTS: "<path>/tournamentName/<tournamentName>/divisionIndex/<divisionIndex>/roundIndex/<roundIndex>/poolIndex/<poolIndex>/getPoolResults",
-        GET_S3_RESULTS: "https://s3-us-west-2.amazonaws.com/<stage>-completejudging-results/<tournamentName>-results.json",
+        GET_S3_RESULTS: "https://s3-us-west-2.amazonaws.com/<stage>-completejudging-results/<filename>",
         IMPORT_TOURNAMENT_DATA: "<path>/tournamentName/<tournamentName>/exportTournamentData",
         REQUEST_EXPORT_TOURNAMENT_DATA: newPath + "/tournamentName/<tournamentName>/exportTournamentDataToAWS",
         REQUEST_IMPORT_TOURNAMENT_DATA: newPath + "/tournamentName/<tournamentName>/importTournamentDataFromAWS",

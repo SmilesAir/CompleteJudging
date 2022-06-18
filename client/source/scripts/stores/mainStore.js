@@ -23,5 +23,7 @@ module.exports = Mobx.observable({
     isFinishViewShowing: false,
     isRoutineTimeElapsed: false,
     overrideServerIp: undefined,
-    constantsEditorJson: {}
+    constantsId: undefined,
+    archivedTournamentDataName: null,
+    archivedTournamentData: undefined
 })

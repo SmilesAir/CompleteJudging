@@ -24,6 +24,7 @@ module.exports = class {
         ]
 
         MainStore.constantsId = MainStore.url.searchParams.get("constantsId")
+        MainStore.archivedTournamentDataName = MainStore.url.searchParams.get("archivedTournamentDataName")
 
         for (let dataModel of this.dataModelList) {
             if (!DataAction.verifyDataModel(dataModel)) {
@@ -41,10 +42,11 @@ module.exports = class {
         MainStore.constants.base = BaseData.getDefaultConstants()
 
         this.getConstantsFromCloud()
+        this.getArchivedData()
     }
 
-    async getConstantsFromCloud() {
-        await CommonAction.fetchEx("GET_CONSTANTS", {
+    getConstantsFromCloud() {
+        CommonAction.fetchEx("GET_CONSTANTS", {
             constantsId: MainStore.constantsId || "default"
         }, undefined, {
             method: "GET"
@@ -55,6 +57,33 @@ module.exports = class {
         }).catch((error) => {
             console.error("Error: Can't query constants", error)
         })
+    }
+
+    getArchivedData() {
+        if (MainStore.archivedTournamentDataName !== null) {
+            CommonAction.fetchEx("GET_S3_RESULTS", {
+                filename: `${MainStore.archivedTournamentDataName}.json`
+            }, undefined, {
+                method: "GET",
+                headers: {
+                    "Pragma": "no-cache",
+                    "Cache-Control": "no-cache",
+                    "Content-Type": "application/json"
+                }
+            }).then((response) => {
+                return response.json()
+            }).then((response) => {
+                MainStore.archivedTournamentData = response
+                let info = response.tournamentInfo
+
+                // Need to load data
+                MainStore.tournamentName = info.tournamentName
+                MainStore.saveData = DataAction.loadDataFromPoolCreator(info)
+                MainStore.startupTournamentName = undefined
+            }).catch(() => {
+                // Nothing
+            })
+        }
     }
 
     getModel(data) {

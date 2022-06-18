@@ -107,7 +107,7 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
 
     queryResults() {
         CommonAction.fetchEx("GET_S3_RESULTS", {
-            tournamentName: MainStore.tournamentName.replace(" ", "+")
+            filename: MainStore.tournamentName.replace(" ", "+") + "-results.json"
         }, undefined, {
             method: "GET",
             headers: {

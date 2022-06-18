@@ -64,6 +64,8 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
                     if (pool !== undefined) {
                         DataAction.fillPoolResults(pool).then(() => {
                             this.gotoResultsTabActive(pool)
+                        }).catch((error) => {
+                            console.error(error)
                         })
                     }
                 }

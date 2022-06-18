@@ -19,8 +19,9 @@
         "start:fast": "npm run loc && codeglue --mode=server --stage=development",
         "start:production": "npm run loc && npm i && codeglue --mode=server --stage=production",
         "start:only": "codeglue --mode=server --stage=development",
+        "build": "npm run loc && codeglue --stage=development",
         "build:production": "npm run loc && codeglue --stage=production",
-        "deploy": "aws s3 sync ./builds/web s3://completejudging-development",
+        "deploy": "npm run loc && npm i && npm run build &&aws s3 sync ./builds/web s3://completejudging-development",
         "deploy:production": "npm run loc && npm i && npm run build:production && aws s3 sync ./builds/web s3://completejudging-production"
     },
     "dependencies": {

@@ -484,25 +484,48 @@ function verifyResultsData(pool, results) {
 }
 
 function fillPoolResults(poolData) {
-    return CommonAction.fetchEx("GET_POOL_RESULTS", {
-        tournamentName: MainStore.tournamentName,
-        divisionIndex: poolData.divisionIndex,
-        roundIndex: poolData.roundIndex,
-        poolIndex: poolData.poolIndex
-    }, undefined, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    }).then((response) => {
-        return response.json()
-    }).then((response) => {
-        if (verifyResultsData(poolData, response)) {
-            poolData.results = response
-        }
-    }).catch((error) => {
-        console.log("Fill Pool Results Error", error)
-    })
+    // Use cached results if downloaded
+    if (MainStore.archivedTournamentDataName !== null) {
+        return new Promise((resolve, reject) => {
+            let poolKey = MainStore.archivedTournamentData.tournamentKey[`pool-${poolData.divisionIndex}-${poolData.roundIndex}-${poolData.poolIndex}`]
+            let poolItem = MainStore.archivedTournamentData.poolMap[poolKey]
+
+            let resultsList = []
+            for (let poolAttrName in poolItem) {
+                if (poolAttrName.startsWith("resultsKey")) {
+                    let resultsKey = poolItem[poolAttrName]
+                    let resultsItem = MainStore.archivedTournamentData.resultsMap[resultsKey.judgeName][resultsKey.time.toString()]
+                    resultsList.push({
+                        judgeName: resultsKey.judgeName,
+                        data: resultsItem && resultsItem.data
+                    })
+                }
+            }
+            poolData.results = resultsList
+
+            resolve()
+        })
+    } else {
+        return CommonAction.fetchEx("GET_POOL_RESULTS", {
+            tournamentName: MainStore.tournamentName,
+            divisionIndex: poolData.divisionIndex,
+            roundIndex: poolData.roundIndex,
+            poolIndex: poolData.poolIndex
+        }, undefined, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((response) => {
+            return response.json()
+        }).then((response) => {
+            if (verifyResultsData(poolData, response)) {
+                poolData.results = response
+            }
+        }).catch((error) => {
+            console.log("Fill Pool Results Error", error)
+        })
+    }
 }
 module.exports.fillPoolResults = fillPoolResults
 
