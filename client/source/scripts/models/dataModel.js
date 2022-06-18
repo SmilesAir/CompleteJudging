@@ -53,7 +53,9 @@ module.exports = class {
         }).then((response) => {
             return response.json()
         }).then((response) => {
-            MainStore.constants = response.constants
+            if (response.success === true) {
+                MainStore.constants = response.constants
+            }
         }).catch((error) => {
             console.error("Error: Can't query constants", error)
         })

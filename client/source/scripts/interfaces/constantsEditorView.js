@@ -79,10 +79,11 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
         } else {
             let rows = []
             for (let id of this.state.constantsIdList) {
-                rows.push(<div>
-                    {id}
-                    <button onClick={() => this.onLoad(id)}>Load</button>
-                </div>)
+                rows.push(
+                    <div key={id}>
+                        {id}
+                        <button onClick={() => this.onLoad(id)}>Load</button>
+                    </div>)
             }
 
             return rows
