@@ -13,9 +13,11 @@ module.exports = @MobxReact.observer class extends InterfaceViewBase {
     constructor(props) {
         super(props)
 
+        let idParam = MainStore.url.searchParams.get("constantsId")
+
         this.state = {
             json: undefined,
-            constantsId: "testConstants",
+            constantsId: idParam || "default",
             constantsIdList: undefined
         }
 

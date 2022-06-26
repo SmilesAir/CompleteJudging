@@ -1,5 +1,3 @@
-constants system
-client on cloudfront
 Festival judging works
 clean old stacks/metrics
 
@@ -16,7 +14,6 @@ Express needs to import data if requests are for a different tournament
 Express handle spaces in tournament name
 Judge status is null if link opened before pool is set
 Add "Incremental" to scoreboard title
-Sort the summary results
 Fix css when width is too narrow on results page
 Update pool creator judges with new category names on selection buttons
 Pool creator rename Prod to Production
@@ -47,9 +44,3 @@ keep the active editing diff score hilighted when editing
 Hi Pri
 Warn went 2 devices are using the same judge
 
-
-Variety - Remove quality score. Add separate clock and counter increments
-AI - Convert to counting. All AI/Ex inputs are increments
-    3 buttons. Minor, Quality, OMG
-    Musicality, Teamwork, Form/Flow
-Remove .5
