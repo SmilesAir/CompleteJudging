@@ -129,7 +129,7 @@ function calcAiScore(data) {
     return (getMusic(data) + getTeamwork(data) + getForm(data)) / 4 * MainStore.constants.exAi.aiScaler + DataBase.calcCommonScore(data)
 }
 
-https://www.wolframalpha.com/input?i=y+%3D+%28%2845+-+%28x+-+14%29+%2F+.5%29+%2F+45%29+%5E+2%2C+x+%3D+14+to+50
+//https://www.wolframalpha.com/input?i=y+%3D+%28%2845+-+%28x+-+14%29+%2F+.5%29+%2F+45%29+%5E+2%2C+x+%3D+14+to+50
 function getExScaler(phraseCount, routineLengthSeconds) {
     if (phraseCount !== undefined && routineLengthSeconds !== undefined) {
         let constants = MainStore.constants.exAi
