@@ -6,8 +6,8 @@ module.exports = class extends InterfaceModelBase {
     constructor() {
         super()
 
-        this.name = "Constants Editor"
-        this.type = Enums.EInterface.constantsEditor
+        this.name = "Admin Panel"
+        this.type = Enums.EInterface.admin
     }
 
     createResultsData() {

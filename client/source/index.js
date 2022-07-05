@@ -29,7 +29,8 @@ const OldAiView = require("scripts/interfaces/old/oldAiView.js")
 const OldDiffView = require("scripts/interfaces/old/oldDiffView.js")
 const StreamView = require("scripts/interfaces/streamView.js")
 const BlockPromptView = require("scripts/views/blockPromptView.js")
-const ConstantsEditor = require("scripts/interfaces/constantsEditorView.js")
+const ConstantsEditorView = require("scripts/interfaces/constantsEditorView.js")
+const AdminView = require("scripts/interfaces/adminView.js")
 const CommonAction = require("scripts/actions/commonAction.js")
 
 require("./index.less")
@@ -202,7 +203,10 @@ require("./index.less")
             activeInterface = <StreamView />
             break
         case Enums.EInterface.constantsEditor:
-            activeInterface = <ConstantsEditor />
+            activeInterface = <ConstantsEditorView />
+            break
+        case Enums.EInterface.admin:
+            activeInterface = <AdminView />
             break
         }
 
