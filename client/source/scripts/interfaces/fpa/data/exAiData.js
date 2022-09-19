@@ -14,7 +14,8 @@ module.exports.getDefaultConstants = function() {
         startCountPerSecond: 0.08,
         endCountPerSecond: 0.333,
         xScaler: 0.5,
-        scaler: 1.5
+        scaler: 1.5,
+        minExScaler: .5
     }
 }
 
@@ -138,7 +139,8 @@ function getExScaler(phraseCount, routineLengthSeconds) {
         let delta = end - start
 
         if (phraseCount > start) {
-            return Math.pow((delta - Math.max(0, Math.min(end, phraseCount - start) / constants.xScaler)) / delta, 2)
+            let exScaler = Math.pow((delta - Math.max(0, Math.min(end, phraseCount - start) / constants.xScaler)) / delta, 2)
+            return Math.max(exScaler, constants.minExScaler || .5)
         }
     }
 
