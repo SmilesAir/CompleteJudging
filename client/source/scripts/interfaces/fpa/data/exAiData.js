@@ -173,20 +173,23 @@ module.exports.getHeaderSummary = function(data) {
 }
 
 module.exports.getFullProcessed = function(data, preProcessedData) {
+    let generalScore = DataBase.calcCommonScore(data)
+    let score = calcAiScore(data)
     return {
         type: Enums.EInterface.exAi,
         aI: calcAiScore(data),
         ex: calcDeductions(data),
         adjustedEx: calcDeductions(data, preProcessedData.totalPhraseCount / Math.max(1, preProcessedData.diffJudgeCount), preProcessedData.routineLengthSeconds),
         general: data.general,
-        generalPoints: DataBase.calcCommonScore(data),
+        generalPoints: generalScore,
         music: getMusic(data),
         teamwork: getTeamwork(data),
         form: getForm(data),
         point1Count: data.point1Count,
         point2Count: data.point2Count,
         point3Count: data.point3Count,
-        score: calcAiScore(data)
+        score: score,
+        categoryOnlyScore: (score - generalScore).toFixed(1)
     }
 }
 

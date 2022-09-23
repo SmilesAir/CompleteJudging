@@ -292,6 +292,14 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                             {(teamData.tail).toFixed(2)}
                         </div>
                     </div>
+                    <div className="detailScoreLine bottomBorder">
+                        <div className="label">
+                            {"Points"}
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.categoryOnlyScore}
+                        </div>
+                    </div>
                 </div>
             )
         } else if (teamData.type === Enums.EInterface.variety) {
@@ -319,6 +327,14 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                         </div>
                         <div className="detailSingle">
                             {teamData.quality}
+                        </div>
+                    </div>
+                    <div className="detailScoreLine bottomBorder">
+                        <div className="label">
+                            {"Points"}
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.categoryOnlyScore}
                         </div>
                     </div>
                 </div>
@@ -390,6 +406,14 @@ module.exports = @MobxReact.observer class ResultsView extends React.Component {
                         </div>
                         <div className="detailSingle">
                             {teamData.adjustedEx.toFixed(1)}
+                        </div>
+                    </div>
+                    <div className="detailScoreLine bottomBorder">
+                        <div className="label">
+                            {"Points"}
+                        </div>
+                        <div className="detailSingle">
+                            {teamData.categoryOnlyScore}
                         </div>
                     </div>
                 </div>

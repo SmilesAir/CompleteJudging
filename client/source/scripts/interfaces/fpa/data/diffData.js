@@ -252,7 +252,8 @@ module.exports.getFullProcessed = function(data, preProcessedData) {
         averageTier1Adjusted: averageTier1Adjusted,
         phraseCount: getPhraseCount(markList),
         score: score,
-        tail: score - averageTier1Adjusted
+        tail: score - averageTier1Adjusted - generalPoints,
+        categoryOnlyScore: (score - generalPoints).toFixed(1)
     }
 }
 

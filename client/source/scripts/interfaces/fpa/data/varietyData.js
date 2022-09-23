@@ -88,13 +88,16 @@ function calcScore(data, preProcessedData) {
 }
 
 module.exports.getFullProcessed = function(data, preProcessedData) {
+    let totalScore = calcScore(data, preProcessedData)
+    let generalScore = DataBase.calcCommonScore(data)
     return {
         type: Enums.EInterface.variety,
         quantity: data.quantityScore,
         quality: data.qualityScore,
         general: data.general,
-        generalPoints: DataBase.calcCommonScore(data),
-        score: calcScore(data, preProcessedData)
+        generalPoints: generalScore,
+        score: totalScore,
+        categoryOnlyScore: (totalScore - generalScore).toFixed(1)
     }
 }
 
