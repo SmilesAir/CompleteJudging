@@ -483,7 +483,7 @@ function verifyResultsData(pool, results) {
     return true
 }
 
-function fillPoolResults(poolData) {
+function fillPoolResults(poolData, skipVerify) {
     // Use cached results if downloaded
     if (MainStore.archivedTournamentDataName !== null) {
         return new Promise((resolve, reject) => {
@@ -519,7 +519,7 @@ function fillPoolResults(poolData) {
         }).then((response) => {
             return response.json()
         }).then((response) => {
-            if (verifyResultsData(poolData, response)) {
+            if (skipVerify === true || verifyResultsData(poolData, response)) {
                 poolData.results = response
             }
         }).catch((error) => {

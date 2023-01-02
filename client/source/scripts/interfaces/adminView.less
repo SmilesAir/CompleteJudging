@@ -9,9 +9,25 @@
 
     overflow: auto;
 
-    .export {
-        padding: 1em;
+    .section {
+        padding-left: .5em;
+        padding-bottom: .5em;
+        padding-right: .5em;
         border: 2px black solid;
         border-radius: 5px;
+        margin-bottom: 1em;
+
+        iframe {
+            width: 100%;
+            border: 2px rgb(192, 192, 192) solid;
+            border-radius: 5px;
+            margin-bottom: 1em;
+        }
+
+        .exportTextContainer {
+            display: flex;
+            flex-direction: column;
+            margin-top: .5em;
+        }
     }
 }
